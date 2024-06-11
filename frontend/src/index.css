@@ -1,13 +1,11 @@
-html,
-body {
-  height: 100vh;
-}
-
 body {
   margin: 0;
   font-family: 'Corbel', 'Candara', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --main-text-color: rgb(66, 66, 66);
+  --footer-background-color: rgb(232, 255, 219);
 }
 
 h1,
@@ -28,4 +26,10 @@ a {
 
 ul {
   list-style: none;
+  display: flex;
+  align-items: center;
+}
+
+button {
+  cursor: pointer;
 }

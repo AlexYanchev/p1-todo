@@ -15,7 +15,7 @@ export type ButtonElementProps = {
 };
 
 const Button: FC<ButtonElementProps> = ({
-  typeElement,
+  typeElement = 'button',
   text,
   type,
   name,

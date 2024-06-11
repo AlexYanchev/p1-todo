@@ -37,7 +37,7 @@ export type InputElementProps = {
 };
 
 const Input: FC<InputElementProps> = ({
-  typeElement,
+  typeElement = 'input',
   classNameContainer,
   classNameLabel,
   className,

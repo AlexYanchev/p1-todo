@@ -2,10 +2,45 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import RegistrationPage from './pages/RegistrationPage/RegistrationPage';
+import LoginPage from './pages/LoginPage/LoginPage';
+import ViewTasksPage from './pages/ViewTasksPage/ViewTasksPage';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <App />,
+    children: [
+      {
+        path: 'publicTasks',
+        element: <ViewTasksPage publicTasks={true} />,
+      },
+      {
+        path: 'tasks',
+        element: <ViewTasksPage publicTasks={false} />,
+        // children: [
+        //   {
+        //     path: 'sharedTasks',
+        //     element: <ViewTasksPage />,
+        //   },
+        // ],
+      },
+    ],
+  },
+  {
+    path: '/login',
+    element: <LoginPage />,
+  },
+  {
+    path: '/registration',
+    element: <RegistrationPage />,
+  },
+]);
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>,
   document.getElementById('root')
 );

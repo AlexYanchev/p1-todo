@@ -1,0 +1,11 @@
+.footer {
+  background-color: var(--footer-background-color);
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.created_by {
+  font-size: 2.25rem;
+}

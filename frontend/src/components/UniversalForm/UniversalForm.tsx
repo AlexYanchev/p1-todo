@@ -6,11 +6,12 @@ import Button, { ButtonElementProps } from '../Button/Button';
 type Props = {
   elements: Array<InputElementProps | ButtonElementProps>;
   onSubmit: (e?: SyntheticEvent) => void;
+  className?: string;
 };
 
-const UniversalForm: FC<Props> = ({ elements, onSubmit }) => {
+const UniversalForm: FC<Props> = ({ elements, onSubmit, className }) => {
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} className={className || ''}>
       {elements.map((element, index) =>
         element.typeElement === 'button' ? (
           <Button {...element} key={`button-form-${index}`} />

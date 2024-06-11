@@ -1,0 +1,19 @@
+.header {
+  height: 130px;
+  padding: 40px 50px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.link_list {
+  gap: 55px;
+}
+
+.createTaskButton {
+  padding: 15px 30px;
+  background-color: #acfc94;
+  border: none;
+  font-size: 1.12rem;
+  color: inherit;
+}

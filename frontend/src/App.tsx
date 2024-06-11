@@ -1,8 +1,16 @@
-import styles from 'app.module.css';
-import UniversalForm from './components/UniversalForm/UniversalForm';
+import { Outlet } from 'react-router-dom';
+import styles from './app.module.css';
+import Footer from './components/Footer/Footer';
+import Menu from './components/Menu/Menu';
 
 function App() {
-  return <h1>hello</h1>;
+  return (
+    <section className={styles.container}>
+      <Menu />
+      <Outlet />
+      <Footer />
+    </section>
+  );
 }
 
 export default App;

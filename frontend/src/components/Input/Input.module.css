@@ -1,0 +1,16 @@
+.container {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+  color: var(--main-text-color);
+}
+
+.label {
+  font-size: 1.3rem;
+}
+
+.input {
+  height: 30px;
+  outline: 1px solid currentColor;
+  border: none;
+}

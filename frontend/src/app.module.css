@@ -1,0 +1,8 @@
+.container {
+  max-width: 1240px;
+  margin: auto;
+  height: 100vh;
+  color: var(--main-text-color);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
