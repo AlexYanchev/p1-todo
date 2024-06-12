@@ -1,9 +1,9 @@
 export type TaskType = {
   id: string;
   title: string;
-  date: Date;
+  date: string;
   complete: boolean;
-  expiredAt: Date;
+  expiredAt: string;
   public: boolean;
   owner: string;
   members: Array<string>;

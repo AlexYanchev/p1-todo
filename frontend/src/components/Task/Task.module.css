@@ -1,0 +1,60 @@
+.task_container {
+  background-color: #faf7da;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.24rem;
+}
+
+.title_date {
+  font-size: 0.87;
+  color: rgba(var(--main-text-color-pure-rgb), 0.5);
+}
+
+.steps_container {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 30px;
+  min-height: 170px;
+}
+
+.expiredAt {
+  margin-top: 5px;
+  font-size: 0.875rem;
+}
+
+.footer_container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.likes {
+  display: flex;
+  gap: 10px;
+}
+
+.control_buttons_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.control_buttons_container button,
+.footer_container button {
+  padding: 8px 16px;
+  border: none;
+  font-size: 0.87;
+  background-color: rgba(196, 196, 196);
+  color: inherit;
+}
+
+.control_buttons_container button:hover,
+.footer_container button:hover {
+  opacity: 0.8;
+}

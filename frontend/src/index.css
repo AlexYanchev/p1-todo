@@ -1,10 +1,12 @@
 body {
   margin: 0;
   font-family: 'Corbel', 'Candara', 'Helvetica Neue', sans-serif;
+  font-feature-settings: 'lnum' 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
   --main-text-color: rgb(66, 66, 66);
+  --main-text-color-pure-rgb: 66, 66, 66;
   --footer-background-color: rgb(232, 255, 219);
 }
 
@@ -14,7 +16,8 @@ h3,
 h4,
 p,
 ul,
-li {
+li,
+ol {
   margin: 0;
   padding: 0;
 }
@@ -24,12 +27,33 @@ a {
   color: inherit;
 }
 
-ul {
-  list-style: none;
+ul,
+ol {
   display: flex;
   align-items: center;
 }
 
+ol {
+  list-style: inside decimal;
+}
+
+ul {
+  list-style: none;
+}
+
 button {
   cursor: pointer;
+}
+
+#popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+dl,
+dt,
+dd {
+  margin: 0;
+  padding: 0;
 }

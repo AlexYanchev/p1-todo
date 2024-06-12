@@ -26,6 +26,7 @@ const ControlButtonsOwnTask: FC<Props> = ({
         type='button'
         name='addStep'
         text='Добавить шаг'
+        className={styles.top_button}
         // onClick={onClickAddStep}
       />
       <Button

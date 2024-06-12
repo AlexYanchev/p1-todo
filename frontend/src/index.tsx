@@ -2,11 +2,20 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import {
+  createBrowserRouter,
+  Navigate,
+  redirect,
+  RouterProvider,
+  BrowserRouter,
+  Routes,
+  Route,
+} from 'react-router-dom';
 import RegistrationPage from './pages/RegistrationPage/RegistrationPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import ViewTasksPage from './pages/ViewTasksPage/ViewTasksPage';
 import { TaskStatus } from './types/taskType';
+import Popup from './components/Popup/Popup';
 
 const router = createBrowserRouter([
   {
@@ -20,12 +29,16 @@ const router = createBrowserRouter([
       {
         path: 'tasks',
         element: <ViewTasksPage type={TaskStatus.OWN_TASK} />,
-        // children: [
-        //   {
-        //     path: 'sharedTasks',
-        //     element: <ViewTasksPage />,
-        //   },
-        // ],
+        children: [
+          {
+            path: 'sharedTasks',
+            element: <ViewTasksPage type={TaskStatus.SHARED_TASK} />,
+          },
+        ],
+      },
+      {
+        path: 'createTask',
+        element: <Popup element={<></>} />,
       },
     ],
   },
@@ -41,7 +54,15 @@ const router = createBrowserRouter([
 
 ReactDOM.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    {/* <RouterProvider router={router} /> */}
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Navigate to='/tasks' />} />
+        <Route path='/*' element={<App />} />
+        <Route path='/login' element={<LoginPage />} />
+        <Route path='/registration' element={<RegistrationPage />} />
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

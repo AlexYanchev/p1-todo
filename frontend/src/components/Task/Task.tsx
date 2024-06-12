@@ -4,6 +4,7 @@ import { FC } from 'react';
 import { StepType } from '../../types/stepTypes';
 import ControlButtons from '../ControlButtons/ControlButtons';
 import LikeIcon from '../icons/LikeIcon/LikeIcon';
+import { steps } from '../../MOCK_DATA';
 
 type Props = {
   task: TaskType;
@@ -12,28 +13,31 @@ type Props = {
 
 const Task: FC<Props> = ({ task, type }) => {
   // получаем с сервера шаги для каждого таск
-  const steps: StepType[] = [];
-
+  const stepsData: StepType[] = steps.filter((step) => step.id in task.steps);
   return (
-    <article>
-      <div>
+    <article className={styles.task_container}>
+      <div className={styles.title}>
         <p>{task.title}</p>
-        <span>{task.date}</span>
+        <span className={styles.title_date}>{task.date}</span>
       </div>
-      <div>
+      <ol className={styles.steps_container}>
         {task.steps.map((step) => {
-          return <>{step}</>;
+          return (
+            <li className={styles.step} key={step}>
+              {step}
+            </li>
+          );
         })}
+      </ol>
+      <div className={styles.control_buttons_container}>
+        <ControlButtons type={type} taskId={task.id} />
+        <p className={styles.expiredAt}>Срок выполнения: {task.expiredAt}</p>
       </div>
 
-      <ControlButtons type={type} taskId={task.id} />
-      <p>{task.expiredAt}</p>
-      <div>
-        <dl>
+      <div className={styles.footer_container}>
+        <dl className={styles.likes}>
           <dt>
-            <button type='button'>
-              <LikeIcon pressed={true} size='large' />
-            </button>
+            <LikeIcon pressed={true} size='small' />
           </dt>
           <dd>{task.likes.length}</dd>
         </dl>
