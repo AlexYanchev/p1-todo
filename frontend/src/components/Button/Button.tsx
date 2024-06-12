@@ -1,13 +1,13 @@
 import styles from './Button.module.css';
-import { FC, SyntheticEvent } from 'react';
+import { FC, ReactElement, ReactNode, SyntheticEvent } from 'react';
 
 export type ButtonElementProps = {
   typeElement: 'button';
   type: 'button' | 'submit' | 'reset';
   name: string;
-  text: string;
+  text: string | ReactNode | ReactElement;
   className?: string;
-  onClick?: (e?: SyntheticEvent) => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   options?: {
     autofocus?: boolean;
     disabled?: boolean;

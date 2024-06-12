@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import RegistrationPage from './pages/RegistrationPage/RegistrationPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import ViewTasksPage from './pages/ViewTasksPage/ViewTasksPage';
+import { TaskStatus } from './types/taskType';
 
 const router = createBrowserRouter([
   {
@@ -14,11 +15,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: 'publicTasks',
-        element: <ViewTasksPage publicTasks={true} />,
+        element: <ViewTasksPage type={TaskStatus.PUBLIC_TASK} />,
       },
       {
         path: 'tasks',
-        element: <ViewTasksPage publicTasks={false} />,
+        element: <ViewTasksPage type={TaskStatus.OWN_TASK} />,
         // children: [
         //   {
         //     path: 'sharedTasks',

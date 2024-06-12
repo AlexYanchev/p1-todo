@@ -15,3 +15,9 @@ export type TaskCreateType = Pick<
   TaskType,
   'title' | 'owner' | 'public' | 'expiredAt'
 >;
+
+export enum TaskStatus {
+  OWN_TASK = 'OWN_TASK',
+  PUBLIC_TASK = 'PUBLIC_TASK',
+  SHARED_TASK = 'SHARED_TASK',
+}
