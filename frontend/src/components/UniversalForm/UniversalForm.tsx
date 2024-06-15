@@ -5,7 +5,7 @@ import Button, { ButtonElementProps } from '../Button/Button';
 
 type Props = {
   elements: Array<InputElementProps | ButtonElementProps>;
-  onSubmit: (e?: SyntheticEvent) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   className?: string;
 };
 

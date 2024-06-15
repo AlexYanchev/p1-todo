@@ -16,52 +16,20 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import ViewTasksPage from './pages/ViewTasksPage/ViewTasksPage';
 import { TaskStatus } from './types/taskType';
 import Popup from './components/Popup/Popup';
-
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <App />,
-    children: [
-      {
-        path: 'publicTasks',
-        element: <ViewTasksPage type={TaskStatus.PUBLIC_TASK} />,
-      },
-      {
-        path: 'tasks',
-        element: <ViewTasksPage type={TaskStatus.OWN_TASK} />,
-        children: [
-          {
-            path: 'sharedTasks',
-            element: <ViewTasksPage type={TaskStatus.SHARED_TASK} />,
-          },
-        ],
-      },
-      {
-        path: 'createTask',
-        element: <Popup element={<></>} />,
-      },
-    ],
-  },
-  {
-    path: '/login',
-    element: <LoginPage />,
-  },
-  {
-    path: '/registration',
-    element: <RegistrationPage />,
-  },
-]);
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
 
 ReactDOM.render(
   <React.StrictMode>
-    {/* <RouterProvider router={router} /> */}
     <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Navigate to='/tasks' />} />
-        <Route path='/*' element={<App />} />
-        <Route path='/login' element={<LoginPage />} />
-        <Route path='/registration' element={<RegistrationPage />} />
-      </Routes>
+      <Provider store={store}>
+        <Routes>
+          <Route path='/' element={<Navigate to='/tasks' />} />
+          <Route path='/*' element={<App />} />
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/registration' element={<RegistrationPage />} />
+        </Routes>
+      </Provider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

@@ -17,12 +17,12 @@ export type InputElementProps = {
     | 'tel';
   name: string;
   label: string;
-  value: string;
+  value?: string;
   placeholder?: string;
   className?: string;
   classNameContainer?: string;
   classNameLabel?: string;
-  onChange?: (e?: SyntheticEvent) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   options?: {
     autofocus?: boolean;
     disabled?: boolean;

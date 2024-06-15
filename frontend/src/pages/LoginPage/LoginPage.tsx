@@ -1,7 +1,27 @@
+import { useState } from 'react';
 import UniversalForm from '../../components/UniversalForm/UniversalForm';
 import styles from './LoginPage.module.css';
+import { useAppDispatch } from '../../redux/hooks';
+import { loginUser } from '../../redux/slices/userSlice';
 
 const LoginPage = () => {
+  const dispatch = useAppDispatch();
+  const [formData, setFormData] = useState<{ login: string; password: string }>(
+    {
+      login: '',
+      password: '',
+    }
+  );
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.currentTarget.name]: e.currentTarget.value });
+  };
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(loginUser(formData))
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  };
   return (
     <section className={styles.container}>
       <UniversalForm
@@ -11,14 +31,16 @@ const LoginPage = () => {
             type: 'text',
             name: 'login',
             label: 'Логин',
-            value: '',
+            value: formData.login,
+            onChange,
           },
           {
             typeElement: 'input',
             type: 'password',
             name: 'password',
             label: 'Пароль',
-            value: '',
+            value: formData.password,
+            onChange,
           },
 
           {
@@ -36,7 +58,7 @@ const LoginPage = () => {
             className: `${styles.button}`,
           },
         ]}
-        onSubmit={() => true}
+        onSubmit={onSubmit}
         className={styles.form}
       />
     </section>
