@@ -29,7 +29,7 @@ export const registerUser = createAsyncThunk<
 });
 
 export const loginUser = createAsyncThunk<
-  UserProfileWithTokenType,
+  UserProfileWithTokenType & ErrorTypeFromServer,
   { login: string; password: string }
 >('user/loginUser', async (formData) => {
   return customFetch('/login', 'POST', formData, {

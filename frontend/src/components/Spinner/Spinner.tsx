@@ -7,15 +7,17 @@ type Props = {
 
 const Spinner: FC<Props> = ({ sizeInEM = 1 }) => {
   return (
-    <span
-      className={styles.loader}
-      style={{
-        width: `${sizeInEM}em`,
-        height: `${sizeInEM}em`,
-        borderTop: '3px solid #fff',
-        borderRight: '3px solid transparent',
-      }}
-    ></span>
+    <div className={styles.container}>
+      <div
+        className={styles.loader}
+        style={{
+          width: `${sizeInEM}em`,
+          height: `${sizeInEM}em`,
+          borderTop: '3px solid #fff',
+          borderRight: '3px solid transparent',
+        }}
+      ></div>
+    </div>
   );
 };
 export default Spinner;
