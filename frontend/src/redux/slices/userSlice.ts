@@ -1,6 +1,9 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import type { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import type { RootState } from '../store.js';
-import { UserProfileType } from '../../types/userType.js';
+import { UserProfileType, UserRegisterType } from '../../types/userType.js';
+import { customFetch } from '../../requests';
+import { ErrorTypeFromServer } from '../../types/errorTypes.js';
 
 type UserProfileWithTokenType = UserProfileType & { token: string };
 
@@ -10,23 +13,69 @@ export interface UserState {
   error: any;
 }
 
+export const registerUser = createAsyncThunk<
+  ErrorTypeFromServer,
+  UserRegisterType
+>('user/registerUser', async (registerDataForm) => {
+  return customFetch('/registration', 'POST', registerDataForm, {
+    'Content-Type': 'application/json;charset=utf-8',
+  }).then((res) => {
+    if (res.error) {
+      throw new Error(res.message);
+    } else {
+      return res;
+    }
+  });
+});
+
 export const loginUser = createAsyncThunk<
   UserProfileWithTokenType,
   { login: string; password: string }
 >('user/loginUser', async (formData) => {
-  return fetch('http://localhost:3001/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json;charset=utf-8' },
-    body: JSON.stringify(formData),
-  })
-    .then((res) => res.json())
-    .catch((err) => console.log(err));
+  return customFetch('/login', 'POST', formData, {
+    'Content-Type': 'application/json;charset=utf-8',
+  }).then((res) => {
+    if (res.error) {
+      throw new Error(res.message);
+    } else {
+      return res;
+    }
+  });
 });
 
 const initialState: UserState = {
   user: null,
   status: 'idle',
   error: null,
+};
+
+const loginUserBuilderCases = (builder: ActionReducerMapBuilder<UserState>) => {
+  builder.addCase(loginUser.fulfilled, (state, action) => {
+    state.status = 'fulfilled';
+    state.user = action.payload;
+  });
+  builder.addCase(loginUser.rejected, (state, action) => {
+    state.status = 'rejected';
+    state.error = action.error;
+  });
+  builder.addCase(loginUser.pending, (state, action) => {
+    state.status = 'pending';
+  });
+};
+
+const registerUserBuilderCases = (
+  builder: ActionReducerMapBuilder<UserState>
+) => {
+  builder.addCase(registerUser.fulfilled, (state, action) => {
+    state.status = 'fulfilled';
+  });
+  builder.addCase(registerUser.rejected, (state, action) => {
+    state.status = 'rejected';
+    state.error = action.error;
+  });
+  builder.addCase(registerUser.pending, (state, action) => {
+    state.status = 'pending';
+  });
 };
 
 export const userSlice = createSlice({
@@ -38,23 +87,13 @@ export const userSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(loginUser.fulfilled, (state, action) => {
-      state.status = 'fulfilled';
-      state.user = action.payload;
-    });
-    builder.addCase(loginUser.rejected, (state, action) => {
-      state.status = 'rejected';
-      state.error = action.payload;
-    });
-    builder.addCase(loginUser.pending, (state, action) => {
-      state.status = 'pending';
-    });
+    loginUserBuilderCases(builder);
+    registerUserBuilderCases(builder);
   },
 });
 
 export const { addUser } = userSlice.actions;
 
-// Other code such as selectors can use the imported `RootState` type
-export const getUser = (state: RootState) => state.user;
+export const getUserSlice = (state: RootState) => state.user;
 
 export default userSlice.reducer;
