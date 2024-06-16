@@ -18,6 +18,7 @@ import { TaskStatus } from './types/taskType';
 import Popup from './components/Popup/Popup';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
+import Defender from './components/Defender/Defender';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -25,9 +26,30 @@ ReactDOM.render(
       <Provider store={store}>
         <Routes>
           <Route path='/' element={<Navigate to='/tasks' />} />
-          <Route path='/*' element={<App />} />
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/registration' element={<RegistrationPage />} />
+          <Route
+            path='/*'
+            element={
+              <Defender role='logged'>
+                <App />
+              </Defender>
+            }
+          />
+          <Route
+            path='/login'
+            element={
+              <Defender role='unlogged'>
+                <LoginPage />
+              </Defender>
+            }
+          />
+          <Route
+            path='/registration'
+            element={
+              <Defender role='unlogged'>
+                <RegistrationPage />
+              </Defender>
+            }
+          />
         </Routes>
       </Provider>
     </BrowserRouter>

@@ -85,6 +85,9 @@ export const userSlice = createSlice({
     addUser: (state, action: PayloadAction<UserProfileWithTokenType>) => {
       state.user = action.payload;
     },
+    logout: (state) => {
+      state.user = null;
+    },
   },
   extraReducers(builder) {
     loginUserBuilderCases(builder);
@@ -92,7 +95,7 @@ export const userSlice = createSlice({
   },
 });
 
-export const { addUser } = userSlice.actions;
+export const { addUser, logout } = userSlice.actions;
 
 export const getUserSlice = (state: RootState) => state.user;
 
