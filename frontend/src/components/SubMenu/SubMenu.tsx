@@ -4,7 +4,7 @@ import styles from './SubMenu.module.css';
 const SubMenu = () => {
   return (
     <nav>
-      <LinkItem to='sharedTasks' text='Совместные задачи' />
+      <LinkItem to='/sharedTasks' text='Совместные задачи' />
     </nav>
   );
 };

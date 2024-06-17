@@ -18,13 +18,13 @@ type CustomFetchParamsType = {
   dispatch?: ThunkDispatch<RootState, undefined, UnknownAction>;
 };
 
-export const customFetch = async ({
+export async function customFetch({
   to,
   method,
   headers,
   data,
   dispatch,
-}: CustomFetchParamsType) => {
+}: CustomFetchParamsType) {
   return fetch(`${FETCH_SITE_URL}${to}`, {
     method,
     headers,
@@ -41,4 +41,4 @@ export const customFetch = async ({
         return res;
       }
     });
-};
+}

@@ -2,20 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import {
-  createBrowserRouter,
-  Navigate,
-  redirect,
-  RouterProvider,
-  BrowserRouter,
-  Routes,
-  Route,
-} from 'react-router-dom';
+import { Navigate, BrowserRouter, Routes, Route } from 'react-router-dom';
 import RegistrationPage from './pages/RegistrationPage/RegistrationPage';
 import LoginPage from './pages/LoginPage/LoginPage';
-import ViewTasksPage from './pages/ViewTasksPage/ViewTasksPage';
-import { TasksType } from './types/taskType';
-import Popup from './components/Popup/Popup';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import Defender from './components/Defender/Defender';

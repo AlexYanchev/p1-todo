@@ -1,3 +1,5 @@
+import { StepType } from './stepTypes';
+
 export type TaskType = {
   _id: string;
   title: string;
@@ -7,13 +9,10 @@ export type TaskType = {
   public: boolean;
   owner: string;
   members: Array<string>;
-  steps: Array<string>;
+  steps: Array<StepType>;
   likes: Array<string>;
 };
 
-export type TaskCreateType = Pick<
-  TaskType,
-  'title' | 'owner' | 'public' | 'expiredAt'
->;
+export type TaskCreateType = Pick<TaskType, 'title' | 'public' | 'expiredAt'>;
 
 export type TasksType = 'own' | 'public' | 'shared';

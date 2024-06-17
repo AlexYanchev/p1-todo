@@ -1,11 +1,12 @@
 import { FC, useEffect } from 'react';
 import styles from './ViewTasksPage.module.css';
 import SubMenu from '../../components/SubMenu/SubMenu';
-import { TasksType, TaskType } from '../../types/taskType';
+import { TasksType } from '../../types/taskType';
 import Task from '../../components/Task/Task';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getUserSlice, logout } from '../../redux/slices/userSlice';
-import { getTasks, getTasksAction } from '../../redux/slices/tasksSlice';
+import { getUserSlice } from '../../redux/slices/userSlice';
+import { getTasks } from '../../redux/slices/tasksSlice';
+import { getTasksAction } from '../../redux/actionsAndBuilders/tasks';
 
 type Props = {
   type: TasksType;
@@ -14,21 +15,11 @@ type Props = {
 const ViewTasksPage: FC<Props> = ({ type }) => {
   const userSlice = useAppSelector(getUserSlice);
   const tasksSlice = useAppSelector(getTasks);
-  // const [specificTasks, setSpecificTasks] = useState<TaskType[]>([])
   const dispatch = useAppDispatch();
-  const checkToken = (res: any) => {
-    if (res.invalidToken) {
-      dispatch(logout());
-    }
-  };
+
   useEffect(() => {
     if (userSlice.user) {
-      dispatch(
-        getTasksAction({ token: userSlice.user.token, type, dispatch })
-      ).then((res) => {
-        // checkToken(res);
-      });
-      // .catch((err) => console.log('Ошибка при открытии страницы', err));
+      dispatch(getTasksAction({ token: userSlice.user.token, type, dispatch }));
     }
   }, [type]);
 

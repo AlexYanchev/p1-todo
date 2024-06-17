@@ -1,5 +1,5 @@
 export type StepType = {
-  id: string;
+  _id: string;
   owner: string;
   title: string;
   taskId: string;

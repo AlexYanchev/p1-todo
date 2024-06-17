@@ -3,13 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import Spinner from '../../components/Spinner/Spinner';
 import UniversalForm from '../../components/UniversalForm/UniversalForm';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import {
-  getUserSlice,
-  logout,
-  registerUser,
-} from '../../redux/slices/userSlice';
+import { getUserSlice } from '../../redux/slices/userSlice';
 import styles from './CreateTaskPage.module.css';
-import { customFetch } from '../../requests';
+import { createTaskAction } from '../../redux/actionsAndBuilders/tasks';
 
 const CreateTaskPage = () => {
   const [createTaskDataForm, setCreateTaskDataForm] = useState({
@@ -37,27 +33,17 @@ const CreateTaskPage = () => {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    customFetch({
-      to: '/createTask',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-        Authorization: userSlice.user?.token,
-      },
-      data: createTaskDataForm,
-    })
-      .then((res) => {
-        if (res.invalidToken) {
-          dispatch(logout());
-        }
-      })
-      .catch((err) => console.log(err));
-    // dispatch(registerUser(registerData))
-    //   .unwrap()
-    //   .then((res) => {
-    //     navigate('/login');
-    //   })
-    //   .catch((err: Error) => console.log('Ошибка', err.message));
+    if (userSlice.user) {
+      dispatch(
+        createTaskAction({
+          task: createTaskDataForm,
+          token: userSlice.user.token,
+          dispatch,
+        })
+      ).then(() => navigate(-1));
+    }
+
+    e.currentTarget.reset();
   };
 
   return (

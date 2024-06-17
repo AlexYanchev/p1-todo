@@ -50,13 +50,13 @@ export const loginUser = createAsyncThunk<
       'Content-Type': 'application/json;charset=utf-8',
     },
     data: formData,
-  }).then((res) => {
-    if (res.error) {
-      throw new Error(res.message);
-    } else {
+  })
+    .then((res) => {
       return res;
-    }
-  });
+    })
+    .catch((err) => {
+      throw new Error(err.message);
+    });
 });
 
 const loginUserBuilderCases = (builder: ActionReducerMapBuilder<UserState>) => {

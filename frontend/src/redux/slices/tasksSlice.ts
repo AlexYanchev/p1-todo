@@ -1,14 +1,23 @@
 import {
+  ActionReducerMapBuilder,
   ThunkDispatch,
   UnknownAction,
   createAsyncThunk,
   createSlice,
+  PayloadAction,
 } from '@reduxjs/toolkit';
-import { TasksType, TaskType } from '../../types/taskType';
-import { RootState, store } from '../store';
+import { TaskCreateType, TasksType, TaskType } from '../../types/taskType';
+import { RootState } from '../store';
 import { customFetch } from '../../requests';
 import { ErrorTypeFromServer } from '../../types/errorTypes';
-import { logout } from './userSlice';
+import { StepType } from '../../types/stepTypes';
+import {
+  AddStepToTaskActionReturnedType,
+  getTasksActionBuilder,
+  createTaskActionBuilder,
+  deleteTaskActionBuilder,
+  addStepToTaskBuilder,
+} from '../actionsAndBuilders/tasks';
 
 export interface TasksState {
   own: TaskType[];
@@ -26,57 +35,33 @@ export const initialState: TasksState = {
   error: null,
 };
 
-// const setTasksPayload = (typeTasks:TasksType,payload:TaskType[])=>{
-//   switch(typeTasks) {
-//     case 'own': {
-
-//     }
-//   }
-// }
-export const getTasksAction = createAsyncThunk<
-  { tasks: TaskType[] } & ErrorTypeFromServer & { type: TasksType },
-  {
-    token: string;
-    type: TasksType;
-    dispatch: ThunkDispatch<RootState, undefined, UnknownAction>;
-  }
->('tasks/getTasks', async (data) => {
-  return customFetch({
-    to: `/getTasks/${data.type}`,
-    method: 'GET',
-    headers: {
-      // 'Content-Type': 'application/json;charset=utf-8',
-      Authorization: data.token,
-    },
-    dispatch: data.dispatch,
-  })
-    .then((res) => {
-      res.type = data.type;
-      return res;
-    })
-    .catch((err) => {
-      throw new Error(err.message);
-    });
-});
-
 export const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
-  reducers: {},
+  reducers: {
+    addStepToTaskTask: (
+      state,
+      action: PayloadAction<AddStepToTaskActionReturnedType>
+    ) => {
+      state.own = state.own.map((task) => {
+        if (task._id === action.payload.step.taskId) {
+          task.steps.push(action.payload.step);
+          return task;
+        } else {
+          return task;
+        }
+      });
+    },
+  },
   extraReducers(builder) {
-    builder.addCase(getTasksAction.fulfilled, (state, action) => {
-      const { type, ...payload } = action.payload;
-      state[type] = payload.tasks;
-    });
-    builder.addCase(getTasksAction.pending, (state, action) => {
-      state.status = 'pending';
-    });
-    builder.addCase(getTasksAction.rejected, (state, action) => {
-      state.status = 'rejected';
-      state.error = action.error.message;
-    });
+    getTasksActionBuilder(builder);
+    createTaskActionBuilder(builder);
+    deleteTaskActionBuilder(builder);
+    addStepToTaskBuilder(builder);
   },
 });
+
+export const { addStepToTaskTask } = tasksSlice.actions;
 
 export const getTasks = (state: RootState) => state.tasks;
 
