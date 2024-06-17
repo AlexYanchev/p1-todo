@@ -15,7 +15,7 @@ export type UserRegisterType = Pick<
 >;
 export type UserProfileType = Pick<
   UserType,
-  'id' | 'avatar' | 'firstName' | 'lastName' | 'login' | 'taskList'
+  'avatar' | 'firstName' | 'lastName' | 'login'
 >;
 export type UserPublicProfileType = Pick<
   UserType,

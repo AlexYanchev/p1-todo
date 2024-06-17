@@ -9,7 +9,7 @@ export enum CloseIconSize {
 type Props = {
   size?: CloseIconSize;
   color?: string;
-  onClick: (e: React.MouseEvent<HTMLOrSVGElement, MouseEvent>) => void;
+  onClick: (e: React.MouseEvent<any, MouseEvent>) => void;
 };
 
 const CloseIcon: FC<Props> = ({ size, color, onClick }) => {

@@ -1,7 +1,7 @@
 export type TaskType = {
-  id: string;
+  _id: string;
   title: string;
-  date: string;
+  createdAt: string;
   complete: boolean;
   expiredAt: string;
   public: boolean;
@@ -16,8 +16,4 @@ export type TaskCreateType = Pick<
   'title' | 'owner' | 'public' | 'expiredAt'
 >;
 
-export enum TaskStatus {
-  OWN_TASK = 'OWN_TASK',
-  PUBLIC_TASK = 'PUBLIC_TASK',
-  SHARED_TASK = 'SHARED_TASK',
-}
+export type TasksType = 'own' | 'public' | 'shared';

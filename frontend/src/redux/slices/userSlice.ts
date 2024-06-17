@@ -13,27 +13,43 @@ export interface UserState {
   error: any;
 }
 
+const initialState: UserState = {
+  user: null,
+  status: 'idle',
+  error: null,
+};
+
 export const registerUser = createAsyncThunk<
   ErrorTypeFromServer,
   UserRegisterType
 >('user/registerUser', async (registerDataForm) => {
-  return customFetch('/registration', 'POST', registerDataForm, {
-    'Content-Type': 'application/json;charset=utf-8',
-  }).then((res) => {
-    if (res.error) {
-      throw new Error(res.message);
-    } else {
+  return customFetch({
+    to: '/registration',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+    data: registerDataForm,
+  })
+    .then((res) => {
       return res;
-    }
-  });
+    })
+    .catch((err) => {
+      throw new Error(err.message);
+    });
 });
 
 export const loginUser = createAsyncThunk<
   UserProfileWithTokenType & ErrorTypeFromServer,
   { login: string; password: string }
 >('user/loginUser', async (formData) => {
-  return customFetch('/login', 'POST', formData, {
-    'Content-Type': 'application/json;charset=utf-8',
+  return customFetch({
+    to: '/login',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+    data: formData,
   }).then((res) => {
     if (res.error) {
       throw new Error(res.message);
@@ -42,12 +58,6 @@ export const loginUser = createAsyncThunk<
     }
   });
 });
-
-const initialState: UserState = {
-  user: null,
-  status: 'idle',
-  error: null,
-};
 
 const loginUserBuilderCases = (builder: ActionReducerMapBuilder<UserState>) => {
   builder.addCase(loginUser.fulfilled, (state, action) => {

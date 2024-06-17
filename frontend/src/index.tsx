@@ -14,7 +14,7 @@ import {
 import RegistrationPage from './pages/RegistrationPage/RegistrationPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import ViewTasksPage from './pages/ViewTasksPage/ViewTasksPage';
-import { TaskStatus } from './types/taskType';
+import { TasksType } from './types/taskType';
 import Popup from './components/Popup/Popup';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';

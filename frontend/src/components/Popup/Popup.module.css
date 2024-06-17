@@ -9,6 +9,7 @@
 
 .wrapper {
   position: relative;
+  width: 50%;
 }
 
 .wrapper > svg {

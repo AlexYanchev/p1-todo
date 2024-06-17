@@ -11,8 +11,11 @@ type Props = {
 const Popup: FC<Props> = ({ element }) => {
   const rootPortal = document.getElementById('popup');
   const navigate = useNavigate();
-  const closePopup = () => {
-    navigate(-1);
+  const closePopup = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (e.currentTarget === e.target) {
+      navigate(-1);
+    }
+    return;
   };
 
   if (!rootPortal) {
