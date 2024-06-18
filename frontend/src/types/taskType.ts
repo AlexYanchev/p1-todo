@@ -16,3 +16,5 @@ export type TaskType = {
 export type TaskCreateType = Pick<TaskType, 'title' | 'public' | 'expiredAt'>;
 
 export type TasksType = 'own' | 'public' | 'shared';
+
+export type TaskTypeWithoutStepsField = Omit<TaskType, 'steps'>;

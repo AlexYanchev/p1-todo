@@ -25,7 +25,7 @@ const Button: FC<ButtonElementProps> = ({
 }) => {
   return (
     <button
-      className={`${styles.button} ${className || ''}`}
+      className={`${styles.button || ''} ${className || ''}`}
       type={type}
       name={name}
       onClick={onClick}

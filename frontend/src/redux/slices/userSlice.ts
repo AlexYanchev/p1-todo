@@ -3,7 +3,7 @@ import type { ActionReducerMapBuilder } from '@reduxjs/toolkit';
 import type { RootState } from '../store.js';
 import { UserProfileType, UserRegisterType } from '../../types/userType.js';
 import { customFetch } from '../../requests';
-import { ErrorTypeFromServer } from '../../types/errorTypes.js';
+import { ErrorTypeFromServer } from '../actionsAndBuilders/commonTypes.js';
 
 type UserProfileWithTokenType = UserProfileType & { token: string };
 

@@ -5,7 +5,7 @@ import UniversalForm from '../../components/UniversalForm/UniversalForm';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { getUserSlice } from '../../redux/slices/userSlice';
 import styles from './CreateTaskPage.module.css';
-import { createTaskAction } from '../../redux/actionsAndBuilders/tasks';
+import { createTaskAction } from '../../redux/actionsAndBuilders/createTask';
 
 const CreateTaskPage = () => {
   const [createTaskDataForm, setCreateTaskDataForm] = useState({

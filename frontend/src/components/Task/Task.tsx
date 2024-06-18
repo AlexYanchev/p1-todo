@@ -1,51 +1,64 @@
 import styles from './Task.module.css';
-import { TasksType, TaskType } from '../../types/taskType';
-import { FC } from 'react';
-import { StepType } from '../../types/stepTypes';
+import { TasksType, TaskTypeWithoutStepsField } from '../../types/taskType';
+import { FC, useMemo } from 'react';
 import ControlButtons from '../ControlButtons/ControlButtons';
 import LikeIcon from '../icons/LikeIcon/LikeIcon';
-import Button from '../Button/Button';
-import CompleteIcon from '../icons/CompleteIcon/CompleteIcon';
-import DeleteBasketIcon from '../icons/DeleteBasketIcon/DeleteBasketIcon';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import Step from '../Step/Step';
+import { formatDate } from '../../utils';
+import SwitchButton from '../SwitchButton/SwitchButton';
+import { getSpecificSteps } from '../../redux/slices/tasksSlice';
+import { changePublicStatusTaskActionThunk } from '../../redux/actionsAndBuilders/changePublicStatusTask';
+import { getUserSlice } from '../../redux/slices/userSlice';
 
 type Props = {
-  task: TaskType;
+  task: TaskTypeWithoutStepsField;
   type: TasksType;
 };
 
 const Task: FC<Props> = ({ task, type }) => {
+  const dispatch = useAppDispatch();
+  const userSlice = useAppSelector(getUserSlice);
+  const specificSteps = useAppSelector(getSpecificSteps(task._id)) || [];
+
+  const [createdAt, expiredAt] = useMemo(() => {
+    return [formatDate(task.createdAt), formatDate(task.expiredAt)];
+  }, [task.createdAt, task.expiredAt]);
+
+  const changePublicStatusTask = () => {
+    if (userSlice.user) {
+      dispatch(
+        changePublicStatusTaskActionThunk({
+          taskId: task._id,
+          token: userSlice.user.token,
+          dispatch,
+        })
+      );
+    }
+  };
+
   return (
     <article className={styles.task_container}>
       <div className={styles.title}>
-        <p>{task.title}</p>
-        <span className={styles.title_date}>{task.createdAt}</span>
+        <p className={task.complete ? styles.complete : ''}>{task.title}</p>
+        <span className={styles.title_date}>{createdAt}</span>
       </div>
-      <ol className={styles.steps_container}>
-        {task.steps.map((step) => {
-          return (
-            <li className={styles.step} key={step._id}>
-              <span className={styles.step_title}>{step.title}</span>
-              <div className={styles.step_controls}>
-                <Button
-                  typeElement='button'
-                  type='button'
-                  name='deleteStep'
-                  text={<DeleteBasketIcon />}
-                />
-                <Button
-                  typeElement='button'
-                  type='button'
-                  name='completeStep'
-                  text={<CompleteIcon />}
-                />
-              </div>
-            </li>
-          );
-        })}
-      </ol>
+      {task.complete ? (
+        <p className={styles.steps_container}>ЗАВЕРШЕНО</p>
+      ) : (
+        <ol className={styles.steps_container}>
+          {specificSteps.map((step) => {
+            return (
+              <li className={styles.step_container} key={step._id}>
+                <Step step={step} />
+              </li>
+            );
+          })}
+        </ol>
+      )}
       <div className={styles.control_buttons_container}>
         <ControlButtons type={type} taskId={task._id} />
-        <p className={styles.expiredAt}>Срок выполнения: {task.expiredAt}</p>
+        <p className={styles.expiredAt}>Срок выполнения: {expiredAt}</p>
       </div>
 
       <div className={styles.footer_container}>
@@ -55,7 +68,11 @@ const Task: FC<Props> = ({ task, type }) => {
           </dt>
           <dd>{task.likes.length}</dd>
         </dl>
-        <button type='button'>Публичная</button>
+        <SwitchButton
+          labelText='Публичная'
+          publicTask={task.public}
+          onChange={changePublicStatusTask}
+        />
       </div>
     </article>
   );

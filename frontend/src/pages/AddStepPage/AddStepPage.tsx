@@ -3,13 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Spinner from '../../components/Spinner/Spinner';
 import UniversalForm from '../../components/UniversalForm/UniversalForm';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { addStepToTaskTask } from '../../redux/slices/tasksSlice';
 import { getUserSlice } from '../../redux/slices/userSlice';
 import styles from './AddStepPage.module.css';
-import {
-  addStepToTaskAction,
-  AddStepToTaskActionReturnedType,
-} from '../../redux/actionsAndBuilders/tasks';
+import { addStepToTaskAction } from '../../redux/actionsAndBuilders/addStepToTask';
 
 const AddStepPage = () => {
   const [createStepDataForm, setCreateStepDataForm] = useState({
@@ -40,8 +36,6 @@ const AddStepPage = () => {
           step: createStepDataForm,
         })
       ).then((res) => {
-        const payload = res.payload as AddStepToTaskActionReturnedType;
-        dispatch(addStepToTaskTask(payload));
         navigate(-1);
       });
     }

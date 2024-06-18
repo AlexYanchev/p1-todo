@@ -49,11 +49,19 @@ const Input: FC<InputElementProps> = ({
   placeholder,
   options,
 }) => {
+  const styleContainer = classNameContainer
+    ? classNameContainer
+    : styles.container || '';
+
+  const styleLabel = classNameLabel ? classNameLabel : styles.label || '';
+
+  const styleInput = className ? className : styles.input || '';
+
   return (
-    <label className={`${styles.container} ${classNameContainer || ''}`}>
-      <span className={`${styles.label} ${classNameLabel || ''}`}>{label}</span>
+    <label className={styleContainer}>
+      <span className={styleLabel}>{label}</span>
       <input
-        className={`${styles.input} ${className || ''}`}
+        className={styleInput}
         name={name}
         type={type}
         value={value}

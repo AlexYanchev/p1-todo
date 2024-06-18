@@ -1,34 +1,26 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import Button from '../Button/Button';
 import styles from './ControlButtonsOwnTask.module.css';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { deleteTaskAction } from '../../redux/actionsAndBuilders/tasks';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  changeCompleteStatusTaskActionThunk,
+  CompleteTaskActionReturnedType,
+} from '../../redux/actionsAndBuilders/changeCompleteStatusTask';
+import { deleteTaskAction } from '../../redux/actionsAndBuilders/deleteTask';
 
 type Props = {
-  //   onClickAddStep: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  //   onClickDeleteTask: (
-  //     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  //   ) => void;
-  //   onClickCompleteTask: (
-  //     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  //   ) => void;
   taskId: string;
 };
 
-const ControlButtonsOwnTask: FC<Props> = ({
-  //   onClickAddStep,
-  //   onClickDeleteTask,
-  //   onClickCompleteTask,
-  taskId,
-}) => {
+const ControlButtonsOwnTask: FC<Props> = ({ taskId }) => {
+  const [completeTaskState, setCompleteTaskState] = useState(false);
   const userSlice = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const deleteTask = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const deleteTask = () => {
     if (userSlice.user) {
       dispatch(
         deleteTaskAction({ id: taskId, token: userSlice.user.token, dispatch })
@@ -36,9 +28,25 @@ const ControlButtonsOwnTask: FC<Props> = ({
     }
   };
 
-  const addStep = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const addStep = () => {
     navigate(`/addStep/${taskId}`, { state: { background: location } });
   };
+
+  const completeTask = () => {
+    if (userSlice.user) {
+      dispatch(
+        changeCompleteStatusTaskActionThunk({
+          taskId,
+          token: userSlice.user.token,
+          dispatch,
+        })
+      ).then((res) => {
+        const payload = res.payload as CompleteTaskActionReturnedType;
+        setCompleteTaskState(payload.task.complete);
+      });
+    }
+  };
+
   return (
     <div className={styles.container}>
       <Button
@@ -48,6 +56,9 @@ const ControlButtonsOwnTask: FC<Props> = ({
         text='Добавить шаг'
         className={styles.top_button}
         onClick={addStep}
+        options={{
+          disabled: completeTaskState,
+        }}
       />
       <Button
         typeElement='button'
@@ -60,8 +71,8 @@ const ControlButtonsOwnTask: FC<Props> = ({
         typeElement='button'
         type='button'
         name='completeTask'
-        text='Завершить'
-        // onClick={onClickCompleteTask}
+        text={completeTaskState ? 'Восстановить' : 'Завершить'}
+        onClick={completeTask}
       />
     </div>
   );

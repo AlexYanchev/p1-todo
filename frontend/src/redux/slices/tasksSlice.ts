@@ -1,28 +1,19 @@
-import {
-  ActionReducerMapBuilder,
-  ThunkDispatch,
-  UnknownAction,
-  createAsyncThunk,
-  createSlice,
-  PayloadAction,
-} from '@reduxjs/toolkit';
-import { TaskCreateType, TasksType, TaskType } from '../../types/taskType';
+import { createSlice } from '@reduxjs/toolkit';
+import { TaskTypeWithoutStepsField, TasksType } from '../../types/taskType';
 import { RootState } from '../store';
-import { customFetch } from '../../requests';
-import { ErrorTypeFromServer } from '../../types/errorTypes';
 import { StepType } from '../../types/stepTypes';
-import {
-  AddStepToTaskActionReturnedType,
-  getTasksActionBuilder,
-  createTaskActionBuilder,
-  deleteTaskActionBuilder,
-  addStepToTaskBuilder,
-} from '../actionsAndBuilders/tasks';
+import { addStepToTaskBuilder } from '../actionsAndBuilders/addStepToTask';
+import { changeCompleteStatusStepActionThunkBuilder } from '../actionsAndBuilders/changeCompleteStatusStep';
+import { createTaskActionBuilder } from '../actionsAndBuilders/createTask';
+import { deleteStepActionThunkBuilder } from '../actionsAndBuilders/deleteStep';
+import { deleteTaskActionBuilder } from '../actionsAndBuilders/deleteTask';
+import { getTasksActionBuilder } from '../actionsAndBuilders/getTasks';
 
 export interface TasksState {
-  own: TaskType[];
-  public: TaskType[];
-  shared: TaskType[];
+  own: TaskTypeWithoutStepsField[];
+  public: TaskTypeWithoutStepsField[];
+  shared: TaskTypeWithoutStepsField[];
+  steps: { [taskId: string]: StepType[] };
   status: 'idle' | 'pending' | 'fulfilled' | 'rejected';
   error: any;
 }
@@ -31,6 +22,7 @@ export const initialState: TasksState = {
   own: [],
   public: [],
   shared: [],
+  steps: {},
   status: 'idle',
   error: null,
 };
@@ -38,31 +30,26 @@ export const initialState: TasksState = {
 export const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
-  reducers: {
-    addStepToTaskTask: (
-      state,
-      action: PayloadAction<AddStepToTaskActionReturnedType>
-    ) => {
-      state.own = state.own.map((task) => {
-        if (task._id === action.payload.step.taskId) {
-          task.steps.push(action.payload.step);
-          return task;
-        } else {
-          return task;
-        }
-      });
-    },
-  },
+  reducers: {},
   extraReducers(builder) {
     getTasksActionBuilder(builder);
     createTaskActionBuilder(builder);
     deleteTaskActionBuilder(builder);
     addStepToTaskBuilder(builder);
+    changeCompleteStatusStepActionThunkBuilder(builder);
+    deleteStepActionThunkBuilder(builder);
   },
 });
 
-export const { addStepToTaskTask } = tasksSlice.actions;
+// export const { addStepToTaskTask } = tasksSlice.actions;
 
-export const getTasks = (state: RootState) => state.tasks;
+export const getTasks = (type: TasksType) => (state: RootState) =>
+  state.tasks[type];
+
+export const getSpecificSteps = (taskId: string) => (state: RootState) =>
+  state.tasks.steps[taskId];
+// export const getSpecificSteps =
+//   (type: TasksType, taskId: string) => (state: RootState) =>
+//     state.tasks[type].find((task) => task._id === taskId)?.steps;
 
 export default tasksSlice.reducer;

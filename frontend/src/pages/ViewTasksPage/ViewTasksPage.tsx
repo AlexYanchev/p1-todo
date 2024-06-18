@@ -6,7 +6,7 @@ import Task from '../../components/Task/Task';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getUserSlice } from '../../redux/slices/userSlice';
 import { getTasks } from '../../redux/slices/tasksSlice';
-import { getTasksAction } from '../../redux/actionsAndBuilders/tasks';
+import { getTasksAction } from '../../redux/actionsAndBuilders/getTasks';
 
 type Props = {
   type: TasksType;
@@ -14,7 +14,7 @@ type Props = {
 
 const ViewTasksPage: FC<Props> = ({ type }) => {
   const userSlice = useAppSelector(getUserSlice);
-  const tasksSlice = useAppSelector(getTasks);
+  const tasksSlice = useAppSelector(getTasks(type));
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const ViewTasksPage: FC<Props> = ({ type }) => {
     <section className={styles.content}>
       <nav>{type !== 'public' && <SubMenu />}</nav>
       <ul className={styles.tasks_container}>
-        {tasksSlice[type].map((task) => {
+        {tasksSlice.map((task) => {
           return (
             <li key={task._id} className={styles.task_item}>
               <Task task={task} type={type} />
