@@ -2,8 +2,9 @@ import { useState } from 'react';
 import UniversalForm from '../../components/UniversalForm/UniversalForm';
 import styles from './LoginPage.module.css';
 import { useAppDispatch } from '../../redux/hooks';
-import { loginUser, addUser } from '../../redux/slices/userSlice';
+import { addUser } from '../../redux/slices/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../../redux/actionsAndBuilders/user/loginUser';
 
 const LoginPage = () => {
   const dispatch = useAppDispatch();
@@ -29,7 +30,7 @@ const LoginPage = () => {
     e.preventDefault();
     dispatch(loginUser(formData))
       .unwrap()
-      .then((res) => {
+      .then((res: any) => {
         dispatch(addUser(res));
         localStorage.setItem('user', JSON.stringify(res));
         navigate('/tasks');

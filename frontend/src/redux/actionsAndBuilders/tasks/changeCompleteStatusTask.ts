@@ -5,20 +5,13 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { UnknownAction } from 'redux';
-import { customFetch } from '../../requests';
-import { TaskType } from '../../types/taskType';
-import { TasksState } from '../slices/tasksSlice';
-import { RootState } from '../store';
-import { ErrorTypeFromServer } from './commonTypes';
-
-export type CompleteTaskActionReturnedType = {
-  success: boolean;
-  message: string;
-  task: TaskType;
-};
+import { customFetch } from '../../../requests';
+import { TasksState } from '../../slices/tasksSlice';
+import { RootState } from '../../store';
+import { ChangedTaskReturnedType, ErrorTypeFromServer } from './commonTypes';
 
 export const changeCompleteStatusTaskActionThunk = createAsyncThunk<
-  CompleteTaskActionReturnedType & ErrorTypeFromServer,
+  ChangedTaskReturnedType & ErrorTypeFromServer,
   {
     token: string;
     taskId: string;
@@ -44,13 +37,15 @@ export const changeCompleteStatusTaskActionThunkBuilder = (
 ) => {
   builder.addCase(
     changeCompleteStatusTaskActionThunk.fulfilled,
-    (state, action: PayloadAction<CompleteTaskActionReturnedType>) => {
+    (state, action: PayloadAction<ChangedTaskReturnedType>) => {
       state.status = 'fulfilled';
-      state.own = state.own.map((task) =>
-        task._id === action.payload.task._id
-          ? { ...action.payload.task, complete: action.payload.task.complete }
-          : task
-      );
+      state.own = state.own.map((task) => {
+        if (task._id === action.payload.task._id) {
+          task.complete = action.payload.task.complete;
+          return task;
+        }
+        return task;
+      });
     }
   );
   builder.addCase(

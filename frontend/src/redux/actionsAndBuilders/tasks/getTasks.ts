@@ -4,15 +4,15 @@ import {
   ActionReducerMapBuilder,
 } from '@reduxjs/toolkit';
 import { UnknownAction } from 'redux';
-import { customFetch } from '../../requests';
-import { StepType } from '../../types/stepTypes';
+import { customFetch } from '../../../requests';
+import { StepType } from '../../../types/stepTypes';
 import {
   TaskType,
   TasksType,
   TaskTypeWithoutStepsField,
-} from '../../types/taskType';
-import { TasksState } from '../slices/tasksSlice';
-import { RootState } from '../store';
+} from '../../../types/taskType';
+import { TasksState } from '../../slices/tasksSlice';
+import { RootState } from '../../store';
 import { ErrorTypeFromServer } from './commonTypes';
 
 export const getTasksAction = createAsyncThunk<

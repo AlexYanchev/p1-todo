@@ -6,7 +6,7 @@ import Task from '../../components/Task/Task';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getUserSlice } from '../../redux/slices/userSlice';
 import { getTasks } from '../../redux/slices/tasksSlice';
-import { getTasksAction } from '../../redux/actionsAndBuilders/getTasks';
+import { getTasksAction } from '../../redux/actionsAndBuilders/tasks/getTasks';
 
 type Props = {
   type: TasksType;

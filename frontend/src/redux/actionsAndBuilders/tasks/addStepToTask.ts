@@ -5,10 +5,10 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { UnknownAction } from 'redux';
-import { customFetch } from '../../requests';
-import { StepType } from '../../types/stepTypes';
-import { TasksState } from '../slices/tasksSlice';
-import { RootState } from '../store';
+import { customFetch } from '../../../requests';
+import { StepType } from '../../../types/stepTypes';
+import { TasksState } from '../../slices/tasksSlice';
+import { RootState } from '../../store';
 import { ErrorTypeFromServer } from './commonTypes';
 
 export type AddStepToTaskActionReturnedType = {
@@ -27,7 +27,7 @@ export const addStepToTaskAction = createAsyncThunk<
   }
 >('tasks/addStepToTask', async (data) => {
   return customFetch({
-    to: `/addStepToTask/${data.id}`,
+    to: `/addStepToTask/${data.id}/shared`,
     method: 'PATCH',
     headers: {
       Authorization: data.token,

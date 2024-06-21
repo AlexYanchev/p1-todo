@@ -3,9 +3,10 @@ import styles from './RegistrationPage.module.css';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAppDispatch } from '../../redux/hooks';
-import { registerUser, getUserSlice } from '../../redux/slices/userSlice';
+import { getUserSlice } from '../../redux/slices/userSlice';
 import { useAppSelector } from '../../redux/hooks';
 import Spinner from '../../components/Spinner/Spinner';
+import { registerUser } from '../../redux/actionsAndBuilders/user/registerUser';
 
 const RegistrationPage = () => {
   const [registerDataForm, setRegisterDataForm] = useState({
@@ -35,7 +36,7 @@ const RegistrationPage = () => {
     const { retryPassword, ...registerData } = registerDataForm;
     dispatch(registerUser(registerData))
       .unwrap()
-      .then((res) => {
+      .then((res: any) => {
         navigate('/login');
       })
       .catch((err: Error) => console.log('Ошибка', err.message));

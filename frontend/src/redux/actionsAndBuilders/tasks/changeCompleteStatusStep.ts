@@ -5,10 +5,10 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { UnknownAction } from 'redux';
-import { customFetch } from '../../requests';
-import { StepType } from '../../types/stepTypes';
-import { TasksState } from '../slices/tasksSlice';
-import { RootState } from '../store';
+import { customFetch } from '../../../requests';
+import { StepType } from '../../../types/stepTypes';
+import { TasksState } from '../../slices/tasksSlice';
+import { RootState } from '../../store';
 import { ErrorTypeFromServer } from './commonTypes';
 
 export type ChangeCompleteStepActionReturnedType = {

@@ -3,11 +3,9 @@ import Button from '../Button/Button';
 import styles from './ControlButtonsOwnTask.module.css';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-  changeCompleteStatusTaskActionThunk,
-  CompleteTaskActionReturnedType,
-} from '../../redux/actionsAndBuilders/changeCompleteStatusTask';
-import { deleteTaskAction } from '../../redux/actionsAndBuilders/deleteTask';
+import { changeCompleteStatusTaskActionThunk } from '../../redux/actionsAndBuilders/tasks/changeCompleteStatusTask';
+import { deleteTaskAction } from '../../redux/actionsAndBuilders/tasks/deleteTask';
+import { ChangedTaskReturnedType } from '../../redux/actionsAndBuilders/tasks/commonTypes';
 
 type Props = {
   taskId: string;
@@ -41,7 +39,7 @@ const ControlButtonsOwnTask: FC<Props> = ({ taskId }) => {
           dispatch,
         })
       ).then((res) => {
-        const payload = res.payload as CompleteTaskActionReturnedType;
+        const payload = res.payload as ChangedTaskReturnedType;
         setCompleteTaskState(payload.task.complete);
       });
     }

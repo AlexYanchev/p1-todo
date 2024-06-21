@@ -1,5 +1,5 @@
 export type UserType = {
-  id: string;
+  _id: string;
   login: string;
   firstName: string;
   lastName: string;
@@ -15,12 +15,12 @@ export type UserRegisterType = Pick<
 >;
 export type UserProfileType = Pick<
   UserType,
-  'avatar' | 'firstName' | 'lastName' | 'login'
+  'avatar' | 'firstName' | 'lastName' | 'login' | '_id'
 >;
 export type UserPublicProfileType = Pick<
   UserType,
   'firstName' | 'lastName' | 'avatar' | 'taskList'
 >;
-export type UserChangeFirstName = Pick<UserType, 'id' | 'firstName'>;
-export type UserChangeLastName = Pick<UserType, 'id' | 'lastName'>;
-export type UserChangeAvatar = Pick<UserType, 'id' | 'avatar'>;
+export type UserChangeFirstName = Pick<UserType, '_id' | 'firstName'>;
+export type UserChangeLastName = Pick<UserType, '_id' | 'lastName'>;
+export type UserChangeAvatar = Pick<UserType, '_id' | 'avatar'>;

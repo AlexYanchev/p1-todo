@@ -8,11 +8,23 @@ import { TasksType } from './types/taskType';
 import CreateTaskPage from './pages/CreateTaskPage/CreateTaskPage';
 import { useEffect } from 'react';
 import AddStepPage from './pages/AddStepPage/AddStepPage';
+import ProfilePage from './pages/ProfilePage/ProfilePage';
+import SetAvatarPage from './pages/SetAvatarPage/SetAvatarPage';
 
 function App() {
   const location = useLocation();
   const background = location.state && location.state.background;
   const protectedRoutesFromDirectCall = ['/createTask', '/addStep'];
+
+  // const routesForNotLoggedUsers = ['/login', '/registration'];
+  // const lastUrl = localStorage.getItem('lastUrl');
+
+  // const loggedUserNavigateRoute =
+  //   lastUrl in routesForNotLoggedUsers ? '/' : lastUrl;
+  // if (lastUrl) {
+  //   console.log(true);
+  //   return <Navigate to={lastUrl} />;
+  // }
 
   if (
     !background &&
@@ -28,9 +40,14 @@ function App() {
         <Route path='tasks' element={<ViewTasksPage type='own' />} />
         <Route path='sharedTasks' element={<ViewTasksPage type='shared' />} />
         <Route path='publicTasks' element={<ViewTasksPage type='public' />} />
+        <Route path='profile' element={<ProfilePage />} />
       </Routes>
       {background && (
         <Routes>
+          <Route
+            path='setAvatar'
+            element={<Popup element={<SetAvatarPage />} />}
+          />
           <Route
             path='createTask'
             element={<Popup element={<CreateTaskPage />} />}

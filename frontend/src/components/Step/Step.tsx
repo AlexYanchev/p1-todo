@@ -6,14 +6,15 @@ import DeleteBasketIcon from '../icons/DeleteBasketIcon/DeleteBasketIcon';
 import styles from './Step.module.css';
 import userSlice, { getUserSlice } from '../../redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { changeCompleteStatusStepActionThunk } from '../../redux/actionsAndBuilders/changeCompleteStatusStep';
-import { deleteStepActionThunk } from '../../redux/actionsAndBuilders/deleteStep';
+import { changeCompleteStatusStepActionThunk } from '../../redux/actionsAndBuilders/tasks/changeCompleteStatusStep';
+import { deleteStepActionThunk } from '../../redux/actionsAndBuilders/tasks/deleteStep';
 
 type Props = {
   step: StepType;
+  shared: boolean;
 };
 
-const Step: FC<Props> = ({ step }) => {
+const Step: FC<Props> = ({ step, shared }) => {
   const dispatch = useAppDispatch();
   const userSlice = useAppSelector(getUserSlice);
 
@@ -42,30 +43,34 @@ const Step: FC<Props> = ({ step }) => {
       <span
         className={`${styles.step_title} ${
           step.complete ? styles.complete : ''
+        } ${
+          shared && step.owner === userSlice.user?._id ? styles.step_own : ''
         }`}
       >
         {step.title}
       </span>
-      <div className={styles.step_controls}>
-        <Button
-          typeElement='button'
-          type='button'
-          name='deleteStep'
-          text={<DeleteBasketIcon />}
-          onClick={() => {
-            deleteStep(step._id);
-          }}
-        />
-        <Button
-          typeElement='button'
-          type='button'
-          name='completeStep'
-          text={<CompleteIcon />}
-          onClick={() => {
-            completeStep(step._id);
-          }}
-        />
-      </div>
+      {step.owner === userSlice.user?._id && (
+        <div className={styles.step_controls}>
+          <Button
+            typeElement='button'
+            type='button'
+            name='deleteStep'
+            text={<DeleteBasketIcon />}
+            onClick={() => {
+              deleteStep(step._id);
+            }}
+          />
+          <Button
+            typeElement='button'
+            type='button'
+            name='completeStep'
+            text={<CompleteIcon />}
+            onClick={() => {
+              completeStep(step._id);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };

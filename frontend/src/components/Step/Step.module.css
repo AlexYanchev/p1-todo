@@ -32,3 +32,7 @@
 .complete {
   text-decoration: line-through;
 }
+
+.step_own {
+  color: #3442ff;
+}

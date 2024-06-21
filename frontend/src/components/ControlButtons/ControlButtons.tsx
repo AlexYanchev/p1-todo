@@ -8,15 +8,24 @@ import ControlButtonsSharedTask from '../ControlButtonsSharedTask/ControlButtons
 type Props = {
   type: TasksType;
   taskId: string;
+  taskBelongsCurrentUser: boolean;
 };
 
-const ControlButtons: FC<Props> = ({ type, taskId }) => {
+const ControlButtons: FC<Props> = ({
+  type,
+  taskId,
+  taskBelongsCurrentUser,
+}) => {
   switch (type) {
     case 'own': {
       return <ControlButtonsOwnTask taskId={taskId} />;
     }
     case 'public': {
-      return <ControlButtonsPublicTask taskId={taskId} />;
+      return taskBelongsCurrentUser ? (
+        <></>
+      ) : (
+        <ControlButtonsPublicTask taskId={taskId} />
+      );
     }
     case 'shared': {
       return <ControlButtonsSharedTask taskId={taskId} />;

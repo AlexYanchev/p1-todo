@@ -4,9 +4,9 @@ import {
   ActionReducerMapBuilder,
 } from '@reduxjs/toolkit';
 import { UnknownAction } from 'redux';
-import { customFetch } from '../../requests';
-import { TasksState } from '../slices/tasksSlice';
-import { RootState } from '../store';
+import { customFetch } from '../../../requests';
+import { TasksState } from '../../slices/tasksSlice';
+import { RootState } from '../../store';
 import { ErrorTypeFromServer } from './commonTypes';
 
 export const deleteTaskAction = createAsyncThunk<
@@ -36,7 +36,8 @@ export const deleteTaskActionBuilder = (
 ) => {
   builder.addCase(deleteTaskAction.fulfilled, (state, action) => {
     state.status = 'fulfilled';
-    state.own = state.own.filter((task) => task._id !== action.payload._id);
+    state.waitingToDelete = action.payload._id;
+    // state.own = state.own.filter((task) => task._id !== action.payload._id);
   });
   builder.addCase(deleteTaskAction.pending, (state, action) => {
     state.status = 'pending';

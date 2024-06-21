@@ -2,38 +2,37 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Spinner from '../../components/Spinner/Spinner';
 import UniversalForm from '../../components/UniversalForm/UniversalForm';
-import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import { getUserSlice } from '../../redux/slices/userSlice';
-import styles from './AddStepPage.module.css';
 import { addStepToTaskAction } from '../../redux/actionsAndBuilders/tasks/addStepToTask';
+import { useAppSelector, useAppDispatch } from '../../redux/hooks';
+import userSlice, { getUserSlice } from '../../redux/slices/userSlice';
+import styles from './SetAvatarPage.module.css';
+import { changeUserAvatarActionThunk } from '../../redux/actionsAndBuilders/user/changeUserAvatar';
 
-const AddStepPage = () => {
-  const [createStepDataForm, setCreateStepDataForm] = useState({
-    title: '',
+const SetAvatarPage = () => {
+  const [srcImgDataForm, setSrcImgDataForm] = useState({
+    src: '',
   });
-  const disabledCreateTaskButton = !Boolean(createStepDataForm.title);
+  const disabledCreateTaskButton = !Boolean(srcImgDataForm.src);
 
   const userSlice = useAppSelector(getUserSlice);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { taskId } = useParams();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCreateStepDataForm({
-      ...createStepDataForm,
+    setSrcImgDataForm({
+      ...srcImgDataForm,
       [e.currentTarget.name]: e.currentTarget.value,
     });
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (userSlice.user && taskId) {
+    if (userSlice.user) {
       dispatch(
-        addStepToTaskAction({
-          id: taskId,
+        changeUserAvatarActionThunk({
           token: userSlice.user.token,
           dispatch,
-          step: createStepDataForm,
+          fields: { avatar: srcImgDataForm.src },
         })
       ).then((res) => {
         navigate(-1);
@@ -50,9 +49,9 @@ const AddStepPage = () => {
           {
             typeElement: 'input',
             type: 'text',
-            name: 'title',
-            label: 'Шаг',
-            value: createStepDataForm.title,
+            name: 'src',
+            label: 'Ссылка на картинку',
+            value: srcImgDataForm.src,
             onChange,
           },
 
@@ -74,4 +73,4 @@ const AddStepPage = () => {
     </section>
   );
 };
-export default AddStepPage;
+export default SetAvatarPage;

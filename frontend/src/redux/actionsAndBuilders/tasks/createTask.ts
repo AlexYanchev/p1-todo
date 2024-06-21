@@ -4,10 +4,10 @@ import {
   ActionReducerMapBuilder,
 } from '@reduxjs/toolkit';
 import { UnknownAction } from 'redux';
-import { customFetch } from '../../requests';
-import { TaskType, TaskCreateType } from '../../types/taskType';
-import { TasksState } from '../slices/tasksSlice';
-import { RootState } from '../store';
+import { customFetch } from '../../../requests';
+import { TaskType, TaskCreateType } from '../../../types/taskType';
+import { TasksState } from '../../slices/tasksSlice';
+import { RootState } from '../../store';
 import { ErrorTypeFromServer } from './commonTypes';
 
 export const createTaskAction = createAsyncThunk<
