@@ -1,26 +1,25 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Spinner from '../../components/Spinner/Spinner';
 import UniversalForm from '../../components/UniversalForm/UniversalForm';
-import { addStepToTaskAction } from '../../redux/actionsAndBuilders/tasks/addStepToTask';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
-import userSlice, { getUserSlice } from '../../redux/slices/userSlice';
+import { getUserSlice } from '../../redux/slices/userSlice';
 import styles from './SetAvatarPage.module.css';
-import { changeUserAvatarActionThunk } from '../../redux/actionsAndBuilders/user/changeUserAvatar';
+import { changeUserDataActionThunk } from '../../redux/actionsAndBuilders/user/changeUserData';
 
 const SetAvatarPage = () => {
-  const [srcImgDataForm, setSrcImgDataForm] = useState({
-    src: '',
+  const [avatar, setAvatar] = useState({
+    avatar: '',
   });
-  const disabledCreateTaskButton = !Boolean(srcImgDataForm.src);
+  const disabledCreateTaskButton = !Boolean(avatar.avatar);
 
   const userSlice = useAppSelector(getUserSlice);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSrcImgDataForm({
-      ...srcImgDataForm,
+    setAvatar({
+      ...avatar,
       [e.currentTarget.name]: e.currentTarget.value,
     });
   };
@@ -29,10 +28,10 @@ const SetAvatarPage = () => {
     e.preventDefault();
     if (userSlice.user) {
       dispatch(
-        changeUserAvatarActionThunk({
+        changeUserDataActionThunk({
           token: userSlice.user.token,
           dispatch,
-          fields: { avatar: srcImgDataForm.src },
+          fields: { avatar: avatar.avatar },
         })
       ).then((res) => {
         navigate(-1);
@@ -51,7 +50,7 @@ const SetAvatarPage = () => {
             type: 'text',
             name: 'src',
             label: 'Ссылка на картинку',
-            value: srcImgDataForm.src,
+            value: avatar.avatar,
             onChange,
           },
 

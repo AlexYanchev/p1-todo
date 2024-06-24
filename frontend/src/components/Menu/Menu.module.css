@@ -32,3 +32,9 @@
   font-size: 1.12rem;
   font-family: inherit;
 }
+
+.profile_item {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}

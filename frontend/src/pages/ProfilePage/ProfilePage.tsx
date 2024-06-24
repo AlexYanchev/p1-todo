@@ -2,20 +2,74 @@ import styles from './ProfilePage.module.css';
 import Image from '../../components/Image/Image';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getUserSlice } from '../../redux/slices/userSlice';
-import { useEffect, useState } from 'react';
-import { customFetch } from '../../requests';
+import { useCallback, useState } from 'react';
 import UniversalForm from '../../components/UniversalForm/UniversalForm';
-import EditPencilIcon from '../../components/icons/EditPencilIcon/EditPencilIcon';
+import { changeUserDataActionThunk } from '../../redux/actionsAndBuilders/user/changeUserData';
+
+type DataFormType = {
+  firstName: string;
+  lastName: string;
+};
 
 const ProfilePage = () => {
   const userSlice = useAppSelector(getUserSlice);
   const dispatch = useAppDispatch();
+  const [dataForm, setDataForm] = useState<DataFormType>({
+    firstName: '',
+    lastName: '',
+  });
   const user = userSlice.user;
+
+  const resetForm = useCallback(() => {
+    let field: keyof DataFormType;
+    for (field in dataForm) {
+      dataForm[field] = '';
+    }
+  }, [dataForm]);
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDataForm({
+      ...dataForm,
+      [e.currentTarget.name]: e.currentTarget.value,
+    });
+  };
+
+  const saveChange = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!user) {
+      return;
+    }
+    const resultData = Object.keys(dataForm).reduce((acc, current) => {
+      const field = current as keyof DataFormType;
+
+      if (user[field] === dataForm[field] || !Boolean(dataForm[field])) {
+        return acc;
+      } else {
+        acc[field] = dataForm[field];
+        return acc;
+      }
+    }, {} as { [k in keyof DataFormType]: string });
+
+    dispatch(
+      changeUserDataActionThunk({
+        token: user?.token,
+        dispatch,
+        fields: resultData,
+      })
+    )
+      .unwrap()
+      .then((res) => {});
+
+    resetForm();
+  };
 
   return (
     <section className={styles.profile_container}>
       <div className={styles.content}>
-        <Image alt='Аватар' width='300px' height='300px' type='avatar' />
+        <div>
+          <Image alt='Аватар' width='300px' height='300px' type='avatar' />
+        </div>
+
         <div className={styles.info_container}>
           <UniversalForm
             className={styles.form_container}
@@ -26,31 +80,50 @@ const ProfilePage = () => {
                 name: 'firstName',
                 label: 'Имя',
                 placeholder: user?.firstName,
+                value: dataForm.firstName,
+                errorMessage:
+                  'Количество символов от 2 до 15. Только русские буквы',
+                options: {
+                  minLength: 2,
+                  maxLength: 15,
+                  pattern: '^[а-яА-ЯёЁ]+$',
+                  'aria-errormessage': 'errorMessage-firstName',
+                },
+                onChange,
               },
-              {
-                typeElement: 'button',
-                type: 'button',
-                name: 'editFirstName',
-                text: <EditPencilIcon size={'20'} />,
-                className: styles.form_button_edit,
-              },
+
               {
                 typeElement: 'input',
                 type: 'text',
                 name: 'lastName',
                 label: 'Фамилия',
                 placeholder: user?.lastName,
+                value: dataForm.lastName,
+                errorMessage:
+                  'Количество символов от 2 до 15. Только русские буквы',
+                options: {
+                  minLength: 2,
+                  maxLength: 15,
+                  pattern: '^[а-яА-ЯёЁ]+$',
+                  'aria-errormessage': 'errorMessage-lastName',
+                },
+                onChange,
               },
 
               {
                 typeElement: 'button',
-                type: 'button',
+                type: 'submit',
                 name: 'editLastName',
-                text: <EditPencilIcon size={'20'} />,
-                className: styles.form_button_edit,
+                text: 'Сохранить',
+                className: styles.button_save,
+                options: {
+                  disabled: Object.values(dataForm).every(
+                    (value) => !Boolean(value)
+                  ),
+                },
               },
             ]}
-            onSubmit={() => {}}
+            onSubmit={saveChange}
           />
         </div>
       </div>

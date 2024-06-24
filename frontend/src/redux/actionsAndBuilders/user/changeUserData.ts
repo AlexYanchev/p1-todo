@@ -16,17 +16,23 @@ import {
 import { UserProfileType, UserType } from '../../../types/userType';
 import { UserState } from '../../slices/userSlice';
 
-export type ChangeUserAvatarReturnedType = { user: UserProfileType } & {
+export type FieldsForChanges = 'avatar' | 'firstName' | 'lastName';
+
+export type FieldsForChangesAsObject = { [field in FieldsForChanges]?: string };
+
+export type ChangedUserDataReturnedType = {
+  fields: FieldsForChangesAsObject;
+} & {
   success: boolean;
   message: string;
 };
 
-export const changeUserAvatarActionThunk = createAsyncThunk<
-  ChangeUserAvatarReturnedType & ErrorTypeFromServer,
+export const changeUserDataActionThunk = createAsyncThunk<
+  ChangedUserDataReturnedType & ErrorTypeFromServer,
   {
     token: string;
     dispatch: ThunkDispatch<RootState, undefined, UnknownAction>;
-    fields: { avatar?: string; firstName?: string; lastName?: string };
+    fields: FieldsForChangesAsObject;
   }
 >('user/changeUserData', async (data) => {
   return customFetch({
@@ -37,7 +43,7 @@ export const changeUserAvatarActionThunk = createAsyncThunk<
       'Content-Type': 'application/json;charset=utf-8',
     },
     dispatch: data.dispatch,
-    data: data.fields,
+    data: { fields: data.fields },
   })
     .then((res) => res)
     .catch((err) => {
@@ -45,24 +51,24 @@ export const changeUserAvatarActionThunk = createAsyncThunk<
     });
 });
 
-export const changeUserAvatarActionThunkBuilder = (
+export const changeUserDataActionThunkBuilder = (
   builder: ActionReducerMapBuilder<UserState>
 ) => {
   builder.addCase(
-    changeUserAvatarActionThunk.fulfilled,
-    (state, action: PayloadAction<ChangeUserAvatarReturnedType>) => {
+    changeUserDataActionThunk.fulfilled,
+    (state, action: PayloadAction<ChangedUserDataReturnedType>) => {
       state.status = 'fulfilled';
 
       if (state.user) {
-        state.user.avatar = action.payload.user.avatar;
+        state.user = { ...state.user, ...action.payload.fields };
         localStorage.setItem('user', JSON.stringify(state.user));
       }
     }
   );
-  builder.addCase(changeUserAvatarActionThunk.pending, (state, action) => {
+  builder.addCase(changeUserDataActionThunk.pending, (state, action) => {
     state.status = 'pending';
   });
-  builder.addCase(changeUserAvatarActionThunk.rejected, (state, action) => {
+  builder.addCase(changeUserDataActionThunk.rejected, (state, action) => {
     state.status = 'rejected';
     state.error = action.error.message;
   });

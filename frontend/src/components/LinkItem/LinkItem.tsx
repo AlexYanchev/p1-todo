@@ -1,9 +1,9 @@
 import styles from './LinkItem.module.css';
 import { NavLink } from 'react-router-dom';
-import { FC } from 'react';
+import { FC, ReactElement, ReactNode } from 'react';
 
 type Props = {
-  text: string;
+  text: string | ReactNode | ReactElement;
   to: string;
   options?: {
     end: boolean;

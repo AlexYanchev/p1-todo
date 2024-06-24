@@ -8,16 +8,10 @@
   gap: 50px;
 }
 
-.form_container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 30px;
-  row-gap: 20px;
-  align-items: end;
-}
-
-.form_button_edit {
+.button_save {
+  max-width: 350px;
+  width: 100%;
   border: none;
-  background: none;
-  width: fit-content;
+  font-size: 1.3rem;
+  padding: 12px 50px;
 }
