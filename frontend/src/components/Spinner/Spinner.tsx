@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import styles from './Spinner.module.css';
 
 type Props = {

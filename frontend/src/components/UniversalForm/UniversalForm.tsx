@@ -1,5 +1,5 @@
 import styles from './UniversalForm.module.css';
-import { FC, SyntheticEvent } from 'react';
+import { FC } from 'react';
 import Input, { InputElementProps } from '../Input/Input';
 import Button, { ButtonElementProps } from '../Button/Button';
 

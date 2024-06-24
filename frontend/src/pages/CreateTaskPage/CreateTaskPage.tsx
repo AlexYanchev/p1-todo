@@ -13,14 +13,16 @@ const CreateTaskPage = () => {
     public: false,
     expiredAt: '',
   });
-  const disabledCreateTaskButton =
-    !Boolean(createTaskDataForm.title) ||
-    !Boolean(createTaskDataForm.expiredAt);
 
   const userSlice = useAppSelector(getUserSlice);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const currentDate = new Date();
+  const pending = useAppSelector((state) => state.tasks.status === 'pending');
+  const disabledCreateTaskButton =
+    !Boolean(createTaskDataForm.title) ||
+    !Boolean(createTaskDataForm.expiredAt) ||
+    pending;
 
   const currentFormattedDate = useMemo(() => {
     return `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
@@ -69,6 +71,7 @@ const CreateTaskPage = () => {
               minLength: 3,
               maxLength: 15,
               'aria-errormessage': 'errorMessage-title',
+              disabled: pending,
             },
           },
           {
@@ -78,6 +81,7 @@ const CreateTaskPage = () => {
             label: 'Публичная',
             options: {
               checked: createTaskDataForm.public,
+              disabled: pending,
             },
             onChange,
             className: styles.checkbox,
@@ -92,6 +96,7 @@ const CreateTaskPage = () => {
             onChange,
             options: {
               min: currentFormattedDate,
+              disabled: pending,
             },
           },
 
@@ -99,8 +104,8 @@ const CreateTaskPage = () => {
             typeElement: 'button',
             type: 'submit',
             name: 'create',
-            text: 'Создать',
-            className: `${styles.button}`,
+            text: pending ? <Spinner /> : 'Создать',
+            className: `standart-button`,
             options: {
               disabled: disabledCreateTaskButton,
             },
@@ -109,7 +114,6 @@ const CreateTaskPage = () => {
         onSubmit={onSubmit}
         className={styles.form}
       />
-      {userSlice.status === 'pending' && <Spinner sizeInEM={2} />}
     </section>
   );
 };

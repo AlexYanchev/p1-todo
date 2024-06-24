@@ -7,6 +7,7 @@ import { deleteTaskAction } from '../../redux/actionsAndBuilders/tasks/deleteTas
 import { TasksType } from '../../types/taskType';
 import { changeTaskActionThunk } from '../../redux/actionsAndBuilders/tasks/changeTask';
 import { getSpecificTask } from '../../redux/slices/tasksSlice';
+import Spinner from '../Spinner/Spinner';
 
 type Props = {
   taskId: string;
@@ -18,7 +19,13 @@ const ControlButtonsOwnTask: FC<Props> = ({ taskId, type }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const [action, setAction] = useState({
+    addStep: false,
+    deleteTask: false,
+    completeTask: false,
+  });
   const currentTask = useAppSelector(getSpecificTask(type, taskId));
+  const pending = useAppSelector((state) => state.tasks.status === 'pending');
 
   const deleteTask = () => {
     if (userSlice.user) {
@@ -44,6 +51,7 @@ const ControlButtonsOwnTask: FC<Props> = ({ taskId, type }) => {
         })
       );
     }
+    setAction({ ...action, completeTask: true });
   };
 
   return (
@@ -56,22 +64,32 @@ const ControlButtonsOwnTask: FC<Props> = ({ taskId, type }) => {
         className={styles.top_button}
         onClick={addStep}
         options={{
-          disabled: currentTask?.complete,
+          disabled: currentTask?.complete || pending,
         }}
       />
       <Button
         typeElement='button'
         type='button'
         name='deleteTask'
-        text='Удалить'
+        text={pending && action.deleteTask ? <Spinner /> : 'Удалить'}
         onClick={deleteTask}
+        options={{ disabled: pending }}
       />
       <Button
         typeElement='button'
         type='button'
         name='completeTask'
-        text={currentTask?.complete ? 'Восстановить' : 'Завершить'}
+        text={
+          currentTask?.complete ? (
+            'Восстановить'
+          ) : pending && action.completeTask ? (
+            <Spinner />
+          ) : (
+            'Завершить'
+          )
+        }
         onClick={completeTask}
+        options={{ disabled: pending }}
       />
     </div>
   );

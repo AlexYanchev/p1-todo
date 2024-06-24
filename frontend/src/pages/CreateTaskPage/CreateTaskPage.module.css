@@ -1,17 +1,5 @@
 .container {
   width: 100%;
-  /* background-color: #ffffff;
-  max-width: 350px;
-  display: flex;
-  justify-content: center; */
-}
-
-.button {
-  max-width: 350px;
-  width: 100%;
-  border: none;
-  font-size: 1.3rem;
-  padding: 12px 50px;
 }
 
 .checkbox {

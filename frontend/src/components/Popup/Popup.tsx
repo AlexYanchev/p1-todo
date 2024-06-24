@@ -1,7 +1,7 @@
 import { FC, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './Popup.module.css';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import CloseIcon from '../icons/CloseIcon/CloseIcon';
 
 type Props = {

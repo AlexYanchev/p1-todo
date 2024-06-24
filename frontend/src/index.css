@@ -59,3 +59,23 @@ dd {
   margin: 0;
   padding: 0;
 }
+
+.standart-button {
+  max-width: 350px;
+  width: 100%;
+  border: none;
+  font-size: 1.3rem;
+  padding: 12px 50px;
+}
+
+.standart-form {
+  width: 100%;
+  background-color: #ffffff;
+  max-width: 350px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 75px 70px;
+}

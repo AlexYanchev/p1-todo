@@ -1,10 +1,10 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { StepType } from '../../types/stepTypes';
 import Button from '../Button/Button';
 import CompleteIcon from '../icons/CompleteIcon/CompleteIcon';
 import DeleteBasketIcon from '../icons/DeleteBasketIcon/DeleteBasketIcon';
 import styles from './Step.module.css';
-import userSlice, { getUserSlice } from '../../redux/slices/userSlice';
+import { getUserSlice } from '../../redux/slices/userSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { changeCompleteStatusStepActionThunk } from '../../redux/actionsAndBuilders/tasks/changeCompleteStatusStep';
 import { deleteStepActionThunk } from '../../redux/actionsAndBuilders/tasks/deleteStep';

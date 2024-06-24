@@ -11,12 +11,14 @@ const AddStepPage = () => {
   const [createStepDataForm, setCreateStepDataForm] = useState({
     title: '',
   });
-  const disabledCreateTaskButton = !Boolean(createStepDataForm.title);
 
   const userSlice = useAppSelector(getUserSlice);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { taskId } = useParams();
+  const pending = useAppSelector((state) => state.tasks.status === 'pending');
+  const disabledCreateTaskButton =
+    !Boolean(createStepDataForm.title) || pending;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCreateStepDataForm({
@@ -59,6 +61,7 @@ const AddStepPage = () => {
               minLength: 3,
               maxLength: 30,
               'aria-errormessage': 'errorMessage-title',
+              disabled: pending,
             },
           },
 
@@ -66,17 +69,16 @@ const AddStepPage = () => {
             typeElement: 'button',
             type: 'submit',
             name: 'add',
-            text: 'Добавить',
-            className: `${styles.button}`,
+            text: pending ? <Spinner /> : 'Добавить',
+            className: `standart-button`,
             options: {
               disabled: disabledCreateTaskButton,
             },
           },
         ]}
         onSubmit={onSubmit}
-        className={styles.form}
+        className='standart-form'
       />
-      {userSlice.status === 'pending' && <Spinner sizeInEM={2} />}
     </section>
   );
 };

@@ -1,4 +1,4 @@
-import { ReactNode, FC, ReactElement, ReactChildren, useEffect } from 'react';
+import { ReactNode, FC, useEffect } from 'react';
 import styles from './Defender.module.css';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { Navigate } from 'react-router-dom';
@@ -24,18 +24,19 @@ const Defender: FC<Props> = ({ role, children }) => {
     }
   }, []);
 
-  // window.onbeforeunload = function () {
-  //   localStorage.setItem('lastUrl', window.location.pathname);
-  // };
-  // const lastUrl = localStorage.getItem('lastUrl') || '/tasks';
+  window.onbeforeunload = function () {
+    localStorage.setItem('lastUrl', window.location.pathname);
+  };
+  let lastUrl = localStorage.getItem('lastUrl') || '/tasks';
+  const noLastUrl = ['/login', '/registration'];
+  lastUrl = noLastUrl.includes(lastUrl) ? '/tasks' : lastUrl;
 
   switch (role) {
     case 'logged': {
       return user ? <>{children}</> : <Navigate to='/login' />;
     }
     case 'unlogged': {
-      // return user ? <Navigate to={lastUrl} /> : <>{children}</>;
-      return user ? <Navigate to='/' /> : <>{children}</>;
+      return user ? <Navigate to={lastUrl} /> : <>{children}</>;
     }
     default: {
       return <ErrorPage />;

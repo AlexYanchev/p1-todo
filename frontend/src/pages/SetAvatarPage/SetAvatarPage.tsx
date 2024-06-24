@@ -11,7 +11,8 @@ const SetAvatarPage = () => {
   const [avatar, setAvatar] = useState({
     avatar: '',
   });
-  const disabledCreateTaskButton = !Boolean(avatar.avatar);
+  const pending = useAppSelector((state) => state.user.status === 'pending');
+  const disabledCreateTaskButton = !Boolean(avatar.avatar) || pending;
 
   const userSlice = useAppSelector(getUserSlice);
   const navigate = useNavigate();
@@ -52,23 +53,25 @@ const SetAvatarPage = () => {
             label: 'Ссылка на картинку',
             value: avatar.avatar,
             onChange,
+            options: {
+              disabled: pending,
+            },
           },
 
           {
             typeElement: 'button',
             type: 'submit',
             name: 'add',
-            text: 'Добавить',
-            className: `${styles.button}`,
+            text: pending ? <Spinner /> : 'Добавить',
+            className: `standart-button`,
             options: {
               disabled: disabledCreateTaskButton,
             },
           },
         ]}
         onSubmit={onSubmit}
-        className={styles.form}
+        className='standart-form'
       />
-      {userSlice.status === 'pending' && <Spinner sizeInEM={2} />}
     </section>
   );
 };

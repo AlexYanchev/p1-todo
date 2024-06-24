@@ -4,11 +4,3 @@
   place-content: center;
   grid-template-columns: 1fr;
 }
-
-.button {
-  max-width: 350px;
-  width: 100%;
-  border: none;
-  font-size: 1.3rem;
-  padding: 12px 50px;
-}

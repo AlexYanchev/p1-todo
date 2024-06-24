@@ -9,14 +9,11 @@ import { formatDate } from '../../utils';
 import SwitchButton from '../SwitchButton/SwitchButton';
 import {
   getSpecificSteps,
-  getSpecificTask,
-  getTasks,
   getWaitingToDeleteTask,
 } from '../../redux/slices/tasksSlice';
 import { getUserSlice } from '../../redux/slices/userSlice';
 import { deleteTaskFromStore } from '../../redux/slices/tasksSlice';
 import { changeTaskActionThunk } from '../../redux/actionsAndBuilders/tasks/changeTask';
-import Spinner from '../Spinner/Spinner';
 
 type Props = {
   task: TaskTypeWithoutStepsField;
@@ -28,10 +25,11 @@ const Task: FC<Props> = ({ task, type }) => {
   const userSlice = useAppSelector(getUserSlice);
   const specificSteps = useAppSelector(getSpecificSteps(task._id)) || [];
   const waitingToDeleteTask = useAppSelector(getWaitingToDeleteTask);
+
   const needDelete = task._id === waitingToDeleteTask;
   const ownTask = type === 'own';
   const sharedTask = type === 'shared';
-  const status = useAppSelector((state) => state.tasks.status);
+  const pending = useAppSelector((state) => state.tasks.status === 'pending');
 
   const pressedLikeIcon = useMemo(() => {
     if (userSlice.user && task.likes.includes(userSlice.user._id) && !ownTask) {
@@ -52,6 +50,9 @@ const Task: FC<Props> = ({ task, type }) => {
   }, [task.createdAt, task.expiredAt]);
 
   const changePublicStatusTask = () => {
+    if (pending) {
+      return;
+    }
     if (userSlice.user) {
       dispatch(
         changeTaskActionThunk({
@@ -66,7 +67,7 @@ const Task: FC<Props> = ({ task, type }) => {
   };
 
   const putLike = () => {
-    if (ownTask) {
+    if (ownTask || pending) {
       return;
     } else {
       if (userSlice.user) {

@@ -1,5 +1,5 @@
 import styles from './Button.module.css';
-import { FC, ReactElement, ReactNode, SyntheticEvent } from 'react';
+import { FC, ReactElement, ReactNode } from 'react';
 
 export type ButtonElementProps = {
   typeElement: 'button';

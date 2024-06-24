@@ -1,7 +1,6 @@
 import styles from './Menu.module.css';
 import LinkItem from '../LinkItem/LinkItem';
 import Button from '../Button/Button';
-import Popup from '../Popup/Popup';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getUserSlice, logout } from '../../redux/slices/userSlice';

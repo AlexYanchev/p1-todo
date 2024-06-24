@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import UniversalForm from '../../components/UniversalForm/UniversalForm';
 import styles from './LoginPage.module.css';
-import { useAppDispatch } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { addUser } from '../../redux/slices/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../redux/actionsAndBuilders/user/loginUser';
@@ -9,6 +9,7 @@ import { loginUser } from '../../redux/actionsAndBuilders/user/loginUser';
 const LoginPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const status = useAppSelector((state) => state.user.status);
   const [formData, setFormData] = useState<{ login: string; password: string }>(
     {
       login: '',
@@ -17,7 +18,9 @@ const LoginPage = () => {
   );
 
   const disabledLoginButton =
-    !Boolean(formData.login) || !Boolean(formData.password);
+    !Boolean(formData.login) ||
+    !Boolean(formData.password) ||
+    status === 'pending';
 
   const registration = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     navigate('/registration');
@@ -70,7 +73,7 @@ const LoginPage = () => {
             type: 'submit',
             name: 'login',
             text: 'Войти',
-            className: `${styles.button}`,
+            className: `standart-button`,
             options: {
               disabled: disabledLoginButton,
             },
@@ -80,7 +83,7 @@ const LoginPage = () => {
             type: 'button',
             name: 'register',
             text: 'Зарегистрироваться',
-            className: `${styles.button}`,
+            className: `standart-button`,
             onClick: registration,
           },
         ]}

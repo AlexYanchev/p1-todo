@@ -16,13 +16,16 @@ const RegistrationPage = () => {
     retryPassword: '',
     login: '',
   });
-  const disabledRegisterButton =
-    !Object.values(registerDataForm).every((v) => Boolean(v)) ||
-    registerDataForm.password !== registerDataForm.retryPassword;
 
   const userSlice = useAppSelector(getUserSlice);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const status = useAppSelector((state) => state.user.status);
+
+  const disabledRegisterButton =
+    !Object.values(registerDataForm).every((v) => Boolean(v)) ||
+    registerDataForm.password !== registerDataForm.retryPassword ||
+    status === 'pending';
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRegisterDataForm({
@@ -118,7 +121,7 @@ const RegistrationPage = () => {
             type: 'button',
             name: 'cancel',
             text: 'Отмена',
-            className: `${styles.button}`,
+            className: `standart-button`,
             onClick: cancel,
           },
           {
@@ -126,7 +129,7 @@ const RegistrationPage = () => {
             type: 'submit',
             name: 'register',
             text: 'Зарегистрироваться',
-            className: `${styles.button}`,
+            className: `standart-button`,
             options: {
               disabled: disabledRegisterButton,
             },
