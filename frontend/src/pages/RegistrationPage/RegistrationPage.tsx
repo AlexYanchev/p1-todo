@@ -57,6 +57,14 @@ const RegistrationPage = () => {
             label: 'Имя',
             value: registerDataForm.firstName,
             onChange,
+            errorMessage:
+              'Количество символов от 2 до 15. Только русские буквы',
+            options: {
+              minLength: 2,
+              maxLength: 15,
+              pattern: '^[а-яА-ЯёЁ]+$',
+              'aria-errormessage': 'errorMessage-firstName',
+            },
           },
           {
             typeElement: 'input',
@@ -65,6 +73,14 @@ const RegistrationPage = () => {
             label: 'Фамилия',
             value: registerDataForm.lastName,
             onChange,
+            errorMessage:
+              'Количество символов от 2 до 20. Только русские буквы',
+            options: {
+              minLength: 2,
+              maxLength: 15,
+              pattern: '^[а-яА-ЯёЁ]+$',
+              'aria-errormessage': 'errorMessage-lastName',
+            },
           },
           {
             typeElement: 'input',
@@ -89,6 +105,13 @@ const RegistrationPage = () => {
             label: 'Логин',
             value: registerDataForm.login,
             onChange,
+            errorMessage:
+              'Только латинские буквы и цифры. От 3 до 15 символов.',
+            options: {
+              minLength: 3,
+              maxLength: 15,
+              'aria-errormessage': 'errorMessage-login',
+            },
           },
           {
             typeElement: 'button',

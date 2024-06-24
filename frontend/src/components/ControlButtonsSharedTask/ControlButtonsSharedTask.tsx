@@ -2,11 +2,13 @@ import { FC } from 'react';
 import styles from './ControlButtonsSharedTask.module.css';
 import Button from '../Button/Button';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { TasksType } from '../../types/taskType';
 
 type Props = {
   taskId: string;
+  type: TasksType;
 };
-const ControlButtonsSharedTask: FC<Props> = ({ taskId }) => {
+const ControlButtonsSharedTask: FC<Props> = ({ taskId, type }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const proposeStep = () => {

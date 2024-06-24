@@ -3,28 +3,32 @@ import Button from '../Button/Button';
 import styles from './ControlButtonsPublicTask.module.css';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getUserSlice } from '../../redux/slices/userSlice';
-import {
-  JoinToTaskReturnedType,
-  joinToTaskActionThunk,
-} from '../../redux/actionsAndBuilders/tasks/joinToTask';
+import { changeTaskActionThunk } from '../../redux/actionsAndBuilders/tasks/changeTask';
+import { TasksType } from '../../types/taskType';
+import { ChangedTaskReturnedType } from '../../redux/actionsAndBuilders/tasks/commonTypes';
+import { getSpecificTask } from '../../redux/slices/tasksSlice';
 
 type Props = {
   taskId: string;
+  type: TasksType;
 };
 
-const ControlButtonsPublicTask: FC<Props> = ({ taskId }) => {
+const ControlButtonsPublicTask: FC<Props> = ({ taskId, type }) => {
   const userSlice = useAppSelector(getUserSlice);
   const dispatch = useAppDispatch();
-  const [join, setJoin] = useState(false);
+  const currentTask = useAppSelector(getSpecificTask(type, taskId));
 
   const joinToTask = () => {
     if (userSlice.user) {
       dispatch(
-        joinToTaskActionThunk({ taskId, token: userSlice.user.token, dispatch })
-      ).then((res) => {
-        const response = res.payload as JoinToTaskReturnedType;
-        setJoin(response.data.action);
-      });
+        changeTaskActionThunk({
+          taskId,
+          token: userSlice.user.token,
+          dispatch,
+          typeTask: type,
+          fields: 'members',
+        })
+      );
     }
   };
   return (
@@ -34,7 +38,11 @@ const ControlButtonsPublicTask: FC<Props> = ({ taskId }) => {
           typeElement='button'
           type='button'
           name='joinToTask'
-          text={join ? 'Отсоединиться' : 'Присоединиться'}
+          text={
+            currentTask!.members.includes(userSlice.user!._id)
+              ? 'Отсоединиться'
+              : 'Присоединиться'
+          }
           onClick={joinToTask}
         />
       }

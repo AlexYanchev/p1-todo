@@ -24,7 +24,9 @@ const Popup: FC<Props> = ({ element }) => {
   return createPortal(
     <div className={styles.background} onClick={closePopup}>
       <div className={styles.wrapper}>
-        <CloseIcon onClick={closePopup} />
+        <div className={styles.close_icon}>
+          <CloseIcon onClick={closePopup} />
+        </div>
         {element}
       </div>
     </div>,

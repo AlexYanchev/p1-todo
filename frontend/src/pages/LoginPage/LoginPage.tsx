@@ -37,6 +37,7 @@ const LoginPage = () => {
       })
       .catch((err: Error) => console.log(err.message));
   };
+
   return (
     <section className={styles.container}>
       <UniversalForm
@@ -48,6 +49,12 @@ const LoginPage = () => {
             label: 'Логин',
             value: formData.login,
             onChange,
+            errorMessage: 'Только латинские буквы и цифры',
+            options: {
+              minLength: 3,
+              maxLength: 15,
+              'aria-errormessage': 'errorMessage-login',
+            },
           },
           {
             typeElement: 'input',

@@ -54,6 +54,12 @@ const AddStepPage = () => {
             label: 'Шаг',
             value: createStepDataForm.title,
             onChange,
+            errorMessage: 'От 3 до 30 символов.',
+            options: {
+              minLength: 3,
+              maxLength: 30,
+              'aria-errormessage': 'errorMessage-title',
+            },
           },
 
           {

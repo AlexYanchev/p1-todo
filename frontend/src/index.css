@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  width: 100%;
   font-family: 'Corbel', 'Candara', 'Helvetica Neue', sans-serif;
   font-feature-settings: 'lnum' 1;
   -webkit-font-smoothing: antialiased;
@@ -49,6 +50,7 @@ button {
   position: fixed;
   top: 0;
   left: 0;
+  width: 100%;
 }
 
 dl,

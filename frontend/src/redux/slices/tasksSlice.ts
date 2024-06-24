@@ -8,10 +8,7 @@ import { createTaskActionBuilder } from '../actionsAndBuilders/tasks/createTask'
 import { deleteStepActionThunkBuilder } from '../actionsAndBuilders/tasks/deleteStep';
 import { deleteTaskActionBuilder } from '../actionsAndBuilders/tasks/deleteTask';
 import { getTasksActionBuilder } from '../actionsAndBuilders/tasks/getTasks';
-import { changeCompleteStatusTaskActionThunkBuilder } from '../actionsAndBuilders/tasks/changeCompleteStatusTask';
-import { changePublicStatusTaskActionThunkBuilder } from '../actionsAndBuilders/tasks/changePublicStatusTask';
-import { putLikeToTaskActionThunkBuilder } from '../actionsAndBuilders/tasks/putLikeToTask';
-import { joinToTaskActionThunkBuilder } from '../actionsAndBuilders/tasks/joinToTask';
+import { changeTaskActionThunkBuilder } from '../actionsAndBuilders/tasks/changeTask';
 
 export interface TasksState {
   own: TaskTypeWithoutStepsField[];
@@ -50,10 +47,7 @@ export const tasksSlice = createSlice({
     addStepToTaskBuilder(builder);
     changeCompleteStatusStepActionThunkBuilder(builder);
     deleteStepActionThunkBuilder(builder);
-    changeCompleteStatusTaskActionThunkBuilder(builder);
-    changePublicStatusTaskActionThunkBuilder(builder);
-    putLikeToTaskActionThunkBuilder(builder);
-    joinToTaskActionThunkBuilder(builder);
+    changeTaskActionThunkBuilder(builder);
   },
 });
 

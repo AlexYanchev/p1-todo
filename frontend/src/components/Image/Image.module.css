@@ -3,7 +3,7 @@
   display: inline-flex;
   border-radius: 100%;
   overflow: hidden;
-  background-color: rgba(110, 110, 110, 0.263);
+  background-color: rgba(111, 111, 111, 0.263);
 }
 
 .container:hover > .edit {

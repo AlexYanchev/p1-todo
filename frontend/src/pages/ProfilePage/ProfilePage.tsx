@@ -4,6 +4,8 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getUserSlice } from '../../redux/slices/userSlice';
 import { useEffect, useState } from 'react';
 import { customFetch } from '../../requests';
+import UniversalForm from '../../components/UniversalForm/UniversalForm';
+import EditPencilIcon from '../../components/icons/EditPencilIcon/EditPencilIcon';
 
 const ProfilePage = () => {
   const userSlice = useAppSelector(getUserSlice);
@@ -12,7 +14,46 @@ const ProfilePage = () => {
 
   return (
     <section className={styles.profile_container}>
-      <Image alt='Аватар' width='300px' height='300px' type='avatar' />
+      <div className={styles.content}>
+        <Image alt='Аватар' width='300px' height='300px' type='avatar' />
+        <div className={styles.info_container}>
+          <UniversalForm
+            className={styles.form_container}
+            elements={[
+              {
+                typeElement: 'input',
+                type: 'text',
+                name: 'firstName',
+                label: 'Имя',
+                placeholder: user?.firstName,
+              },
+              {
+                typeElement: 'button',
+                type: 'button',
+                name: 'editFirstName',
+                text: <EditPencilIcon size={'20'} />,
+                className: styles.form_button_edit,
+              },
+              {
+                typeElement: 'input',
+                type: 'text',
+                name: 'lastName',
+                label: 'Фамилия',
+                placeholder: user?.lastName,
+              },
+
+              {
+                typeElement: 'button',
+                type: 'button',
+                name: 'editLastName',
+                text: <EditPencilIcon size={'20'} />,
+                className: styles.form_button_edit,
+              },
+            ]}
+            onSubmit={() => {}}
+          />
+        </div>
+      </div>
     </section>
   );
 };

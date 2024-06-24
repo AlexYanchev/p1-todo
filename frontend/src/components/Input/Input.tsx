@@ -1,5 +1,5 @@
 import styles from './Input.module.css';
-import { FC, SyntheticEvent } from 'react';
+import { FC } from 'react';
 
 export type InputElementProps = {
   typeElement: 'input';
@@ -22,18 +22,20 @@ export type InputElementProps = {
   className?: string;
   classNameContainer?: string;
   classNameLabel?: string;
+  errorMessage?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  options?: {
-    autofocus?: boolean;
-    disabled?: boolean;
-    checked?: boolean;
-    max?: string;
-    min?: string;
-    maxlength?: number;
-    minlength?: number;
-    pattern?: string;
-    readonly?: boolean;
-  };
+  options?: Partial<{
+    'aria-errormessage': `errorMessage-${string}`;
+    autofocus: boolean;
+    disabled: boolean;
+    checked: boolean;
+    max: string;
+    min: string;
+    maxLength: number;
+    minLength: number;
+    pattern: string;
+    readonly: boolean;
+  }>;
 };
 
 const Input: FC<InputElementProps> = ({
@@ -41,6 +43,7 @@ const Input: FC<InputElementProps> = ({
   classNameContainer,
   classNameLabel,
   className,
+  errorMessage,
   label,
   name,
   type,
@@ -69,6 +72,9 @@ const Input: FC<InputElementProps> = ({
         placeholder={placeholder}
         {...options}
       />
+      <span id={`errorMessage-${name}`} className={styles.error_message}>
+        {errorMessage}
+      </span>
     </label>
   );
 };

@@ -6,7 +6,8 @@ import { logout } from '../redux/slices/userSlice';
 
 type MethodsFetchType = 'POST' | 'GET' | 'PATCH' | 'HEAD' | 'DELETE' | 'PUT';
 type HeadersType = {
-  'Content-Type': 'application/json;charset=utf-8' | string;
+  'Content-Type': 'application/json;charset=utf-8' | 'text/plain';
+  // 'Content-Type': 'application/json;charset=utf-8' | string;
   Authorization: string;
 };
 

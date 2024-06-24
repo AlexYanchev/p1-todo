@@ -3,20 +3,22 @@ import Button from '../Button/Button';
 import styles from './ControlButtonsOwnTask.module.css';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { changeCompleteStatusTaskActionThunk } from '../../redux/actionsAndBuilders/tasks/changeCompleteStatusTask';
 import { deleteTaskAction } from '../../redux/actionsAndBuilders/tasks/deleteTask';
-import { ChangedTaskReturnedType } from '../../redux/actionsAndBuilders/tasks/commonTypes';
+import { TasksType } from '../../types/taskType';
+import { changeTaskActionThunk } from '../../redux/actionsAndBuilders/tasks/changeTask';
+import { getSpecificTask } from '../../redux/slices/tasksSlice';
 
 type Props = {
   taskId: string;
+  type: TasksType;
 };
 
-const ControlButtonsOwnTask: FC<Props> = ({ taskId }) => {
-  const [completeTaskState, setCompleteTaskState] = useState(false);
+const ControlButtonsOwnTask: FC<Props> = ({ taskId, type }) => {
   const userSlice = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const currentTask = useAppSelector(getSpecificTask(type, taskId));
 
   const deleteTask = () => {
     if (userSlice.user) {
@@ -33,15 +35,14 @@ const ControlButtonsOwnTask: FC<Props> = ({ taskId }) => {
   const completeTask = () => {
     if (userSlice.user) {
       dispatch(
-        changeCompleteStatusTaskActionThunk({
+        changeTaskActionThunk({
           taskId,
           token: userSlice.user.token,
           dispatch,
+          typeTask: type,
+          fields: 'complete',
         })
-      ).then((res) => {
-        const payload = res.payload as ChangedTaskReturnedType;
-        setCompleteTaskState(payload.task.complete);
-      });
+      );
     }
   };
 
@@ -55,7 +56,7 @@ const ControlButtonsOwnTask: FC<Props> = ({ taskId }) => {
         className={styles.top_button}
         onClick={addStep}
         options={{
-          disabled: completeTaskState,
+          disabled: currentTask?.complete,
         }}
       />
       <Button
@@ -69,7 +70,7 @@ const ControlButtonsOwnTask: FC<Props> = ({ taskId }) => {
         typeElement='button'
         type='button'
         name='completeTask'
-        text={completeTaskState ? 'Восстановить' : 'Завершить'}
+        text={currentTask?.complete ? 'Восстановить' : 'Завершить'}
         onClick={completeTask}
       />
     </div>

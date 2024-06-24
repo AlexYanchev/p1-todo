@@ -24,17 +24,18 @@ const Defender: FC<Props> = ({ role, children }) => {
     }
   }, []);
 
-  window.onbeforeunload = function () {
-    localStorage.setItem('lastUrl', window.location.pathname);
-  };
-  const lastUrl = localStorage.getItem('lastUrl') || '/tasks';
+  // window.onbeforeunload = function () {
+  //   localStorage.setItem('lastUrl', window.location.pathname);
+  // };
+  // const lastUrl = localStorage.getItem('lastUrl') || '/tasks';
 
   switch (role) {
     case 'logged': {
       return user ? <>{children}</> : <Navigate to='/login' />;
     }
     case 'unlogged': {
-      return user ? <Navigate to={lastUrl} /> : <>{children}</>;
+      // return user ? <Navigate to={lastUrl} /> : <>{children}</>;
+      return user ? <Navigate to='/' /> : <>{children}</>;
     }
     default: {
       return <ErrorPage />;

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Spinner from '../../components/Spinner/Spinner';
 import UniversalForm from '../../components/UniversalForm/UniversalForm';
@@ -20,6 +20,13 @@ const CreateTaskPage = () => {
   const userSlice = useAppSelector(getUserSlice);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const currentDate = new Date();
+
+  const currentFormattedDate = useMemo(() => {
+    return `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}-${currentDate.getDate() - 1}`;
+  }, [currentDate.getDate()]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCreateTaskDataForm({
@@ -57,6 +64,12 @@ const CreateTaskPage = () => {
             label: 'Заголовок',
             value: createTaskDataForm.title,
             onChange,
+            errorMessage: 'От 3 до 15 символов.',
+            options: {
+              minLength: 3,
+              maxLength: 15,
+              'aria-errormessage': 'errorMessage-title',
+            },
           },
           {
             typeElement: 'input',
@@ -77,6 +90,9 @@ const CreateTaskPage = () => {
             label: 'Сделать до',
             value: createTaskDataForm.expiredAt,
             onChange,
+            options: {
+              min: currentFormattedDate,
+            },
           },
 
           {

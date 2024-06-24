@@ -11,7 +11,7 @@ type Props = {
 
 const UniversalForm: FC<Props> = ({ elements, onSubmit, className }) => {
   return (
-    <form onSubmit={onSubmit} className={className || ''}>
+    <form onSubmit={onSubmit} className={`${styles.form} ${className || ''}`}>
       {elements.map((element, index) =>
         element.typeElement === 'button' ? (
           <Button {...element} key={`button-form-${index}`} />

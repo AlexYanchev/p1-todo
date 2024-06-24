@@ -18,17 +18,17 @@ const ControlButtons: FC<Props> = ({
 }) => {
   switch (type) {
     case 'own': {
-      return <ControlButtonsOwnTask taskId={taskId} />;
+      return <ControlButtonsOwnTask taskId={taskId} type={type} />;
     }
     case 'public': {
       return taskBelongsCurrentUser ? (
         <></>
       ) : (
-        <ControlButtonsPublicTask taskId={taskId} />
+        <ControlButtonsPublicTask taskId={taskId} type={type} />
       );
     }
     case 'shared': {
-      return <ControlButtonsSharedTask taskId={taskId} />;
+      return <ControlButtonsSharedTask taskId={taskId} type={type} />;
     }
   }
 };

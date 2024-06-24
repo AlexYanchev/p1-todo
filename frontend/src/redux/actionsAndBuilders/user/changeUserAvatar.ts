@@ -34,7 +34,7 @@ export const changeUserAvatarActionThunk = createAsyncThunk<
     method: 'PATCH',
     headers: {
       Authorization: data.token,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json;charset=utf-8',
     },
     dispatch: data.dispatch,
     data: data.fields,
@@ -55,6 +55,7 @@ export const changeUserAvatarActionThunkBuilder = (
 
       if (state.user) {
         state.user.avatar = action.payload.user.avatar;
+        localStorage.setItem('user', JSON.stringify(state.user));
       }
     }
   );
