@@ -1,7 +1,10 @@
 import mongoose, { Schema, Types, Model, Document } from 'mongoose';
 import { createHmac } from 'crypto';
 import * as dotenv from 'dotenv';
-import { cryptographer, tokenizer } from '../utils/index.js';
+import { checkerBody, cryptographer, tokenizer } from '../utils/index.js';
+import { Request, Response } from 'express';
+import { getUser } from '../../utils/index.js';
+import { resError } from '../utils/index.js';
 
 dotenv.config();
 
@@ -12,59 +15,71 @@ export type UserType = {
   lastName: string;
   password: string;
   avatar: string;
-  //   taskList: Array<Types.ObjectId>;
 };
 
+export type ChangeUserDataParamsType = {
+  userId: Types.ObjectId;
+  changedFields: {
+    avatar: string;
+    firstName: string;
+    lastName: string;
+  };
+};
+
+export type UserWithoutPasswordType = Omit<UserType, 'password'>;
+
 export interface UserModelWithStatic extends Model<UserType> {
+  changeUserData: (req: Request, res: Response) => void;
   registrationUser: (user: UserType) => Promise<UserType & Document>;
-  login: (data: { login: string; password: string }) => Promise<
-    UserType &
-      Required<{
-        _id: Types.ObjectId;
-      }> & { token: string }
-  >;
+  login: (req: Request, res: Response) => Promise<void>;
 }
 
-const onlyRusLettersReg = /^[а-яА-ЯёЁ0-9]+$/;
+const onlyRusLettersReg = /^[а-яА-ЯёЁ]+$/;
 
-const userSchema = new mongoose.Schema<UserType, UserModelWithStatic>({
-  login: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 3,
-    maxlength: 15,
-    match: /^[A-Za-z0-9]+$/,
-    unique: true,
+const userSchema = new mongoose.Schema<UserType, UserModelWithStatic>(
+  {
+    login: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 3,
+      maxlength: 15,
+      match: /^[A-Za-z0-9]+$/,
+      unique: true,
+    },
+    firstName: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 2,
+      maxlength: 15,
+      match: onlyRusLettersReg,
+    },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 2,
+      maxlength: 20,
+      match: onlyRusLettersReg,
+    },
+    password: {
+      type: String,
+      required: true,
+      trim: true,
+      select: false,
+    },
+    avatar: {
+      type: String,
+      default: '',
+      trim: true,
+      maxlength: 310,
+    },
   },
-  firstName: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 2,
-    maxlength: 15,
-    match: onlyRusLettersReg,
-  },
-  lastName: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 2,
-    maxlength: 20,
-    match: onlyRusLettersReg,
-  },
-  password: {
-    type: String,
-    required: true,
-    trim: true,
-    select: false,
-  },
-  avatar: {
-    type: String,
-    default: '',
-    trim: true,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 userSchema.virtual('fullName').get(function () {
   return this.firstName + ' ' + this.lastName;
@@ -76,38 +91,83 @@ userSchema.virtual('tasks', {
   foreignField: 'owner',
 });
 
+userSchema.statics.changeUserData = async function (
+  req: Request,
+  res: Response
+) {
+  type FieldsForChanges = 'avatar' | 'firstName' | 'lastName';
+  type FieldsForChangesBodyDTO = { [field in FieldsForChanges]: string };
+
+  const user = getUser(req);
+
+  if (
+    !checkerBody.includesKeyAndValueType(
+      ['avatar', 'firstName', 'lastName'],
+      req.body.fields,
+      'string'
+    )
+  ) {
+    resError(res, 400, 'Некорректный запрос');
+    return;
+  }
+
+  const fields = req.body.fields as FieldsForChangesBodyDTO;
+
+  UserModel.findOneAndUpdate({ userId: user._id }, fields)
+    .then((user) => {
+      res.status(200).json({
+        success: true,
+        message: 'Успешно',
+        fields,
+      });
+    })
+    .catch((error) => {
+      resError(res, 400, 'Ошибка обновления данных');
+    });
+};
+
 userSchema.statics.registrationUser = async function (user: UserType) {
   const hashedPassword = cryptographer.getHashedWithSecret(user.password);
 
   return await this.create({ ...user, password: hashedPassword });
 };
 
-userSchema.statics.login = async function (data: {
-  login: string;
-  password: string;
-}): Promise<any> {
-  const user = await this.findOne(
-    {
-      login: data.login,
-      password: cryptographer.getHashedWithSecret(data.password),
-    },
-    '-_id'
-  );
+userSchema.statics.login = async function (
+  req: Request,
+  res: Response
+): Promise<void> {
+  if (
+    !checkerBody.includesKeyAndValueType(
+      ['login', 'password'],
+      req.body.fields,
+      'string'
+    )
+  ) {
+    resError(res, 400, 'Некорректный запрос');
+    return;
+  }
 
-  return new Promise((resolve, reject) => {
-    if (!user) {
-      return reject(new Error('Неправильный логин или пароль'));
-    }
-    const returnedUser = user.toObject({ flattenObjectIds: true });
-    return tokenizer
-      .getTokenAndData(returnedUser)
-      .then((tokenAndData) => {
-        return resolve(tokenAndData);
-      })
-      .catch((error) => {
-        return reject(error);
-      });
+  const user = await this.findOne({
+    login: req.body.login,
+    password: cryptographer.getHashedWithSecret(req.body.password),
   });
+
+  if (!user) {
+    resError(res, 400, 'Неправильный логин или пароль');
+    return;
+  }
+  const returnedUser = user.toObject({ flattenObjectIds: true });
+
+  tokenizer
+    .getTokenAndData<UserWithoutPasswordType>(returnedUser)
+    .then((tokenAndData) => {
+      res.status(202).json(tokenAndData);
+      return;
+    })
+    .catch((error) => {
+      resError(res, 401, error.message);
+      return;
+    });
 };
 
 export const UserModel = mongoose.model<UserType, UserModelWithStatic>(

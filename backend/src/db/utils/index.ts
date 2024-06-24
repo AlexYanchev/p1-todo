@@ -1,5 +1,6 @@
-import { createHmac } from 'crypto';
+import { createHmac, randomBytes } from 'crypto';
 import * as dotenv from 'dotenv';
+import { Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 dotenv.config();
@@ -23,6 +24,9 @@ export const cryptographer = {
     hmac.update(data);
     return hmac.digest('hex') === hashedData;
   },
+  createSimpleHash: function () {
+    return randomBytes(16).toString('hex');
+  },
 };
 
 export const tokenizer = {
@@ -33,9 +37,9 @@ export const tokenizer = {
     }
     return this.secret;
   },
-  getTokenAndData: async function (
-    data: any
-  ): Promise<{ data: any; token: string }> {
+  getTokenAndData: async function <T extends {}>(
+    data: T
+  ): Promise<T & { token: string }> {
     return new Promise((resolve, reject) => {
       jwt.sign(
         data,
@@ -55,11 +59,33 @@ export const tokenizer = {
     return new Promise((resolve, reject) => {
       jwt.verify(token, this._getSecret(), function (err, decoded) {
         if (err || !decoded) {
-          reject('Неправильный токен');
+          return reject('Неправильный токен');
         } else {
-          resolve(decoded);
+          return resolve(decoded);
         }
       });
+    });
+  },
+};
+
+export const resError = (
+  res: Response,
+  status: number,
+  message: string
+): void => {
+  res.status(status).json({ error: true, message });
+};
+
+export const checkerBody = {
+  includesKeyAndValueType: function (
+    requiredFields: Array<string>,
+    checkingObject: Record<string, string>,
+    typeValue: 'string'
+  ): boolean {
+    return Object.keys(checkingObject).every((key) => {
+      return (
+        requiredFields.includes(key) && typeof checkingObject[key] === typeValue
+      );
     });
   },
 };

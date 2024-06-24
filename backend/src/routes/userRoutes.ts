@@ -1,19 +1,11 @@
 import { Router } from 'express';
 import { UserModel } from '../db/schemas/userSchema.js';
+import { validateToken } from '../utils/index.js';
 
 const userRouter = Router();
 
 userRouter.post('/login', (req, res) => {
-  UserModel.login(req.body)
-    .then((response) => {
-      res.status(202).json(response);
-    })
-    .catch((err: Error) =>
-      res.status(401).json({
-        error: true,
-        message: err.message,
-      })
-    );
+  UserModel.login(req, res);
 });
 
 userRouter.post('/registration', (req, res) => {
@@ -31,6 +23,12 @@ userRouter.post('/registration', (req, res) => {
           .json({ error: true, message: 'Такой пользователь уже существует' });
       }
     });
+});
+
+userRouter.use(validateToken);
+
+userRouter.patch('/changeUserData', (req, res) => {
+  UserModel.changeUserData(req, res);
 });
 
 export default userRouter;
