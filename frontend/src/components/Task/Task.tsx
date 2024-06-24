@@ -27,7 +27,7 @@ const Task: FC<Props> = ({ task, type }) => {
   const waitingToDeleteTask = useAppSelector(getWaitingToDeleteTask);
 
   const needDelete = task._id === waitingToDeleteTask;
-  const ownTask = type === 'own';
+  const ownTask = task.owner === userSlice.user?._id;
   const sharedTask = type === 'shared';
   const pending = useAppSelector((state) => state.tasks.status === 'pending');
 
