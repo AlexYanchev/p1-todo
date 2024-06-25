@@ -57,7 +57,7 @@ export const tokenizer = {
   },
   verifyToken: async function (token: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      jwt.verify(token, this._getSecret(), function (err, decoded) {
+      jwt.verify(token, this._getSecret(), function (err: any, decoded: any) {
         if (err || !decoded) {
           return reject('Неправильный токен');
         } else {

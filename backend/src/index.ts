@@ -6,7 +6,6 @@ import cors from 'cors';
 import connectDB from './db/index.js';
 import Models from './db/schemas/index.js';
 import { validateToken } from './utils/index.js';
-import { tokenizer } from './db/utils/index.js';
 
 connectDB()
   .then(() => {

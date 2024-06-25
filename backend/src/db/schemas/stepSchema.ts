@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import mongoose, { Document, Model, Schema, Types } from 'mongoose';
 
 export type StepType = {
@@ -10,13 +11,11 @@ export type StepType = {
 
 export interface StepTypeWithStatic extends Model<StepType> {
   addStep: (step: StepType) => Promise<StepType & Document>;
-  changeCompleteStatusStep: (
-    taskId: Types.ObjectId,
-    ownerId: Types.ObjectId
-  ) => Promise<StepType & Document>;
+  deleteStep: (req: Request, res: Response) => Promise<void>;
+  changeCompleteStatusStep: (req: Request, res: Response) => Promise<void>;
 }
 
-const stepSchema = new mongoose.Schema<StepType, StepTypeWithStatic>({
+export const stepSchema = new mongoose.Schema<StepType, StepTypeWithStatic>({
   owner: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -43,19 +42,6 @@ const stepSchema = new mongoose.Schema<StepType, StepTypeWithStatic>({
 
 stepSchema.statics.addStep = function (step: StepType) {
   return this.create(step);
-};
-
-stepSchema.statics.changeCompleteStatusStep = async function (
-  stepId: Types.ObjectId,
-  ownerId: Types.ObjectId
-) {
-  const step = await this.findOne({ _id: stepId, owner: ownerId });
-  if (!step) {
-    return Promise.reject({ message: 'Шаг не найден' });
-  }
-  step.complete = !step.complete;
-  const savedStep = await step.save();
-  return savedStep;
 };
 
 export const StepModel = mongoose.model<StepType, StepTypeWithStatic>(

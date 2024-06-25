@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "cd ./src && tsc",
     "start": "cd ./build && node index.js",
-    "dev": "nodemon --watch ./src --exec \"cd ./src && tsc && cd ../dist && node index.js\" --verbose -e ts"
+    "dev": "nodemon --watch ./src --exec \"cd ./src && tsc && cd ../build && node index.js\" --verbose -e ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
