@@ -19,7 +19,7 @@ export const loginUser = createAsyncThunk<
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
     },
-    data: formData,
+    data: { fields: formData },
   })
     .then((res) => {
       return res;
@@ -35,6 +35,7 @@ export const loginUserBuilderCases = (
   builder.addCase(loginUser.fulfilled, (state, action) => {
     state.status = 'fulfilled';
     state.user = action.payload;
+    localStorage.setItem('user', JSON.stringify(action.payload));
   });
   builder.addCase(loginUser.rejected, (state, action) => {
     state.status = 'rejected';

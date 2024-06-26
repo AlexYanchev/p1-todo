@@ -35,6 +35,7 @@ export type InputElementProps = {
     minLength: number;
     pattern: string;
     readonly: boolean;
+    ref: React.RefObject<HTMLInputElement>;
   }>;
 };
 

@@ -1,6 +1,5 @@
 import { FC, useEffect } from 'react';
 import styles from './ViewTasksPage.module.css';
-import SubMenu from '../../components/SubMenu/SubMenu';
 import { TasksType } from '../../types/taskType';
 import Task from '../../components/Task/Task';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -19,13 +18,16 @@ const ViewTasksPage: FC<Props> = ({ type }) => {
 
   useEffect(() => {
     if (userSlice.user) {
+      console.log(
+        '/tasks. Запрашиваем таски',
+        userSlice.user.token.slice(0, 10)
+      );
       dispatch(getTasksAction({ token: userSlice.user.token, type, dispatch }));
     }
   }, [type]);
 
   return (
     <section className={styles.content}>
-      <nav>{type !== 'public' && <SubMenu />}</nav>
       <ul className={styles.tasks_container}>
         {tasksSlice.map((task) => {
           return (

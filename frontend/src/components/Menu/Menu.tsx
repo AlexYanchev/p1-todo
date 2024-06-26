@@ -42,6 +42,9 @@ const Menu = () => {
           <li>
             <LinkItem to='publicTasks' text='Публичные задачи' />
           </li>
+          <li>
+            <LinkItem to='/sharedTasks' text='Совместные задачи' />
+          </li>
         </ul>
         <ul className={styles.link_list}>
           <li className={styles.profile_item}>

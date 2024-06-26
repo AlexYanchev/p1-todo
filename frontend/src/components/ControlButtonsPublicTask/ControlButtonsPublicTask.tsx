@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import Button from '../Button/Button';
 import styles from './ControlButtonsPublicTask.module.css';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -18,7 +18,12 @@ const ControlButtonsPublicTask: FC<Props> = ({ taskId, type }) => {
   const dispatch = useAppDispatch();
   const currentTask = useAppSelector(getSpecificTask(type, taskId));
   const pending = useAppSelector((state) => state.tasks.status === 'pending');
+  const [action, setAction] = useState({
+    joinToTask: false,
+  });
+  const spinner = pending && action.joinToTask;
 
+  console.log(action);
   const joinToTask = () => {
     if (userSlice.user) {
       dispatch(
@@ -29,8 +34,12 @@ const ControlButtonsPublicTask: FC<Props> = ({ taskId, type }) => {
           typeTask: type,
           fields: 'members',
         })
-      );
+      ).then(() => {
+        setAction({ ...action, joinToTask: false });
+      });
     }
+
+    setAction({ ...action, joinToTask: true });
   };
   return (
     <div className={styles.container}>
@@ -42,7 +51,7 @@ const ControlButtonsPublicTask: FC<Props> = ({ taskId, type }) => {
           text={
             currentTask!.members.includes(userSlice.user!._id) ? (
               'Отсоединиться'
-            ) : pending ? (
+            ) : spinner ? (
               <Spinner />
             ) : (
               'Присоединиться'

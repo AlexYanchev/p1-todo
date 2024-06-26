@@ -16,12 +16,14 @@ import {
 import { UserProfileType, UserType } from '../../../types/userType';
 import { UserState } from '../../slices/userSlice';
 
-export type FieldsForChanges = 'avatar' | 'firstName' | 'lastName';
+export type FieldsForChanges = 'avatar' | 'firstName' | 'lastName' | 'login';
 
 export type FieldsForChangesAsObject = { [field in FieldsForChanges]?: string };
 
 export type ChangedUserDataReturnedType = {
   fields: FieldsForChangesAsObject;
+  justCheck: boolean;
+  canChange: boolean;
 } & {
   success: boolean;
   message: string;
@@ -33,10 +35,11 @@ export const changeUserDataActionThunk = createAsyncThunk<
     token: string;
     dispatch: ThunkDispatch<RootState, undefined, UnknownAction>;
     fields: FieldsForChangesAsObject;
+    justCheck?: boolean;
   }
 >('user/changeUserData', async (data) => {
   return customFetch({
-    to: `/changeUserData`,
+    to: data.justCheck ? `/changeUserData/justCheck` : `/changeUserData`,
     method: 'PATCH',
     headers: {
       Authorization: data.token,
@@ -45,7 +48,14 @@ export const changeUserDataActionThunk = createAsyncThunk<
     dispatch: data.dispatch,
     data: { fields: data.fields },
   })
-    .then((res) => res)
+    .then((res) => {
+      if (data.justCheck) {
+        res.justCheck = data.justCheck;
+        return res;
+      } else {
+        return res;
+      }
+    })
     .catch((err) => {
       throw new Error(err.message);
     });
@@ -58,6 +68,10 @@ export const changeUserDataActionThunkBuilder = (
     changeUserDataActionThunk.fulfilled,
     (state, action: PayloadAction<ChangedUserDataReturnedType>) => {
       state.status = 'fulfilled';
+
+      if (action.payload.justCheck) {
+        return;
+      }
 
       if (state.user) {
         state.user = { ...state.user, ...action.payload.fields };

@@ -2,14 +2,14 @@ import { useState } from 'react';
 import UniversalForm from '../../components/UniversalForm/UniversalForm';
 import styles from './LoginPage.module.css';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { addUser } from '../../redux/slices/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../../redux/actionsAndBuilders/user/loginUser';
+import Spinner from '../../components/Spinner/Spinner';
 
 const LoginPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const status = useAppSelector((state) => state.user.status);
+  const pending = useAppSelector((state) => state.user.status === 'pending');
   const [formData, setFormData] = useState<{ login: string; password: string }>(
     {
       login: '',
@@ -18,9 +18,7 @@ const LoginPage = () => {
   );
 
   const disabledLoginButton =
-    !Boolean(formData.login) ||
-    !Boolean(formData.password) ||
-    status === 'pending';
+    !Boolean(formData.login) || !Boolean(formData.password) || pending;
 
   const registration = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     navigate('/registration');
@@ -34,11 +32,11 @@ const LoginPage = () => {
     dispatch(loginUser(formData))
       .unwrap()
       .then((res: any) => {
-        dispatch(addUser(res));
-        localStorage.setItem('user', JSON.stringify(res));
         navigate('/tasks');
       })
-      .catch((err: Error) => console.log(err.message));
+      .catch((err: Error) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -72,7 +70,7 @@ const LoginPage = () => {
             typeElement: 'button',
             type: 'submit',
             name: 'login',
-            text: 'Войти',
+            text: pending ? <Spinner /> : 'Войти',
             className: `standart-button`,
             options: {
               disabled: disabledLoginButton,

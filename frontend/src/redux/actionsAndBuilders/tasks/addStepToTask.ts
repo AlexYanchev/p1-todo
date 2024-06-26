@@ -27,7 +27,7 @@ export const addStepToTaskAction = createAsyncThunk<
   }
 >('tasks/addStepToTask', async (data) => {
   return customFetch({
-    to: `/addStepToTask/${data.id}/shared`,
+    to: `/addStepToTask/${data.id}`,
     method: 'PATCH',
     headers: {
       Authorization: data.token,

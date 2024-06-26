@@ -2,24 +2,34 @@ import styles from './ProfilePage.module.css';
 import Image from '../../components/Image/Image';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getUserSlice } from '../../redux/slices/userSlice';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import UniversalForm from '../../components/UniversalForm/UniversalForm';
 import { changeUserDataActionThunk } from '../../redux/actionsAndBuilders/user/changeUserData';
 
 type DataFormType = {
   firstName: string;
   lastName: string;
+  login: string;
 };
 
 const ProfilePage = () => {
+  const loginInputRef = useRef<HTMLInputElement>(null);
   const userSlice = useAppSelector(getUserSlice);
   const dispatch = useAppDispatch();
   const [dataForm, setDataForm] = useState<DataFormType>({
     firstName: '',
     lastName: '',
+    login: '',
   });
+  const [fieldCanChange, setFieldCanChange] = useState({
+    login: { check: false, canChange: false },
+  });
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout>();
   const user = userSlice.user;
   const pending = useAppSelector((state) => state.user.status === 'pending');
+  const disabledButton =
+    Object.values(dataForm).every((value) => !Boolean(value) || pending) ||
+    !fieldCanChange.login.canChange;
 
   const resetForm = useCallback(() => {
     let field: keyof DataFormType;
@@ -33,6 +43,54 @@ const ProfilePage = () => {
       ...dataForm,
       [e.currentTarget.name]: e.currentTarget.value,
     });
+
+    if (
+      user &&
+      e.currentTarget.name === 'login' &&
+      e.currentTarget.value.length >= 3 &&
+      e.currentTarget.value.match(/^[A-Za-z0-9]+$/)
+    ) {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      const id = setTimeout(
+        (newLogin) => {
+          dispatch(
+            changeUserDataActionThunk({
+              token: user.token,
+              dispatch,
+              fields: { login: newLogin },
+              justCheck: true,
+            })
+          )
+            .unwrap()
+            .then((res) => {
+              if (!res.canChange) {
+                loginInputRef.current?.setCustomValidity('Логин занят');
+              } else {
+                loginInputRef.current?.setCustomValidity('');
+              }
+              setFieldCanChange({
+                ...fieldCanChange,
+                login: { check: true, canChange: res.canChange },
+              });
+              loginInputRef.current?.focus();
+            })
+            .catch((error) => {
+              console.log('Error check field: login');
+            });
+        },
+        1000,
+        e.currentTarget.value
+      );
+
+      setTimeoutId(id);
+    } else {
+      setFieldCanChange({
+        ...fieldCanChange,
+        login: { check: false, canChange: false },
+      });
+    }
   };
 
   const saveChange = (e: React.FormEvent<HTMLFormElement>) => {
@@ -110,6 +168,27 @@ const ProfilePage = () => {
                 },
                 onChange,
               },
+              {
+                typeElement: 'input',
+                type: 'text',
+                name: 'login',
+                label: 'Логин',
+                placeholder: user?.login,
+                value: dataForm.login,
+                errorMessage:
+                  fieldCanChange.login.check && !fieldCanChange.login.canChange
+                    ? 'Логин занят'
+                    : 'Только латинские буквы и цифры. От 3 до 15 символов.',
+                options: {
+                  minLength: 3,
+                  maxLength: 15,
+                  pattern: '^[A-Za-z0-9]+$',
+                  'aria-errormessage': 'errorMessage-login',
+                  disabled: pending,
+                  ref: loginInputRef,
+                },
+                onChange,
+              },
 
               {
                 typeElement: 'button',
@@ -118,9 +197,7 @@ const ProfilePage = () => {
                 text: 'Сохранить',
                 className: `standart-button`,
                 options: {
-                  disabled: Object.values(dataForm).every(
-                    (value) => !Boolean(value) || pending
-                  ),
+                  disabled: disabledButton,
                 },
               },
             ]}

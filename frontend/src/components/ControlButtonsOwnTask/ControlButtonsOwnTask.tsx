@@ -49,7 +49,9 @@ const ControlButtonsOwnTask: FC<Props> = ({ taskId, type }) => {
           typeTask: type,
           fields: 'complete',
         })
-      );
+      ).then(() => {
+        setAction({ ...action, completeTask: false });
+      });
     }
     setAction({ ...action, completeTask: true });
   };
