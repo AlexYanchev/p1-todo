@@ -1,37 +1,37 @@
 import { Request, Response } from 'express';
 import {
   UserWithoutPasswordType,
-  userSchema,
+  UserModel,
 } from '../../db/schemas/userSchema.js';
+import { checkerBody, cryptographer, tokenizer } from '../../db/utils/index.js';
 import {
-  checkerBody,
-  cryptographer,
   resError,
-  tokenizer,
-} from '../../db/utils/index.js';
+  responseErrorData,
+} from '../../helpers/response/resError.js';
+import {
+  resSuccess,
+  responseSuccessData,
+} from '../../helpers/response/resSuccess.js';
 
-userSchema.statics.login = async function (
+export default async function login(
   req: Request,
   res: Response
 ): Promise<void> {
+  const body = req.body.fields as { login: string; password: string };
   if (
-    !checkerBody.includesKeyAndValueType(
-      ['login', 'password'],
-      req.body.fields,
-      'string'
-    )
+    !checkerBody.includesKeyAndValueType(['login', 'password'], body, 'string')
   ) {
-    resError(res, 400, 'Некорректный запрос');
+    resError(res, responseErrorData.badRequest);
     return;
   }
 
-  const user = await this.findOne({
-    login: req.body.login,
-    password: cryptographer.getHashedWithSecret(req.body.password),
+  const user = await UserModel.findOne({
+    login: body.login,
+    password: cryptographer.getHashedWithSecret(body.password),
   });
 
   if (!user) {
-    resError(res, 400, 'Неправильный логин или пароль');
+    resError(res, responseErrorData.credentialsBad);
     return;
   }
   const returnedUser = user.toObject({ flattenObjectIds: true });
@@ -39,11 +39,11 @@ userSchema.statics.login = async function (
   tokenizer
     .getTokenAndData<UserWithoutPasswordType>(returnedUser)
     .then((tokenAndData) => {
-      res.status(202).json(tokenAndData);
+      resSuccess(res, responseSuccessData.loginSuccess, { ...tokenAndData });
       return;
     })
-    .catch((error) => {
-      resError(res, 401, error.message);
+    .catch((error: Error) => {
+      resError(res, responseErrorData.TokenError);
       return;
     });
-};
+}

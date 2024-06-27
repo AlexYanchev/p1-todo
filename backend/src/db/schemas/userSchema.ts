@@ -1,9 +1,5 @@
-import mongoose, { Schema, Types, Model, Document } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import * as dotenv from 'dotenv';
-import { checkerBody, cryptographer, tokenizer } from '../utils/index.js';
-import { Request, Response } from 'express';
-import { getUser } from '../../utils/index.js';
-import { resError } from '../utils/index.js';
 
 dotenv.config();
 
@@ -27,15 +23,15 @@ export type ChangeUserDataParamsType = {
 
 export type UserWithoutPasswordType = Omit<UserType, 'password'>;
 
-export interface UserModelWithStatic extends Model<UserType> {
-  changeUserData: (req: Request, res: Response) => void;
-  registrationUser: (req: Request, res: Response) => void;
-  login: (req: Request, res: Response) => Promise<void>;
-}
+// export interface UserModelWithStatic extends Model<UserType> {
+//   changeUserData: (req: Request, res: Response) => void;
+//   registrationUser: (req: Request, res: Response) => void;
+//   login: (req: Request, res: Response) => Promise<void>;
+// }
 
 const onlyRusLettersReg = /^[а-яА-ЯёЁ]+$/;
 
-export const userSchema = new mongoose.Schema<UserType, UserModelWithStatic>(
+export const userSchema = new mongoose.Schema<UserType>(
   {
     login: {
       type: String,
@@ -90,8 +86,15 @@ userSchema.virtual('tasks', {
   foreignField: 'owner',
 });
 
-export const UserModel = mongoose.model<UserType, UserModelWithStatic>(
-  'User',
-  userSchema,
-  'User'
-);
+userSchema.pre('save', function (next) {
+  this.firstName =
+    this.firstName.charAt(0).toUpperCase() +
+    this.firstName.slice(1).toLocaleLowerCase();
+
+  this.lastName =
+    this.lastName.charAt(0).toUpperCase() +
+    this.lastName.slice(1).toLocaleLowerCase();
+  next();
+});
+
+export const UserModel = mongoose.model<UserType>('User', userSchema, 'User');

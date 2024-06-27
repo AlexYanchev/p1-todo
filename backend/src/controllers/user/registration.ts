@@ -1,25 +1,37 @@
 import { Request, Response } from 'express';
-import { userSchema } from '../../db/schemas/userSchema.js';
+import { UserModel } from '../../db/schemas/userSchema.js';
 import { cryptographer } from '../../db/utils/index.js';
+import {
+  resError,
+  responseErrorData,
+} from '../../helpers/response/resError.js';
+import {
+  resSuccess,
+  responseSuccessData,
+} from '../../helpers/response/resSuccess.js';
+import { checkerBody } from '../../db/utils/index.js';
 
-userSchema.statics.changeUserData = async function (
-  req: Request,
-  res: Response
-) {
+export default async function registrationUser(req: Request, res: Response) {
+  if (
+    !checkerBody.includesKeyAndValueType(
+      ['login', 'password', 'firstName', 'lastName'],
+      req.body,
+      'string'
+    )
+  ) {
+    resError(res, responseErrorData.badRequest);
+    return;
+  }
+
   const hashedPassword = cryptographer.getHashedWithSecret(req.body.password);
 
-  this.create({ ...req.body, password: hashedPassword })
+  UserModel.create({ ...req.body, password: hashedPassword })
     .then((response) => {
-      res.status(202).json({
-        error: false,
-        message: 'Регистрация прошла успешно',
-      });
+      resSuccess(res, responseSuccessData.registrationSuccess);
     })
     .catch(({ errorResponse }) => {
       if (errorResponse.code === 11000) {
-        res
-          .status(400)
-          .json({ error: true, message: 'Такой пользователь уже существует' });
+        resError(res, responseErrorData.userIsExist);
       }
     });
-};
+}

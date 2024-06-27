@@ -10,7 +10,7 @@ export const cryptographer = {
   secret: process.env.SECRET_PASSWORD,
   _createHmac: function () {
     if (!this.secret) {
-      throw Error('Не указан секрет');
+      throw new Error('Не указан секрет');
     }
     return createHmac(this.encryptionMethod, this.secret);
   },
@@ -33,7 +33,7 @@ export const tokenizer = {
   secret: process.env.SECRET_TOKENS,
   _getSecret: function () {
     if (!this.secret) {
-      throw Error('Не указан секрет');
+      throw new Error('Не указан секрет');
     }
     return this.secret;
   },
@@ -47,7 +47,7 @@ export const tokenizer = {
         { expiresIn: '24h' },
         function (err, token) {
           if (err || !token) {
-            return reject('Ошибка получения токена');
+            return reject(new Error('Ошибка получения токена'));
           } else {
             return resolve({ ...data, token });
           }
@@ -68,24 +68,58 @@ export const tokenizer = {
   },
 };
 
-export const resError = (
-  res: Response,
-  status: number,
-  message: string
-): void => {
-  res.status(status).json({ error: true, message });
-};
-
 export const checkerBody = {
   includesKeyAndValueType: function (
     requiredFields: Array<string>,
     checkingObject: Record<string, string>,
     typeValue: 'string'
   ): boolean {
-    return Object.keys(checkingObject).every((key) => {
-      return (
-        requiredFields.includes(key) && typeof checkingObject[key] === typeValue
-      );
-    });
+    console.log('От Чекера. Проверяю body.', checkingObject);
+    if (typeof checkingObject !== 'object') {
+      console.log('От Чекера. Body не является объектом.', false);
+      return false;
+    }
+    const result =
+      Object.keys(checkingObject).length &&
+      Object.keys(checkingObject).every((key) => {
+        return (
+          requiredFields.includes(key) &&
+          typeof checkingObject[key] === typeValue
+        );
+      });
+
+    console.log('От Чекера. Результат общей проверки: ', Boolean(result));
+
+    return Boolean(result);
   },
+};
+
+export const checkerParams = (
+  paramsObject: Record<string, string | Array<string>>
+): boolean => {
+  console.log('Работает Чекер Параметров. Поступил объект: ', paramsObject);
+  const result = Object.keys(paramsObject).every((parametr) => {
+    console.log(
+      'Работает Чекер Параметров. Смотрим параметр: ',
+      parametr,
+      ' Значение: ',
+      paramsObject[parametr],
+      ' Тип значения: ',
+      typeof paramsObject[parametr]
+    );
+    if (!paramsObject[parametr]) {
+      console.log(`Параметра ${parametr} нет, смотрим дальше`);
+      return true;
+    }
+
+    if (typeof paramsObject[parametr] === 'string') {
+      return parametr === paramsObject[parametr];
+    } else if (Array.isArray(paramsObject[parametr])) {
+      return paramsObject[parametr].includes(parametr);
+    } else {
+      return false;
+    }
+  });
+  console.log('Работает Чекер Параметров. Результат проверки: ', result);
+  return result;
 };

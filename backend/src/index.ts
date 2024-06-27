@@ -6,6 +6,7 @@ import cors from 'cors';
 import connectDB from './db/index.js';
 import Models from './db/schemas/index.js';
 import { validateToken } from './utils/index.js';
+import { resError, responseErrorData } from './helpers/response/resError.js';
 
 connectDB()
   .then(() => {
@@ -34,12 +35,7 @@ app.use(
 app.use(userRouter, validateToken, taskRouter, stepRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.log(err);
-  res.status(401).json({
-    invalidToken: true,
-    error: true,
-    message: err,
-  });
+  resError(res, responseErrorData.badRequest, { invalidToken: true });
 });
 
 app.listen(port, () => {

@@ -15,36 +15,21 @@ export const validateToken = (
   if (req.path.startsWith('/store')) {
     return next();
   }
+  console.log(
+    'Валидация токена. Поступил запрос с токеном: ',
+    req.headers.authorization?.slice(0, 10) + '...'
+  );
   const token = req.headers.authorization || '';
-
+  console.log('Валидация токена. Токен: ', token.slice(0, 5) + '...');
   tokenizer
     .verifyToken(token)
     .then((decoded) => {
+      console.log('Валидация токена. Юзер найден и декодирован: ', decoded._id);
       req.body.userDecoded = decoded;
       next();
     })
     .catch((error) => {
+      console.log('Валидация токена. Ошибка верификации токена: ', error);
       next(error);
     });
-};
-
-export const getFormatDataFile = (req: Request) => {
-  const imgTypes: { [mime: string]: string } = {
-    'image/png': 'png',
-    'image/jpeg': 'jpeg',
-  };
-  const contentType = req.headers['content-type'];
-
-  return contentType ? imgTypes[contentType] : undefined;
-};
-
-export const getPathToFiles = (userId: Types.ObjectId, type: 'avatars') => {
-  switch (type) {
-    case 'avatars': {
-      return `db/storeFiles/${userId}/avatars/`;
-    }
-    default: {
-      return null;
-    }
-  }
 };

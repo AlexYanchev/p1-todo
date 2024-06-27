@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import mongoose, { Document, Model, Schema, Types } from 'mongoose';
 
 export type StepType = {
-  // id: string;
   owner: Types.ObjectId;
   title: string;
   taskId: Types.ObjectId;

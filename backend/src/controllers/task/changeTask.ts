@@ -2,15 +2,22 @@ import { Types } from 'mongoose';
 import {
   ChangeTaskDTO,
   AdditionalDataReturnedType,
-  taskSchema,
+  TaskModel,
   AnotherTaskFieldsThatCanBeChanged,
   YourselfTaskFieldsThatCanBeChanged,
 } from '../../db/schemas/taskSchema.js';
-import { resError } from '../../db/utils/index.js';
 import { getUser } from '../../utils/index.js';
 import { Request, Response } from 'express';
+import {
+  resError,
+  responseErrorData,
+} from '../../helpers/response/resError.js';
+import {
+  resSuccess,
+  responseSuccessData,
+} from '../../helpers/response/resSuccess.js';
 
-taskSchema.statics.changeTask = async function (req: Request, res: Response) {
+export default async function changeTask(req: Request, res: Response) {
   const user = getUser(req);
   const taskId = new Types.ObjectId(req.params.taskId);
   const changeFields: ChangeTaskDTO = req.body.fields;
@@ -23,9 +30,9 @@ taskSchema.statics.changeTask = async function (req: Request, res: Response) {
   };
 
   try {
-    const task = await this.findOne({ _id: taskId });
+    const task = await TaskModel.findOne({ _id: taskId });
     if (!task) {
-      resError(res, 400, 'Таска не существует');
+      resError(res, responseErrorData.notExist);
       return;
     }
 
@@ -53,7 +60,7 @@ taskSchema.statics.changeTask = async function (req: Request, res: Response) {
       task[changeFieldsForSelfTask] = !task[changeFieldsForSelfTask];
       additionalData.action = task[changeFieldsForSelfTask];
     } else {
-      resError(res, 400, 'Ошибка выполнения запроса');
+      resError(res, responseErrorData.badRequest);
       return;
     }
 
@@ -61,12 +68,11 @@ taskSchema.statics.changeTask = async function (req: Request, res: Response) {
     additionalData.message = 'Данные изменены';
     additionalData.field = changeFields;
 
-    res.status(201).json({
-      success: true,
+    resSuccess(res, responseSuccessData.updateDataSuccess, {
       task: newTask,
       ...additionalData,
     });
   } catch (error) {
-    resError(res, 500, 'Ошибка выполнения запроса');
+    resError(res, responseErrorData.default);
   }
-};
+}

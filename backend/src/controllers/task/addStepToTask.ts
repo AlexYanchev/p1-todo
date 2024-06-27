@@ -1,42 +1,71 @@
 import { Types } from 'mongoose';
 import { StepModel } from '../../db/schemas/stepSchema.js';
-import { taskSchema } from '../../db/schemas/taskSchema.js';
+import { TaskModel } from '../../db/schemas/taskSchema.js';
 import { getUser } from '../../utils/index.js';
 import { Request, Response } from 'express';
+import {
+  resError,
+  responseErrorData,
+} from '../../helpers/response/resError.js';
+import {
+  resSuccess,
+  responseSuccessData,
+} from '../../helpers/response/resSuccess.js';
 
-taskSchema.statics.addStepToTask = async function (
-  req: Request,
-  res: Response
-) {
+export default async function addStepToTask(req: Request, res: Response) {
   const user = getUser(req);
   const taskId = new Types.ObjectId(req.params.id);
-  const shared = req.params.shared === 'shared';
   const title = req.body.title as string;
+
+  console.log(
+    'Первичные данные. ',
+    'user: ',
+    user,
+    'taskId: ',
+    taskId,
+
+    'title: ',
+    title
+  );
 
   const addStep = (
     title: string,
     taskId: Types.ObjectId,
     owner: Types.ObjectId
   ) => {
+    console.log(
+      'Пытаемся добавить шаг. ',
+      'Title: ',
+      title,
+      'taskId: ',
+      taskId,
+      'owner: ',
+      owner
+    );
     StepModel.addStep({ title, taskId, owner })
       .then((step) => {
-        res.status(201).json({ success: true, message: 'Шаг добавлен', step });
+        console.log('Шаг добавлен');
+        resSuccess(res, responseSuccessData.addDataSuccess, { step });
       })
-      .catch((err) => {
-        res
-          .status(400)
-          .json({ error: true, message: 'Ошибка добавления шага' });
+      .catch((err: any) => {
+        console.log('Шаг не добавлен', err);
+        resError(res, responseErrorData.errorAddData);
       });
   };
 
-  if (shared) {
-    const task = await this.findOne({ _id: taskId });
-    if (task && task.members.includes(user._id)) {
-      addStep(title, taskId, user._id);
-    } else {
-      res.status(400).json({ error: true, message: 'Ошибка добавления шага' });
-    }
-  } else {
-    addStep(title, taskId, user._id);
+  const task = await TaskModel.findOne({ _id: taskId });
+  if (!task) {
+    return resError(res, responseErrorData.notExist);
   }
-};
+
+  if (task.owner.equals(user._id)) {
+    console.log('Таск own. Попробуем добавить шаг');
+    addStep(title, taskId, user._id);
+  } else if (task.members.includes(user._id)) {
+    console.log('Таск shared. Попробуем добавить шаг');
+    addStep(title, taskId, user._id);
+  } else {
+    console.log('Таск не найден, либо тебя нет в списках members');
+    resError(res, responseErrorData.errorAddData);
+  }
+}

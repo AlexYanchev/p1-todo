@@ -4,11 +4,13 @@ import mongoose, { Model, Schema, Types } from 'mongoose';
 export type TaskType = {
   title: string;
   complete: boolean;
-  expiredAt: string;
+  expiredAt: Schema.Types.Date;
   public: boolean;
   owner: Types.ObjectId;
   members: Array<Types.ObjectId>;
   likes: Array<Types.ObjectId>;
+  expired: boolean;
+  willBeDeleted: Schema.Types.Date | null;
 };
 
 export type TaskCreateType = Pick<
@@ -28,15 +30,7 @@ export type ChangeTaskDTO = 'public' | 'complete' | 'likes' | 'members';
 export type YourselfTaskFieldsThatCanBeChanged = 'public' | 'complete';
 export type AnotherTaskFieldsThatCanBeChanged = 'likes' | 'members';
 
-export interface TaskWithStaticType extends Model<TaskType> {
-  createTask: (req: Request, res: Response) => void;
-  changeTask: (req: Request, res: Response) => void;
-  getTasks: (req: Request, res: Response) => void;
-  deleteTask: (req: Request, res: Response) => void;
-  addStepToTask: (req: Request, res: Response) => void;
-}
-
-export const taskSchema = new mongoose.Schema<TaskType, TaskWithStaticType>(
+export const taskSchema = new mongoose.Schema<TaskType>(
   {
     title: {
       type: String,
@@ -48,7 +42,7 @@ export const taskSchema = new mongoose.Schema<TaskType, TaskWithStaticType>(
     },
 
     expiredAt: {
-      type: String,
+      type: Schema.Types.Date,
       required: true,
       trim: true,
     },
@@ -75,6 +69,11 @@ export const taskSchema = new mongoose.Schema<TaskType, TaskWithStaticType>(
       type: [Schema.Types.ObjectId],
       default: [],
     },
+    expired: {
+      type: Boolean,
+      default: false,
+    },
+    willBeDeleted: { type: Schema.Types.Date, default: null },
   },
   {
     timestamps: true,
@@ -89,8 +88,34 @@ taskSchema.virtual('steps', {
   foreignField: 'taskId',
 });
 
-export const TaskModel = mongoose.model<TaskType, TaskWithStaticType>(
-  'Task',
-  taskSchema,
-  'Task'
-);
+// taskSchema.pre('find', async function (next) {
+//   const currentDate = new Date();
+//   console.log(
+//     'Работает pre хук find. Для фильтрации просроченных задач. Получили текущую дату: ',
+//     currentDate
+//   );
+//   const query = this.getQuery();
+//   query.$and = [{ expiredAt: { $lte: currentDate } }];
+//   console.log(
+//     'Фильтрации просроченных задач. Добавили в запрос дополнительный фильтр. Теперь запро такой: ',
+//     query,
+//     'Пытаемся обновить Таски.'
+//   );
+//   try {
+//     const updatedTask = await this.updateMany(query, { expired: true });
+//     if (updatedTask) {
+//       console.log(
+//         'Успешно отфильтровали и добавили поле expired=true: ',
+//         updatedTask
+//       );
+//       next();
+//     } else {
+//       console.log('Обновленных тасков нет: ', updatedTask);
+//     }
+//   } catch (e: any) {
+//     console.log('Ошибка обновления Тасков: ', e);
+//     next(e);
+//   }
+// });
+
+export const TaskModel = mongoose.model<TaskType>('Task', taskSchema, 'Task');

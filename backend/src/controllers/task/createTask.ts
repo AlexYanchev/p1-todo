@@ -1,21 +1,38 @@
-import { taskSchema } from '../../db/schemas/taskSchema.js';
+import { TaskModel } from '../../db/schemas/taskSchema.js';
 import { getUser } from '../../utils/index.js';
 import { Request, Response } from 'express';
+import {
+  resError,
+  responseErrorData,
+} from '../../helpers/response/resError.js';
+import {
+  resSuccess,
+  responseSuccessData,
+} from '../../helpers/response/resSuccess.js';
 
-taskSchema.statics.createTask = async function (req: Request, res: Response) {
+export default async function createTask(req: Request, res: Response) {
   const user = getUser(req);
-  const task = await this.create({ ...req.body, owner: user._id });
+  console.log('Запрос на создания нового Таска. Body запроса: ', req.body);
+  const task = await TaskModel.create({ ...req.body, owner: user._id });
+  if (!task) {
+    console.log('Таск не создан ', task);
+    resError(res, responseErrorData.errorCreateData);
 
+    return;
+  }
+
+  console.log('Таск создан ', task);
   task
     .populate('steps')
     .then((task) => {
-      res.status(201).json(task);
+      console.log('Отправляем успешный ответ о создании таска. Таск ', task);
+      resSuccess(res, responseSuccessData.createDataSuccess, task);
     })
     .catch((err) => {
-      console.log(err);
-      res.status(400).json({
-        error: true,
-        message: err,
-      });
+      console.log(
+        'Ошибка в БД. Не смогли использовать метод populate таска. Ошибка: ',
+        err.message
+      );
+      resError(res, responseErrorData.default);
     });
-};
+}
