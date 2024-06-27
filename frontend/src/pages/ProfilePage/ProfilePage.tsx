@@ -5,6 +5,7 @@ import { getUserSlice } from '../../redux/slices/userSlice';
 import { useCallback, useRef, useState } from 'react';
 import UniversalForm from '../../components/UniversalForm/UniversalForm';
 import { changeUserDataActionThunk } from '../../redux/actionsAndBuilders/user/changeUserData';
+import ArchiveTasksViewer from '../../components/ArchiveTasksViewer/ArchiveTasksViewer';
 
 type DataFormType = {
   firstName: string;
@@ -65,14 +66,14 @@ const ProfilePage = () => {
           )
             .unwrap()
             .then((res) => {
-              if (!res.canChange) {
+              if (!res.data.canChange) {
                 loginInputRef.current?.setCustomValidity('Логин занят');
               } else {
                 loginInputRef.current?.setCustomValidity('');
               }
               setFieldCanChange({
                 ...fieldCanChange,
-                login: { check: true, canChange: res.canChange },
+                login: { check: true, canChange: res.data.canChange },
               });
               loginInputRef.current?.focus();
             })
@@ -125,6 +126,7 @@ const ProfilePage = () => {
       <div className={styles.content}>
         <div>
           <Image alt='Аватар' width='300px' height='300px' type='avatar' />
+          <ArchiveTasksViewer />
         </div>
 
         <div className={styles.info_container}>

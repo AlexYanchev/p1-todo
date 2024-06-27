@@ -10,7 +10,7 @@ export type UserProfileWithTokenType = UserProfileType & { token: string } & {
 };
 
 export const loginUser = createAsyncThunk<
-  UserProfileWithTokenType & ErrorTypeFromServer,
+  { data: UserProfileWithTokenType & ErrorTypeFromServer },
   { login: string; password: string }
 >('user/loginUser', async (formData) => {
   return customFetch({
@@ -34,8 +34,8 @@ export const loginUserBuilderCases = (
 ) => {
   builder.addCase(loginUser.fulfilled, (state, action) => {
     state.status = 'fulfilled';
-    state.user = action.payload;
-    localStorage.setItem('user', JSON.stringify(action.payload));
+    state.user = action.payload.data;
+    localStorage.setItem('user', JSON.stringify(action.payload.data));
   });
   builder.addCase(loginUser.rejected, (state, action) => {
     state.status = 'rejected';

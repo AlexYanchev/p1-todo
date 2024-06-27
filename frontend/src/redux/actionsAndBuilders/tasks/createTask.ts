@@ -11,7 +11,7 @@ import { RootState } from '../../store';
 import { ErrorTypeFromServer } from './commonTypes';
 
 export const createTaskAction = createAsyncThunk<
-  TaskType & ErrorTypeFromServer,
+  { data: TaskType & ErrorTypeFromServer },
   {
     task: TaskCreateType;
     token: string;
@@ -38,7 +38,7 @@ export const createTaskActionBuilder = (
 ) => {
   builder.addCase(createTaskAction.fulfilled, (state, action) => {
     state.status = 'fulfilled';
-    const { steps, ...task } = action.payload;
+    const { steps, ...task } = action.payload.data;
     state.own = [task, ...state.own];
     state.steps[task._id] = steps;
   });

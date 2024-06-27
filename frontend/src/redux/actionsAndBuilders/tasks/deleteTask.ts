@@ -10,7 +10,13 @@ import { RootState } from '../../store';
 import { ErrorTypeFromServer } from './commonTypes';
 
 export const deleteTaskAction = createAsyncThunk<
-  { success: boolean; message: string; _id: string } & ErrorTypeFromServer,
+  {
+    data: {
+      success: boolean;
+      message: string;
+      _id: string;
+    } & ErrorTypeFromServer;
+  },
   {
     id: string;
     token: string;
@@ -36,7 +42,7 @@ export const deleteTaskActionBuilder = (
 ) => {
   builder.addCase(deleteTaskAction.fulfilled, (state, action) => {
     state.status = 'fulfilled';
-    state.waitingToDelete = action.payload._id;
+    state.waitingToDelete = action.payload.data._id;
     // state.own = state.own.filter((task) => task._id !== action.payload._id);
   });
   builder.addCase(deleteTaskAction.pending, (state, action) => {

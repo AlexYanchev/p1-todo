@@ -18,7 +18,7 @@ export type DeleteStepActionReturnedType = {
 };
 
 export const deleteStepActionThunk = createAsyncThunk<
-  DeleteStepActionReturnedType & ErrorTypeFromServer,
+  { data: DeleteStepActionReturnedType & ErrorTypeFromServer },
   {
     stepId: string;
     token: string;
@@ -42,15 +42,12 @@ export const deleteStepActionThunk = createAsyncThunk<
 export const deleteStepActionThunkBuilder = (
   builder: ActionReducerMapBuilder<TasksState>
 ) => {
-  builder.addCase(
-    deleteStepActionThunk.fulfilled,
-    (state, action: PayloadAction<DeleteStepActionReturnedType>) => {
-      state.status = 'fulfilled';
-      state.steps[action.payload.taskId] = state.steps[
-        action.payload.taskId
-      ].filter((step) => step._id !== action.payload.stepId);
-    }
-  );
+  builder.addCase(deleteStepActionThunk.fulfilled, (state, action) => {
+    state.status = 'fulfilled';
+    state.steps[action.payload.data.taskId] = state.steps[
+      action.payload.data.taskId
+    ].filter((step) => step._id !== action.payload.data.stepId);
+  });
   builder.addCase(deleteStepActionThunk.pending, (state, action) => {
     state.status = 'pending';
   });

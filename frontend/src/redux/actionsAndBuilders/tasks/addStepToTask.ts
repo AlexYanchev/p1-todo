@@ -18,7 +18,7 @@ export type AddStepToTaskActionReturnedType = {
 };
 
 export const addStepToTaskAction = createAsyncThunk<
-  AddStepToTaskActionReturnedType & ErrorTypeFromServer,
+  { data: AddStepToTaskActionReturnedType & ErrorTypeFromServer },
   {
     id: string;
     token: string;
@@ -45,16 +45,13 @@ export const addStepToTaskAction = createAsyncThunk<
 export const addStepToTaskBuilder = (
   builder: ActionReducerMapBuilder<TasksState>
 ) => {
-  builder.addCase(
-    addStepToTaskAction.fulfilled,
-    (state, action: PayloadAction<AddStepToTaskActionReturnedType>) => {
-      state.status = 'fulfilled';
-      state.steps[action.payload.step.taskId] = [
-        action.payload.step,
-        ...state.steps[action.payload.step.taskId],
-      ];
-    }
-  );
+  builder.addCase(addStepToTaskAction.fulfilled, (state, action) => {
+    state.status = 'fulfilled';
+    state.steps[action.payload.data.step.taskId] = [
+      action.payload.data.step,
+      ...state.steps[action.payload.data.step.taskId],
+    ];
+  });
   builder.addCase(addStepToTaskAction.pending, (state, action) => {
     state.status = 'pending';
   });

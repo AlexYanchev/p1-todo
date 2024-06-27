@@ -21,9 +21,11 @@ export type FieldsForChanges = 'avatar' | 'firstName' | 'lastName' | 'login';
 export type FieldsForChangesAsObject = { [field in FieldsForChanges]?: string };
 
 export type ChangedUserDataReturnedType = {
-  fields: FieldsForChangesAsObject;
-  justCheck: boolean;
-  canChange: boolean;
+  data: {
+    fields: FieldsForChangesAsObject;
+    justCheck: boolean;
+    canChange: boolean;
+  };
 } & {
   success: boolean;
   message: string;
@@ -68,13 +70,25 @@ export const changeUserDataActionThunkBuilder = (
     changeUserDataActionThunk.fulfilled,
     (state, action: PayloadAction<ChangedUserDataReturnedType>) => {
       state.status = 'fulfilled';
-
-      if (action.payload.justCheck) {
+      console.log(
+        'Redux. Запрос на изменение данных юзера успешный. Смотрим данные с сервера: ',
+        action.payload
+      );
+      if (action.payload.data.justCheck) {
+        console.log(
+          'Redux. Это просто проверка поля. Изменять ничего не нужно. Выхожу из билдера ',
+          action.payload
+        );
         return;
       }
 
       if (state.user) {
-        state.user = { ...state.user, ...action.payload.fields };
+        console.log(
+          'Redux. С сервера пришли данные для изменения полей юзера: ',
+          action.payload,
+          ' Пробуем изменить '
+        );
+        state.user = { ...state.user, ...action.payload.data.fields };
         localStorage.setItem('user', JSON.stringify(state.user));
       }
     }

@@ -11,6 +11,8 @@ export type TaskType = {
   members: Array<string>;
   steps: Array<StepType>;
   likes: Array<string>;
+  expired: boolean;
+  willBeDeleted: Date | null;
 };
 
 export type TaskCreateType = Pick<TaskType, 'title' | 'public' | 'expiredAt'>;

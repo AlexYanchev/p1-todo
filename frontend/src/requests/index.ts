@@ -37,25 +37,27 @@ export async function customFetch({
           headers,
           body,
         };
-  return fetch(`${FETCH_SITE_URL}${to}`, options)
-    .then((res) => res.json())
-    .then((resJson) => {
-      if (resJson.data) {
-        return { ...resJson, ...resJson.data };
-      } else {
-        return resJson;
-      }
-    })
-    .then((res) => {
-      if (dispatch && res.invalidToken) {
-        dispatch(logout());
-        throw new Error(res.message);
-      } else if (res.error || !res.success) {
-        throw new Error(res.message);
-      } else {
-        return res;
-      }
-    });
+  return (
+    fetch(`${FETCH_SITE_URL}${to}`, options)
+      .then((res) => res.json())
+      // .then((resJson) => {
+      //   if (resJson.data) {
+      //     return { ...resJson, ...resJson.data };
+      //   } else {
+      //     return resJson;
+      //   }
+      // })
+      .then((res) => {
+        if (dispatch && res.data.invalidToken) {
+          dispatch(logout());
+          throw new Error(res.message);
+        } else if (res.error || !res.success) {
+          throw new Error(res.message);
+        } else {
+          return res;
+        }
+      })
+  );
 }
 
 // export async function customFetch({

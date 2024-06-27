@@ -17,7 +17,7 @@ export type ChangedTaskWithTypeTaskReturnedType = ChangedTaskReturnedType & {
 };
 
 export const changeTaskActionThunk = createAsyncThunk<
-  ChangedTaskWithTypeTaskReturnedType & ErrorTypeFromServer,
+  { data: ChangedTaskWithTypeTaskReturnedType & ErrorTypeFromServer },
   {
     token: string;
     taskId: string;
@@ -37,7 +37,7 @@ export const changeTaskActionThunk = createAsyncThunk<
     data: { fields: data.fields },
   })
     .then((res) => {
-      res.typeTask = data.typeTask;
+      res.data.typeTask = data.typeTask;
       return res;
     })
     .catch((err) => {
@@ -48,29 +48,26 @@ export const changeTaskActionThunk = createAsyncThunk<
 export const changeTaskActionThunkBuilder = (
   builder: ActionReducerMapBuilder<TasksState>
 ) => {
-  builder.addCase(
-    changeTaskActionThunk.fulfilled,
-    (state, action: PayloadAction<ChangedTaskWithTypeTaskReturnedType>) => {
-      state.status = 'fulfilled';
+  builder.addCase(changeTaskActionThunk.fulfilled, (state, action) => {
+    state.status = 'fulfilled';
 
-      const desiredTask = state[action.payload.typeTask].find(
-        (task) => task._id === action.payload.task._id
-      );
-      if (!desiredTask) {
-        return state;
-      }
-      let desiredField = desiredTask[action.payload.field];
-      if (typeof desiredField === 'boolean') {
-        (desiredTask[action.payload.field] as boolean) = action.payload.action;
-      } else if (Array.isArray(desiredField)) {
-        (desiredTask[action.payload.field] as string[]) = action.payload.task[
-          action.payload.field
-        ] as string[];
-      } else {
-        return state;
-      }
+    const desiredTask = state[action.payload.data.typeTask].find(
+      (task) => task._id === action.payload.data.task._id
+    );
+    if (!desiredTask) {
+      return state;
     }
-  );
+    let desiredField = desiredTask[action.payload.data.field];
+    if (typeof desiredField === 'boolean') {
+      (desiredTask[action.payload.data.field] as boolean) =
+        action.payload.data.action;
+    } else if (Array.isArray(desiredField)) {
+      (desiredTask[action.payload.data.field] as string[]) = action.payload.data
+        .task[action.payload.data.field] as string[];
+    } else {
+      return state;
+    }
+  });
   builder.addCase(changeTaskActionThunk.pending, (state, action) => {
     state.status = 'pending';
   });

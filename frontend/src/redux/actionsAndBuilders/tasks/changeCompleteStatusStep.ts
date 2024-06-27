@@ -18,7 +18,7 @@ export type ChangeCompleteStepActionReturnedType = {
 };
 
 export const changeCompleteStatusStepActionThunk = createAsyncThunk<
-  ChangeCompleteStepActionReturnedType & ErrorTypeFromServer,
+  { data: ChangeCompleteStepActionReturnedType & ErrorTypeFromServer },
   {
     stepId: string;
     token: string;
@@ -44,13 +44,13 @@ export const changeCompleteStatusStepActionThunkBuilder = (
 ) => {
   builder.addCase(
     changeCompleteStatusStepActionThunk.fulfilled,
-    (state, action: PayloadAction<ChangeCompleteStepActionReturnedType>) => {
+    (state, action) => {
       state.status = 'fulfilled';
-      state.steps[action.payload.step.taskId] = state.steps[
-        action.payload.step.taskId
+      state.steps[action.payload.data.step.taskId] = state.steps[
+        action.payload.data.step.taskId
       ].map((step) =>
-        step._id === action.payload.step._id
-          ? { ...step, complete: action.payload.step.complete }
+        step._id === action.payload.data.step._id
+          ? { ...step, complete: action.payload.data.step.complete }
           : step
       );
     }

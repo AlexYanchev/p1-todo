@@ -16,15 +16,22 @@ import { RootState } from '../../store';
 import { ErrorTypeFromServer } from './commonTypes';
 
 export const getTasksAction = createAsyncThunk<
-  { tasks: TaskType[] } & ErrorTypeFromServer & { tasksType: TasksType },
+  {
+    data: { tasks: TaskType[] } & ErrorTypeFromServer & {
+        tasksType: TasksType;
+      };
+  },
   {
     token: string;
     type: TasksType;
     dispatch: ThunkDispatch<RootState, undefined, UnknownAction>;
+    getDeletedTasks?: boolean;
   }
 >('tasks/getTasks', async (data) => {
   return customFetch({
-    to: `/getTasks/${data.type}`,
+    to: data.getDeletedTasks
+      ? `/getTasks/${data.type}/deleted`
+      : `/getTasks/${data.type}`,
     method: 'GET',
     headers: {
       // 'Content-Type': 'application/json;charset=utf-8',
@@ -43,7 +50,7 @@ export const getTasksActionBuilder = (
 ) => {
   builder.addCase(getTasksAction.fulfilled, (state, action) => {
     state.status = 'fulfilled';
-    const { tasksType, ...payload } = action.payload;
+    const { tasksType, ...payload } = action.payload.data;
     const separatedTaskAndSteps = payload.tasks.reduce(
       (
         acc: {

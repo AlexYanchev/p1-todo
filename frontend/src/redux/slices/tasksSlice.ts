@@ -59,6 +59,12 @@ export const getWaitingToDeleteTask = (state: RootState) =>
 export const getTasks = (type: TasksType) => (state: RootState) =>
   state.tasks[type];
 
+// export const getActualTasks = (type: TasksType) => (state: RootState) =>
+//   state.tasks[type].filter((task) => !task.expired);
+
+// export const getExpiredTasks = (type: TasksType) => (state: RootState) =>
+//   state.tasks[type].filter((task) => task.expired);
+
 export const getSpecificTask =
   (type: TasksType, taskId: string) => (state: RootState) =>
     state.tasks[type].find((task) => task._id === taskId);
