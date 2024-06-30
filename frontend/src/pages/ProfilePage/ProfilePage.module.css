@@ -7,3 +7,9 @@
   display: flex;
   gap: 50px;
 }
+
+.friends_list {
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}

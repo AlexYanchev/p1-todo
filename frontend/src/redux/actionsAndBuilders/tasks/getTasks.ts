@@ -25,13 +25,10 @@ export const getTasksAction = createAsyncThunk<
     token: string;
     type: TasksType;
     dispatch: ThunkDispatch<RootState, undefined, UnknownAction>;
-    getDeletedTasks?: boolean;
   }
 >('tasks/getTasks', async (data) => {
   return customFetch({
-    to: data.getDeletedTasks
-      ? `/getTasks/${data.type}/deleted`
-      : `/getTasks/${data.type}`,
+    to: `/getTasks/${data.type}`,
     method: 'GET',
     headers: {
       // 'Content-Type': 'application/json;charset=utf-8',

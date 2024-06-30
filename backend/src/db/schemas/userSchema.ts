@@ -1,5 +1,6 @@
-import mongoose, { Types } from 'mongoose';
+import mongoose, { Schema, Types } from 'mongoose';
 import * as dotenv from 'dotenv';
+import login from '../../controllers/user/login.js';
 
 dotenv.config();
 
@@ -10,6 +11,7 @@ export type UserType = {
   lastName: string;
   password: string;
   avatar: string;
+  friends: Types.ObjectId[];
 };
 
 export type ChangeUserDataParamsType = {
@@ -70,6 +72,11 @@ export const userSchema = new mongoose.Schema<UserType>(
       trim: true,
       maxlength: 310,
     },
+    friends: {
+      type: [Schema.Types.ObjectId],
+      default: [],
+      ref: 'User',
+    },
   },
   {
     timestamps: true,
@@ -97,4 +104,17 @@ userSchema.pre('save', function (next) {
   next();
 });
 
+userSchema.index(
+  { firstName: 'text', lastName: 'text' },
+  { default_language: 'russian' }
+);
+
 export const UserModel = mongoose.model<UserType>('User', userSchema, 'User');
+
+UserModel.init()
+  .then((result) => {
+    console.log('Индексы построены.');
+  })
+  .catch((err) => {
+    console.log('Ошибка построения индексов. Ошибка: ', err);
+  });

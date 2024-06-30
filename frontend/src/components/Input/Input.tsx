@@ -14,7 +14,8 @@ export type InputElementProps = {
     | 'password'
     | 'radio'
     | 'text'
-    | 'tel';
+    | 'tel'
+    | 'search';
   name: string;
   label: string;
   value?: string;
@@ -24,6 +25,8 @@ export type InputElementProps = {
   classNameLabel?: string;
   errorMessage?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement, Element>) => void;
+  onFocus?: (e: React.FocusEvent<HTMLInputElement, Element>) => void;
   options?: Partial<{
     'aria-errormessage': `errorMessage-${string}`;
     autofocus: boolean;
@@ -50,6 +53,8 @@ const Input: FC<InputElementProps> = ({
   type,
   value,
   onChange,
+  onBlur,
+  onFocus,
   placeholder,
   options,
 }) => {
@@ -70,6 +75,8 @@ const Input: FC<InputElementProps> = ({
         type={type}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
+        onFocus={onFocus}
         placeholder={placeholder}
         {...options}
       />
