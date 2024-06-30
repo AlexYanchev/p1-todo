@@ -6,6 +6,9 @@ import {
 } from '../actionsAndBuilders/user/loginUser';
 import { registerUserBuilderCases } from '../actionsAndBuilders/user/registerUser';
 import { changeUserDataActionThunkBuilder } from '../actionsAndBuilders/user/changeUserData';
+import { searchPeopleThunkActionBuilder } from '../actionsAndBuilders/user/searchPeople';
+import { UserProfileType } from '../../types/userType.js';
+import { changeFriendsListThunkActionBuilder } from '../actionsAndBuilders/user/addToFriend';
 
 export type SetPrefixReturnedType = {
   success: boolean;
@@ -15,12 +18,14 @@ export type SetPrefixReturnedType = {
 };
 
 export interface UserState {
+  searchPeople: Array<UserProfileType>;
   user: UserProfileWithTokenType | null;
   status: 'idle' | 'pending' | 'fulfilled' | 'rejected';
   error: any;
 }
 
 const initialState: UserState = {
+  searchPeople: [],
   user: null,
   status: 'idle',
   error: null,
@@ -39,6 +44,8 @@ export const userSlice = createSlice({
     },
   },
   extraReducers(builder) {
+    changeFriendsListThunkActionBuilder(builder);
+    searchPeopleThunkActionBuilder(builder);
     loginUserBuilderCases(builder);
     registerUserBuilderCases(builder);
     changeUserDataActionThunkBuilder(builder);
@@ -48,5 +55,7 @@ export const userSlice = createSlice({
 export const { addUser, logout } = userSlice.actions;
 
 export const getUserSlice = (state: RootState) => state.user;
+
+export const getFoundPeople = (state: RootState) => state.user.searchPeople;
 
 export default userSlice.reducer;

@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getUserSlice, logout } from '../../redux/slices/userSlice';
 import LoginIcon from '../icons/LoginIcon/LoginIcon';
+import SearchPeople from '../SearchPeople/SearchPeople';
 
 const Menu = () => {
   const navigate = useNavigate();
@@ -63,6 +64,7 @@ const Menu = () => {
           </li>
         </ul>
       </nav>
+      <SearchPeople />
     </header>
   );
 };

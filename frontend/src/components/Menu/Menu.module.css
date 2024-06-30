@@ -1,9 +1,11 @@
 .header {
-  height: 130px;
+  /* height: 130px; */
   padding: 40px 50px;
   display: flex;
   align-items: center;
   box-sizing: border-box;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .link_list {

@@ -22,3 +22,8 @@ export type TasksType = 'own' | 'public' | 'shared';
 export type TaskTypeWithoutStepsField = Omit<TaskType, 'steps'>;
 
 export type ChangeFieldsTask = 'complete' | 'likes' | 'members' | 'public';
+
+export type ArchiveTasksFileds = Pick<
+  TaskType,
+  '_id' | 'complete' | 'expired' | 'owner' | 'willBeDeleted' | 'title'
+>;

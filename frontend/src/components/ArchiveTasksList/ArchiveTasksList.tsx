@@ -1,25 +1,28 @@
 import { FC } from 'react';
-import { TaskTypeWithoutStepsField } from '../../types/taskType';
+import { ArchiveTasksFileds } from '../../types/taskType';
 import styles from './ArchiveTasksList.module.css';
-import Spinner from '../Spinner/Spinner';
 
 type Props = {
-  list: Array<TaskTypeWithoutStepsField>;
-  downloading?: boolean;
+  list: Array<ArchiveTasksFileds>;
+  classNameContainer?: string;
 };
 
-const ArchiveTasksList: FC<Props> = ({ downloading, list }) => {
-  if (downloading) {
-    return <Spinner />;
-  }
-
+const ArchiveTasksList: FC<Props> = ({ classNameContainer, list }) => {
   if (!list.length) {
     return <p>Тасков нет</p>;
   }
   return (
-    <ul className={styles.container}>
+    <ul
+      className={`${styles.container} ${
+        classNameContainer ? classNameContainer : ''
+      }`}
+    >
       {list.map((task) => {
-        return <li key={task._id}>{task.title}</li>;
+        return (
+          <li key={task._id} className={styles.item}>
+            {task.title}
+          </li>
+        );
       })}
     </ul>
   );

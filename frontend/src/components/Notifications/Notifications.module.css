@@ -1,0 +1,20 @@
+.notifications_container {
+  position: relative;
+}
+
+.quantity {
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  display: flex;
+  background-color: rgb(147, 218, 249);
+  color: rgba(0, 0, 0);
+  width: 0.9rem;
+  height: 0.9rem;
+  padding: 2px;
+  font-size: 0.8rem;
+  border-radius: 100%;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0);
+}

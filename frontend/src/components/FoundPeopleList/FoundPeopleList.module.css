@@ -1,0 +1,23 @@
+/* .background {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+} */
+
+.container {
+  flex-direction: column;
+  position: absolute;
+  background-color: rgb(247, 247, 247);
+  width: calc(100% - 62px);
+  z-index: 10;
+}
+
+.user {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  width: 100%;
+  padding: 5px;
+}

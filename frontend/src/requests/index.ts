@@ -48,7 +48,7 @@ export async function customFetch({
       //   }
       // })
       .then((res) => {
-        if (dispatch && res.data.invalidToken) {
+        if (dispatch && res.data?.invalidToken) {
           dispatch(logout());
           throw new Error(res.message);
         } else if (res.error || !res.success) {

@@ -6,6 +6,7 @@ export type UserType = {
   password: string;
   avatar: string;
   taskList: Array<string>;
+  friends: Array<string>;
 };
 
 export type UserLoginType = Pick<UserType, 'login' | 'password'>;
@@ -15,11 +16,11 @@ export type UserRegisterType = Pick<
 >;
 export type UserProfileType = Pick<
   UserType,
-  'avatar' | 'firstName' | 'lastName' | 'login' | '_id'
+  'avatar' | 'firstName' | 'lastName' | 'login' | '_id' | 'friends'
 >;
 export type UserPublicProfileType = Pick<
   UserType,
-  'firstName' | 'lastName' | 'avatar' | 'taskList'
+  '_id' | 'firstName' | 'lastName' | 'avatar' | 'taskList' | 'friends'
 >;
 export type UserChangeFirstName = Pick<UserType, '_id' | 'firstName'>;
 export type UserChangeLastName = Pick<UserType, '_id' | 'lastName'>;
