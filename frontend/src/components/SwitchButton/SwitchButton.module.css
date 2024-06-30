@@ -1,0 +1,57 @@
+.switchPublic_container {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.switchPublic_switch {
+  display: inline-block;
+  background: #ccc;
+  border-radius: 16px;
+  width: 50px;
+  height: 26px;
+  position: relative;
+  vertical-align: middle;
+  transition: 0.25s;
+}
+
+.switchPublic_switch:before,
+.switchPublic_switch:after {
+  content: '';
+}
+
+.switchPublic_switch:before {
+  display: block;
+  background: linear-gradient(to bottom, #fff 0%, #eee 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  width: 18px;
+  height: 18px;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  transition: left 0.25s;
+}
+
+.switchPublic_container:hover .switchPublic_switch:before {
+  background: linear-gradient(to bottom, #fff 0%, #fff 100%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+}
+
+.switchPublic_input:checked + .switchPublic_switch {
+  background: #56c080;
+}
+
+.switchPublic_input:checked + .switchPublic_switch:before {
+  left: 28px;
+}
+
+.switchPublic_input {
+  position: absolute;
+  visibility: hidden;
+}
+
+.switchPublic_label {
+  margin-right: 20px;
+  position: relative;
+  top: 2px;
+}

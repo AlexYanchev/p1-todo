@@ -1,0 +1,37 @@
+.container {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+  color: var(--main-text-color);
+}
+
+.label {
+  font-size: 1.3rem;
+}
+
+.input {
+  height: 30px;
+  outline: 1px solid currentColor;
+  border: none;
+}
+.input:invalid {
+  outline: 1px solid red;
+}
+
+.error_message {
+  visibility: hidden;
+  height: 0px;
+  transition: height ease 0.3s;
+  box-sizing: content-box;
+  padding: 0px 5px;
+  max-width: 350px;
+  /* overflow-wrap: break-word; */
+}
+
+.input:invalid + .error_message {
+  height: 50px;
+  overflow-y: auto;
+  font-size: 0.7rem;
+  visibility: visible;
+  color: red;
+}

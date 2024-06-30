@@ -1,0 +1,14 @@
+.tasks_container {
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.task_item {
+  width: 100%;
+  max-width: 400px;
+}
+
+.content {
+  padding-bottom: 10px;
+}

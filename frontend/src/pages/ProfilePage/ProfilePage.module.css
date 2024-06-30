@@ -1,0 +1,9 @@
+.profile_container {
+  height: 100%;
+  padding: 30px 50px;
+}
+
+.content {
+  display: flex;
+  gap: 50px;
+}

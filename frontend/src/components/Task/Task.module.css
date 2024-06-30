@@ -1,0 +1,96 @@
+.task_container {
+  background-color: #faf7da;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.24rem;
+}
+
+.title_date {
+  font-size: 0.87rem;
+  color: rgba(var(--main-text-color-pure-rgb), 0.5);
+}
+
+.steps_container {
+  flex-direction: column;
+  /* display: block; */
+  /* gap: 10px; */
+  margin-top: 30px;
+  height: 200px;
+  overflow-y: auto;
+}
+
+.expiredAt {
+  margin-top: 5px;
+  font-size: 0.875rem;
+}
+
+.footer_container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.likes {
+  display: flex;
+  gap: 10px;
+}
+
+.control_buttons_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.control_buttons_container button {
+  padding: 8px 16px;
+  border: none;
+  font-size: 0.87;
+  background-color: rgba(196, 196, 196);
+  color: inherit;
+  min-width: 130px;
+}
+
+.control_buttons_container button:hover {
+  opacity: 0.8;
+}
+
+.step_container {
+  width: 100%;
+  vertical-align: middle;
+  cursor: pointer;
+  padding: 5px 0px;
+}
+
+.step_container:hover {
+  background-color: rgba(255, 255, 255, 0.442);
+}
+
+.complete {
+  text-decoration: line-through;
+}
+
+.fall {
+  animation: fallAway forwards 1s ease-out 1;
+}
+
+@keyframes fallAway {
+  0% {
+    transform: rotateZ(0deg);
+    top: 0;
+    opacity: 1;
+  }
+  25% {
+    transform: rotateZ(-15deg);
+  }
+  100% {
+    top: 300px;
+    transform: rotateZ(-5deg);
+    opacity: 0;
+  }
+}

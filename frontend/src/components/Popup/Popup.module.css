@@ -1,0 +1,21 @@
+.background {
+  height: 100vh;
+  width: 100%;
+  background-color: rgba(29, 28, 28, 0.367);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+}
+
+.close_icon {
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  cursor: pointer;
+}
