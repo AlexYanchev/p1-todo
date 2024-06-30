@@ -5,8 +5,17 @@ import createTask from '../controllers/task/createTask.js';
 import deleteTask from '../controllers/task/deleteTask.js';
 import getTasks from '../controllers/task/getTasks.js';
 import { resError, responseErrorData } from '../helpers/response/resError.js';
+import getArchiveTasks from '../controllers/task/getArchiveTasks.js';
 
 const taskRouter = Router();
+
+taskRouter.get('/getArchiveTasks', async (req, res) => {
+  try {
+    await getArchiveTasks(req, res);
+  } catch {
+    resError(res, responseErrorData.default);
+  }
+});
 
 taskRouter.post('/createTask', async (req, res) => {
   try {
@@ -16,7 +25,7 @@ taskRouter.post('/createTask', async (req, res) => {
   }
 });
 
-taskRouter.get('/getTasks/:tasksType/:deleted?', async (req, res) => {
+taskRouter.get('/getTasks/:tasksType', async (req, res) => {
   try {
     await getTasks(req, res);
   } catch {

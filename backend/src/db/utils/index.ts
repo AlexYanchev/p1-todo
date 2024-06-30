@@ -94,6 +94,15 @@ export const checkerBody = {
   },
 };
 
+/**
+ * Проверяет параметры, переданные в URL.
+ * Если в URL должно быть значение own, то нужно передать объект с ключом [req.params.key] и значением 'own'.
+ * Если параметры могут быть разные, то передаем объект с ключом [req.params.key] и доступными значениями в виде массива ['own','public']
+ * Чекер проверяет правильность переданных параметров
+ * @param paramsObject
+ * @returns boolean
+ */
+
 export const checkerParams = (
   paramsObject: Record<string, string | Array<string>>
 ): boolean => {
@@ -121,5 +130,20 @@ export const checkerParams = (
     }
   });
   console.log('Работает Чекер Параметров. Результат проверки: ', result);
+  return result;
+};
+
+export const checkerQuery = (
+  queryObj: Record<string, string>,
+  keys: Array<string>
+) => {
+  console.log(
+    'Работает Чекер Запроса. Поступил объект запроса: ',
+    queryObj,
+    ' Ключи, которые должны быть: ',
+    keys
+  );
+  const result = Object.keys(queryObj).every((key) => keys.includes(key));
+  console.log('Результат работы Чекера: ', result);
   return result;
 };
