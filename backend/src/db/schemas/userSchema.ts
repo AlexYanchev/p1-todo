@@ -12,6 +12,8 @@ export type UserType = {
   password: string;
   avatar: string;
   friends: Types.ObjectId[];
+  sharedToMeTasks: Types.ObjectId[];
+  sharedToMeSteps: Array<{ step: { title: string }; taskId: Types.ObjectId }>;
 };
 
 export type ChangeUserDataParamsType = {
@@ -76,6 +78,20 @@ export const userSchema = new mongoose.Schema<UserType>(
       type: [Schema.Types.ObjectId],
       default: [],
       ref: 'User',
+    },
+    sharedToMeTasks: {
+      type: [Schema.Types.ObjectId],
+      default: [],
+      ref: 'Task',
+    },
+    sharedToMeSteps: {
+      type: [
+        {
+          step: { title: { type: String, require: true, trim: true } },
+          taskId: { type: Schema.Types.ObjectId, ref: 'Task' },
+        },
+      ],
+      default: [],
     },
   },
   {

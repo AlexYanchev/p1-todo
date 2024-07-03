@@ -7,6 +7,8 @@ import { resError, responseErrorData } from '../helpers/response/resError.js';
 import searchPeople from '../controllers/user/searchPeople.js';
 import { changeFriendsList } from '../controllers/user/changeFriendsList.js';
 import { getFriendsList } from '../controllers/user/getFriendsList.js';
+import shareTask from '../controllers/user/shareTask.js';
+import proposeStep from '../controllers/user/proposeStep.js';
 
 const userRouter = Router();
 
@@ -60,6 +62,26 @@ userRouter.get('/getData/friendsList', async (req, res) => {
   console.log('Запрос списка друзей');
   try {
     await getFriendsList(req, res);
+  } catch (e) {
+    console.log('Общая ошибка. Что то пошло не так. ', e);
+    resError(res, responseErrorData.default);
+  }
+});
+
+userRouter.put('/share/friend/:idFriend/:idTask', async (req, res) => {
+  console.log('Делимся задачей с другом');
+  try {
+    await shareTask(req, res);
+  } catch (e) {
+    console.log('Общая ошибка. Что то пошло не так. ', e);
+    resError(res, responseErrorData.default);
+  }
+});
+
+userRouter.patch('/share/proposeStep/:idTask', async (req, res) => {
+  console.log('Предлагаем шаг');
+  try {
+    await proposeStep(req, res);
   } catch (e) {
     console.log('Общая ошибка. Что то пошло не так. ', e);
     resError(res, responseErrorData.default);
