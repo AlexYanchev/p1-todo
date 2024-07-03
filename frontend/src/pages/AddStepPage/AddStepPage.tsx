@@ -6,6 +6,7 @@ import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import { getUserSlice } from '../../redux/slices/userSlice';
 import styles from './AddStepPage.module.css';
 import { addStepToTaskAction } from '../../redux/actionsAndBuilders/tasks/addStepToTask';
+import { customFetch } from '../../requests';
 
 const AddStepPage = () => {
   const [createStepDataForm, setCreateStepDataForm] = useState({
@@ -15,10 +16,13 @@ const AddStepPage = () => {
   const userSlice = useAppSelector(getUserSlice);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { taskId } = useParams();
+  const { taskId, offer } = useParams();
   const pending = useAppSelector((state) => state.tasks.status === 'pending');
   const disabledCreateTaskButton =
     !Boolean(createStepDataForm.title) || pending;
+
+  const isOffer = offer === 'offer';
+  const nameButton = isOffer ? 'Предложить' : 'Добавить';
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCreateStepDataForm({
@@ -29,7 +33,10 @@ const AddStepPage = () => {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (userSlice.user && taskId) {
+    if (!userSlice.user) {
+      return;
+    }
+    if (taskId && !isOffer) {
       dispatch(
         addStepToTaskAction({
           id: taskId,
@@ -40,6 +47,24 @@ const AddStepPage = () => {
       ).then((res) => {
         navigate(-1);
       });
+    } else if (isOffer) {
+      customFetch({
+        to: `/share/proposeStep/${taskId}`,
+        method: 'PATCH',
+        headers: {
+          Authorization: userSlice.user.token,
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+        dispatch,
+        data: { step: createStepDataForm },
+      })
+        .then((res) => {
+          console.log('Успешно предложили шаг. ', res);
+          navigate(-1);
+        })
+        .catch((err) => {
+          console.log('Возникла ошибка, при предложении шага. ', err);
+        });
     }
 
     e.currentTarget.reset();
@@ -69,7 +94,7 @@ const AddStepPage = () => {
             typeElement: 'button',
             type: 'submit',
             name: 'add',
-            text: pending ? <Spinner /> : 'Добавить',
+            text: pending ? <Spinner /> : nameButton,
             className: `standart-button`,
             options: {
               disabled: disabledCreateTaskButton,

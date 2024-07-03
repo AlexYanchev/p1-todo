@@ -1,6 +1,6 @@
 import styles from './Task.module.css';
 import { TasksType, TaskTypeWithoutStepsField } from '../../types/taskType';
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import ControlButtons from '../ControlButtons/ControlButtons';
 import LikeIcon from '../icons/LikeIcon/LikeIcon';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -14,6 +14,9 @@ import {
 import { getUserSlice } from '../../redux/slices/userSlice';
 import { deleteTaskFromStore } from '../../redux/slices/tasksSlice';
 import { changeTaskActionThunk } from '../../redux/actionsAndBuilders/tasks/changeTask';
+import Button from '../Button/Button';
+import Popup from '../Popup/Popup';
+import FriendsListForShare from '../FriendsListForShare/FriendsListForShare';
 
 type Props = {
   task: TaskTypeWithoutStepsField;
@@ -25,7 +28,7 @@ const Task: FC<Props> = ({ task, type }) => {
   const userSlice = useAppSelector(getUserSlice);
   const specificSteps = useAppSelector(getSpecificSteps(task._id)) || [];
   const waitingToDeleteTask = useAppSelector(getWaitingToDeleteTask);
-
+  const [openPopupFriendsList, setOpenPopupFriendsList] = useState(false);
   const needDelete = task._id === waitingToDeleteTask;
   const ownTask = task.owner === userSlice.user?._id;
   const sharedTask = type === 'shared';
@@ -121,6 +124,13 @@ const Task: FC<Props> = ({ task, type }) => {
           </dt>
           <dd>{task.likes.length}</dd>
         </dl>
+        <Button
+          typeElement='button'
+          type='button'
+          name='share'
+          text='Поделится'
+          onClick={() => setOpenPopupFriendsList(true)}
+        />
         {task.owner === userSlice.user?._id && (
           <SwitchButton
             labelText='Публичная'
@@ -129,6 +139,19 @@ const Task: FC<Props> = ({ task, type }) => {
           />
         )}
       </div>
+
+      {openPopupFriendsList && (
+        <Popup
+          closePopupCb={() => setOpenPopupFriendsList(false)}
+          format='friendList'
+          element={
+            <FriendsListForShare
+              idTask={task._id}
+              cb={() => setOpenPopupFriendsList(false)}
+            />
+          }
+        />
+      )}
     </article>
   );
 };

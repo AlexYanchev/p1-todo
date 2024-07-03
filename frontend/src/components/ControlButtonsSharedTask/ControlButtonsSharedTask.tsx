@@ -12,7 +12,7 @@ const ControlButtonsSharedTask: FC<Props> = ({ taskId, type }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const proposeStep = () => {
-    navigate(`/addStep/${taskId}`, { state: { background: location } });
+    navigate(`/addStep/${taskId}/offer`, { state: { background: location } });
   };
   return (
     <div className={styles.container}>

@@ -7,7 +7,7 @@
   align-items: center;
 }
 
-.wrapper {
+.wrapper_classic {
   position: relative;
   width: 100%;
   max-width: 500px;
@@ -18,4 +18,9 @@
   top: -30px;
   right: -30px;
   cursor: pointer;
+}
+
+.wrapper_friendList {
+  position: relative;
+  width: 100%;
 }

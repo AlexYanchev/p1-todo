@@ -74,25 +74,34 @@ const ProfilePage = () => {
       </div>
       <div className={styles.friends_container}>
         <h2 className={styles.friends_header}>Друзья</h2>
-        <ol className={styles.friends_list}>
-          {friendsList.map((friend) => {
-            return (
-              <li key={friend._id}>
-                <PublicAvatar srcAvatar={friend.avatar} />
-                <span>
-                  {friend.firstName} {friend.lastName}
-                </span>
-                <Button
-                  typeElement='button'
-                  type='button'
-                  name='deleteFriend'
-                  onClick={() => deleteFriend(friend._id)}
-                  text='Удалить'
-                />
-              </li>
-            );
-          })}
-        </ol>
+        {friendsList.length ? (
+          <ol className={styles.friends_list}>
+            {friendsList.map((friend) => {
+              return (
+                <li key={friend._id}>
+                  <PublicAvatar srcAvatar={friend.avatar} />
+                  <span>
+                    {friend.firstName} {friend.lastName}
+                  </span>
+                  <Button
+                    typeElement='button'
+                    type='button'
+                    name='deleteFriend'
+                    onClick={() => deleteFriend(friend._id)}
+                    text='Удалить'
+                  />
+                </li>
+              );
+            })}
+          </ol>
+        ) : (
+          <p>Друзей нет</p>
+        )}
+      </div>
+      <div className={styles.incoming_action}>
+        <h2>Действия</h2>
+        <h3>Входящие задачи</h3>
+        <h3>Предложенные шаги</h3>
       </div>
     </section>
   );
