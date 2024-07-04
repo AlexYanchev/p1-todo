@@ -13,7 +13,12 @@ export type UserType = {
   avatar: string;
   friends: Types.ObjectId[];
   sharedToMeTasks: Types.ObjectId[];
-  sharedToMeSteps: Array<{ step: { title: string }; taskId: Types.ObjectId }>;
+  sharedToMeSteps: Array<{
+    _id: Types.ObjectId;
+    title: string;
+    proposedBy: Types.ObjectId;
+    task: Types.ObjectId;
+  }>;
 };
 
 export type ChangeUserDataParamsType = {
@@ -87,8 +92,14 @@ export const userSchema = new mongoose.Schema<UserType>(
     sharedToMeSteps: {
       type: [
         {
-          step: { title: { type: String, require: true, trim: true } },
-          taskId: { type: Schema.Types.ObjectId, ref: 'Task' },
+          _id: { type: Schema.Types.ObjectId },
+          title: { type: String, require: true, trim: true },
+          proposedBy: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+          },
+          task: { type: Schema.Types.ObjectId, ref: 'Task' },
         },
       ],
       default: [],

@@ -9,6 +9,9 @@ import { changeFriendsList } from '../controllers/user/changeFriendsList.js';
 import { getFriendsList } from '../controllers/user/getFriendsList.js';
 import shareTask from '../controllers/user/shareTask.js';
 import proposeStep from '../controllers/user/proposeStep.js';
+import { getOffers } from '../controllers/user/getOffers.js';
+import { changeOfferTask } from '../controllers/user/changeOfferTask.js';
+import { changeOfferStep } from '../controllers/user/changeOfferStep.js';
 
 const userRouter = Router();
 
@@ -68,6 +71,16 @@ userRouter.get('/getData/friendsList', async (req, res) => {
   }
 });
 
+userRouter.get('/getData/offers/:type?', async (req, res) => {
+  console.log('Запрос предложений для пользователя');
+  try {
+    await getOffers(req, res);
+  } catch (e) {
+    console.log('Общая ошибка. Что то пошло не так. ', e);
+    resError(res, responseErrorData.default);
+  }
+});
+
 userRouter.put('/share/friend/:idFriend/:idTask', async (req, res) => {
   console.log('Делимся задачей с другом');
   try {
@@ -82,6 +95,26 @@ userRouter.patch('/share/proposeStep/:idTask', async (req, res) => {
   console.log('Предлагаем шаг');
   try {
     await proposeStep(req, res);
+  } catch (e) {
+    console.log('Общая ошибка. Что то пошло не так. ', e);
+    resError(res, responseErrorData.default);
+  }
+});
+
+userRouter.patch('/changeOfferTask/:idTask/:action', async (req, res) => {
+  console.log('Изменяем предложенный таск');
+  try {
+    await changeOfferTask(req, res);
+  } catch (e) {
+    console.log('Общая ошибка. Что то пошло не так. ', e);
+    resError(res, responseErrorData.default);
+  }
+});
+
+userRouter.patch('/changeOfferStep/:idStep/:action', async (req, res) => {
+  console.log('Изменяем предложенный шаг');
+  try {
+    await changeOfferStep(req, res);
   } catch (e) {
     console.log('Общая ошибка. Что то пошло не так. ', e);
     resError(res, responseErrorData.default);

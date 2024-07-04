@@ -11,6 +11,7 @@ import {
 import { getUser } from '../../utils/index.js';
 import { TaskModel } from '../../db/schemas/taskSchema.js';
 import { checkerBody } from '../../db/utils/index.js';
+import { Types } from 'mongoose';
 
 export default async function proposeStep(req: Request, res: Response) {
   const user = getUser(req);
@@ -51,7 +52,12 @@ export default async function proposeStep(req: Request, res: Response) {
   }
 
   ownerTask.sharedToMeSteps = ownerTask.sharedToMeSteps.concat([
-    { step: { title: step.title }, taskId: task._id },
+    {
+      title: step.title,
+      task: task._id,
+      proposedBy: user._id,
+      _id: new Types.ObjectId(),
+    },
   ]);
 
   console.log(
