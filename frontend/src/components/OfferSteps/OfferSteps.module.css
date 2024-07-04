@@ -1,0 +1,9 @@
+.steps_container {
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.step {
+  padding: 10px;
+}

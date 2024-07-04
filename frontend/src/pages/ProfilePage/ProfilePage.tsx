@@ -10,21 +10,34 @@ import PublicAvatar from '../../components/PublicAvatar/PublicAvatar';
 import { changeFriendsListThunkAction } from '../../redux/actionsAndBuilders/user/addToFriend';
 import Button from '../../components/Button/Button';
 import ProfileInfo from '../../components/ProfileInfo/ProfileInfo';
+import Notifications from '../../components/Notifications/Notifications';
+import OfferTasks from '../../components/OfferTasks/OfferTasks';
+import OfferSteps from '../../components/OfferSteps/OfferSteps';
 
 const ProfilePage = () => {
   const userSlice = useAppSelector(getUserSlice);
   const dispatch = useAppDispatch();
-
+  const [quantityOffers, setQuantityOffers] = useState({
+    tasks: 0,
+    steps: 0,
+  });
   const [friendsList, setFriendsList] = useState<UserPublicProfileType[]>([]);
+  const [openOffer, setOpenOffer] = useState({
+    tasks: false,
+    steps: false,
+  });
 
   useEffect(() => {
-    if (userSlice.user && !friendsList.length) {
+    if (!userSlice.user) {
+      return;
+    }
+    if (!friendsList.length) {
       customFetch({
         to: `/getData/friendsList`,
         method: 'GET',
         dispatch,
         headers: {
-          Authorization: userSlice.user?.token,
+          Authorization: userSlice.user.token,
         },
       })
         .then((res) => [
@@ -38,6 +51,31 @@ const ProfilePage = () => {
           );
         });
     }
+
+    customFetch({
+      to: `/getData/offers`,
+      method: 'GET',
+      dispatch,
+      headers: {
+        Authorization: userSlice.user.token,
+      },
+    })
+      .then((res) => [
+        console.log(
+          'Запрос на количество предложений успешен. Результат: ',
+          res
+        ),
+        setQuantityOffers({
+          tasks: Number(res.data.sharedToMeTasks),
+          steps: Number(res.data.sharedToMeSteps),
+        }),
+      ])
+      .catch((err) => {
+        console.log(
+          'Запрос на количество предложений выполнился с ошибкой. Ошибка: ',
+          err
+        );
+      });
   }, []);
 
   const deleteFriend = (idFriend: string) => {
@@ -99,9 +137,39 @@ const ProfilePage = () => {
         )}
       </div>
       <div className={styles.incoming_action}>
-        <h2>Действия</h2>
-        <h3>Входящие задачи</h3>
-        <h3>Предложенные шаги</h3>
+        <h2>Предложения</h2>
+        <div>
+          <Notifications quantity={quantityOffers.tasks}>
+            <h3>Задачи</h3>
+          </Notifications>
+          <Button
+            type='button'
+            typeElement='button'
+            name='sharedToMeTasks'
+            text={openOffer.tasks ? 'Закрыть' : 'Открыть'}
+            className={styles.tasks_button}
+            onClick={() =>
+              setOpenOffer({ ...openOffer, tasks: !openOffer.tasks })
+            }
+          />
+          {openOffer.tasks && <OfferTasks />}
+        </div>
+        <div>
+          <Notifications quantity={quantityOffers.steps}>
+            <h3>Шаги</h3>
+          </Notifications>
+          <Button
+            type='button'
+            typeElement='button'
+            name='sharedToMeSteps'
+            text={openOffer.steps ? 'Закрыть' : 'Открыть'}
+            className={styles.tasks_button}
+            onClick={() =>
+              setOpenOffer({ ...openOffer, steps: !openOffer.steps })
+            }
+          />
+          {openOffer.steps && <OfferSteps />}
+        </div>
       </div>
     </section>
   );

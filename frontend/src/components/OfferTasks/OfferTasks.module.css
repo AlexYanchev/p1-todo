@@ -1,0 +1,9 @@
+.tasks_container {
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.task {
+  padding: 10px;
+}

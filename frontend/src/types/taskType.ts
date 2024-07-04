@@ -27,3 +27,8 @@ export type ArchiveTasksFileds = Pick<
   TaskType,
   '_id' | 'complete' | 'expired' | 'owner' | 'willBeDeleted' | 'title'
 >;
+
+export type OfferTaskType = Pick<
+  TaskType,
+  'title' | 'steps' | '_id' | 'members' | 'public' | 'expiredAt' | 'likes'
+>;
