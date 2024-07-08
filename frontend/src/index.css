@@ -1,14 +1,36 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: fit-content;
+  min-height: 100vh;
+}
+
 body {
   margin: 0;
   width: 100%;
+  height: 100%;
   font-family: 'Corbel', 'Candara', 'Helvetica Neue', sans-serif;
   font-feature-settings: 'lnum' 1;
+
+  background: linear-gradient(
+      217deg,
+      rgba(40, 0, 41, 0.8),
+      rgba(255, 0, 0, 0) 70.71%
+    ),
+    linear-gradient(127deg, rgba(64, 66, 69, 0.8), rgba(30, 7, 28, 0) 70.71%),
+    linear-gradient(336deg, rgba(35, 35, 61, 0.8), rgba(0, 0, 255, 0) 70.71%);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --main-text-color: rgb(66, 66, 66);
+  --main-text-color: rgb(0, 0, 0);
   --main-text-color-pure-rgb: 66, 66, 66;
   --footer-background-color: rgb(232, 255, 219);
+}
+
+#root {
+  min-height: 100vh;
 }
 
 h1,
@@ -26,6 +48,7 @@ ol {
 a {
   text-decoration: none;
   color: inherit;
+  opacity: 1;
 }
 
 ul,
@@ -78,4 +101,27 @@ dd {
   align-items: center;
   gap: 20px;
   padding: 75px 70px;
+}
+
+.button_control {
+  width: 150px;
+  padding: 15px 25px;
+  border-radius: 7px;
+  box-shadow: 0px 0px 12px -2px rgba(0, 0, 0, 0.5);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  border: 0;
+  color: rgb(224, 245, 243);
+  background: linear-gradient(rgba(40, 40, 40, 0.505), rgba(56, 52, 61, 0.505));
+  transition: 0.3s ease-in;
+  height: 45px;
+}
+
+.button_control:hover {
+  color: rgb(224, 245, 243);
+  background: linear-gradient(
+    rgba(156, 156, 156, 0.505),
+    rgba(121, 104, 142, 0.505)
+  );
+  opacity: 0.8;
 }

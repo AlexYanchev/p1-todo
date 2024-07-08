@@ -26,13 +26,14 @@ app.use(
 );
 
 app.use(express.json());
-app.use(
-  express.raw({
-    type: ['application/octet-stream', 'image/png', 'image/jpeg'],
-    limit: '2mb',
-  })
-);
+
 app.use(userRouter, validateToken, taskRouter, stepRouter);
+
+app.use(function (req, res, next) {
+  res.status(404);
+  res.type('txt').send('Not found');
+  return;
+});
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   resError(res, responseErrorData.badRequest, { invalidToken: true });

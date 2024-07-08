@@ -7,3 +7,13 @@ export type StepType = {
 };
 
 export type StepCreateType = Pick<StepType, 'owner' | 'taskId' | 'title'>;
+
+export type OfferStepType = Pick<StepType, '_id' | 'title'> & {
+  task: { title: string };
+  proposedBy: {
+    firstName: string;
+    lastName: string;
+    _id: string;
+    login: string;
+  };
+};

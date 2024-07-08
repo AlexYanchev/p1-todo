@@ -9,16 +9,27 @@ type Props = {
   type: TasksType;
   taskId: string;
   taskBelongsCurrentUser: boolean;
+  classNameContainer?: string;
+  classNameButton?: string;
 };
 
 const ControlButtons: FC<Props> = ({
   type,
   taskId,
   taskBelongsCurrentUser,
+  classNameContainer,
+  classNameButton,
 }) => {
   switch (type) {
     case 'own': {
-      return <ControlButtonsOwnTask taskId={taskId} type={type} />;
+      return (
+        <ControlButtonsOwnTask
+          taskId={taskId}
+          type={type}
+          classNameContainer={classNameContainer}
+          classNameButton={classNameButton}
+        />
+      );
     }
     case 'public': {
       return taskBelongsCurrentUser ? (

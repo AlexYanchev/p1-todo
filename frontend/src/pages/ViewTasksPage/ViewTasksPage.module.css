@@ -2,6 +2,7 @@
   gap: 20px;
   flex-wrap: wrap;
   margin-top: 20px;
+  justify-content: center;
 }
 
 .task_item {
@@ -11,4 +12,5 @@
 
 .content {
   padding-bottom: 10px;
+  height: 100%;
 }

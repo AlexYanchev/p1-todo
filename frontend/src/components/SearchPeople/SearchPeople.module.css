@@ -5,10 +5,19 @@
 }
 
 .container > .form {
+  background: transparent;
   display: flex;
   gap: 10px;
   justify-content: center;
   align-items: center;
   flex-direction: row;
   padding: 0;
+}
+
+.container input {
+  background: transparent;
+}
+
+.container input::placeholder {
+  color: rgba(220, 220, 220, 0.9);
 }

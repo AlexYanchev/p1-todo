@@ -1,0 +1,25 @@
+.friends_list_container {
+  height: 150px;
+  width: 100%;
+  position: fixed;
+  bottom: 0px;
+  background-color: rgb(255, 255, 255);
+}
+
+.firends_list {
+  padding: 20px;
+  display: flex;
+  gap: 20px;
+  overflow-x: scroll;
+}
+
+.friend_info_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.friend_info_container:hover {
+  outline: 2px dotted rgb(157, 206, 255);
+}

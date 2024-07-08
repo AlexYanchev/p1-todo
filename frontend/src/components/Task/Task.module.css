@@ -1,4 +1,4 @@
-.task_container {
+/* .task_container {
   background-color: #faf7da;
   padding: 15px;
   box-sizing: border-box;
@@ -17,8 +17,6 @@
 
 .steps_container {
   flex-direction: column;
-  /* display: block; */
-  /* gap: 10px; */
   margin-top: 30px;
   height: 200px;
   overflow-y: auto;
@@ -73,6 +71,218 @@
 
 .complete {
   text-decoration: line-through;
+}
+
+.fall {
+  animation: fallAway forwards 1s ease-out 1;
+}
+
+@keyframes fallAway {
+  0% {
+    transform: rotateZ(0deg);
+    top: 0;
+    opacity: 1;
+  }
+  25% {
+    transform: rotateZ(-15deg);
+  }
+  100% {
+    top: 300px;
+    transform: rotateZ(-5deg);
+    opacity: 0;
+  }
+} */
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.lightbox {
+  display: none;
+}
+
+.lightbox:target {
+  z-index: 3;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fade 0.3s ease-in-out;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.lightbox_content {
+  width: 40rem;
+  position: relative;
+  padding: 1.5em;
+  background-color: rgba(182, 199, 255, 0.881);
+}
+
+.close_lightbox {
+  position: relative;
+  display: block;
+}
+
+.close_lightbox::after {
+  right: -2.5rem;
+  top: -2.5rem;
+  width: 2rem;
+  height: 2rem;
+  position: absolute;
+  display: flex;
+  z-index: 1;
+  align-items: center;
+  justify-content: center;
+  background-color: black;
+  border-radius: 50%;
+  color: white;
+  content: '×';
+  cursor: pointer;
+}
+
+.close_lightbox::before {
+  z-index: -1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.7);
+  content: '';
+  cursor: default;
+}
+
+.lightbox_steps_container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.step_container {
+  width: 80%;
+  vertical-align: middle;
+}
+.step_container:hover {
+  background-color: rgba(255, 255, 255, 0.292);
+}
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////*/
+
+.task_container {
+  border-radius: 10px;
+  position: relative;
+  padding: 20px 10px;
+  background-color: transparent;
+  height: 400px;
+  background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(1, 1, 1, 0.5));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.task_container::before {
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px -2px rgba(0, 0, 0, 0.548);
+  width: 100%;
+  height: 100%;
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  /* background-image: url('../../../public/images/tasks/background-default.jpg'); */
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  filter: sepia(30%) brightness(85%);
+}
+
+.title_group {
+  text-align: center;
+}
+
+.title_date {
+  font-size: 0.8rem;
+  color: rgb(240, 240, 240);
+  font-weight: 600;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: rgba(3, 23, 34, 0.548);
+  text-shadow: 0px 0px 5px rgb(255, 255, 255);
+  transition: transform 0.3s linear;
+}
+
+.title:hover {
+  color: rgba(9, 50, 72, 0.548);
+  text-shadow: 0px 0px 10px rgb(255, 255, 255);
+  transform: scale(1.05);
+}
+
+.buttons_container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 10px;
+}
+
+.footer_container {
+  display: flex;
+  justify-content: space-evenly;
+  place-items: center center;
+  background-color: rgba(209, 209, 209, 0.375);
+  margin-top: 10px;
+  padding: 10px 15px;
+  border-radius: 7px;
+  width: 90%;
+}
+
+.expiredAt {
+  font-size: 0.8rem;
+  color: rgb(240, 240, 240);
+  font-weight: 600;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.likes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.control_buttons_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: auto;
+}
+
+.show_steps_link {
+  margin-top: 5px;
+  color: rgba(193, 229, 212, 0.9);
+  text-decoration: underline;
+}
+
+.task_complete {
+  font-size: 1.2rem;
+  color: white;
 }
 
 .fall {

@@ -48,6 +48,7 @@ const ControlButtonsPublicTask: FC<Props> = ({ taskId, type }) => {
           typeElement='button'
           type='button'
           name='joinToTask'
+          className='button_control'
           text={
             currentTask!.members.includes(userSlice.user!._id) ? (
               'Отсоединиться'

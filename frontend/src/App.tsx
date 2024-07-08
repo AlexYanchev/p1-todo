@@ -51,7 +51,7 @@ function App() {
             element={<Popup element={<CreateTaskPage />} />}
           />
           <Route
-            path='addStep/:taskId'
+            path='addStep/:taskId/:offer?'
             element={<Popup element={<AddStepPage />} />}
           />
         </Routes>
