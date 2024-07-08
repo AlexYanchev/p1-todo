@@ -26,6 +26,15 @@ const Menu = () => {
   return (
     <header className={styles.header}>
       <nav className={styles.link_container}>
+        <input
+          id='burger-menu'
+          type='checkbox'
+          className={styles.burger_checkbox}
+        />
+        <label htmlFor='burger-menu' className={styles.burger_container}>
+          <span className={styles.burger_container_button}>Меню</span>
+        </label>
+
         <ul className={styles.link_list}>
           <li>
             <Button
@@ -46,8 +55,6 @@ const Menu = () => {
           <li>
             <LinkItem to='/sharedTasks' text='Совместные задачи' />
           </li>
-        </ul>
-        <ul className={styles.link_list}>
           <li className={styles.profile_item}>
             <LoginIcon />
             <LinkItem to='profile' text={userSlice.user?.login} />
@@ -63,6 +70,22 @@ const Menu = () => {
             />
           </li>
         </ul>
+        {/* <ul className={styles.link_list}>
+          <li className={styles.profile_item}>
+            <LoginIcon />
+            <LinkItem to='profile' text={userSlice.user?.login} />
+          </li>
+          <li>
+            <Button
+              typeElement='button'
+              type='button'
+              name='logout'
+              text='Выход'
+              onClick={logoutProfile}
+              className={styles.logout_button}
+            />
+          </li>
+        </ul> */}
       </nav>
       <SearchPeople />
     </header>

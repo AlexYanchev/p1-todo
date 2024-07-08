@@ -4,7 +4,7 @@ import styles from './FoundPeopleList.module.css';
 import Button from '../Button/Button';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getUserSlice } from '../../redux/slices/userSlice';
-import { changeFriendsListThunkAction } from '../../redux/actionsAndBuilders/user/addToFriend';
+import { changeFriendsListThunkAction } from '../../redux/actionsAndBuilders/profileData/friends/changeFriendsList';
 import PublicAvatar from '../PublicAvatar/PublicAvatar';
 
 type Props = {

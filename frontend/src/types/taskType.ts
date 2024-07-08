@@ -23,7 +23,7 @@ export type TaskTypeWithoutStepsField = Omit<TaskType, 'steps'>;
 
 export type ChangeFieldsTask = 'complete' | 'likes' | 'members' | 'public';
 
-export type ArchiveTasksFileds = Pick<
+export type ArchiveTasksFields = Pick<
   TaskType,
   '_id' | 'complete' | 'expired' | 'owner' | 'willBeDeleted' | 'title'
 >;

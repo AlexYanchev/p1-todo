@@ -12,31 +12,44 @@ import {
 
 export const changeFriendsList = async (req: Request, res: Response) => {
   const user = getUser(req);
-
   const idFriend = req.params.idFriend as string;
+
   console.log('Запрос на изменение списка друзей. ID друга: ', idFriend);
   console.log('Ищем текущего юзера и друга для добавления');
-  const result = await UserModel.find({ _id: [user._id, idFriend] });
+
+  const result = await UserModel.find({ _id: [user._id, idFriend] }).populate({
+    path: 'friends',
+    select: ['_id', 'avatar', 'friends', 'firstName', 'lastName'],
+  });
+  const currentUser = result.find((u) => u._id.equals(user._id));
+  const friend = result.find((u) => u._id.equals(idFriend));
+  if (!currentUser || !friend) {
+    console.log(
+      'Не смогли найти друга или пользователя в результатирующей выборки из БД. Ошибка.'
+    );
+    resError(res, responseErrorData.default);
+    return;
+  }
 
   console.log('Результат поиска. Результат: ', result);
 
   const isFriends =
-    result[0].friends.includes(result[1]._id) &&
-    result[1].friends.includes(result[0]._id);
+    currentUser.friends.includes(friend._id) &&
+    friend.friends.includes(currentUser._id);
 
   if (!isFriends) {
     console.log('Пользователей нет в друзьях у друг друга. Добавляем.');
-    result[0].friends = result[0].friends.concat([result[1]._id]);
-    result[1].friends = result[1].friends.concat([result[0]._id]);
+    currentUser.friends = currentUser.friends.concat([friend._id]);
+    friend.friends = friend.friends.concat([currentUser._id]);
   } else if (isFriends) {
     console.log(
       'Пользователи уже есть в друзьях друг у друга. Удаляем из друзей. '
     );
-    result[0].friends = result[0].friends.filter(
-      (idFriend) => !idFriend.equals(result[1]._id)
+    currentUser.friends = currentUser.friends.filter(
+      (idFriend) => !idFriend.equals(friend._id)
     );
-    result[1].friends = result[1].friends.filter(
-      (idFriend) => !idFriend.equals(result[0]._id)
+    friend.friends = friend.friends.filter(
+      (idFriend) => !idFriend.equals(currentUser._id)
     );
   } else {
     console.log('Ошибка изменения списка друзей. Отправляем ошибку. ');
@@ -45,16 +58,18 @@ export const changeFriendsList = async (req: Request, res: Response) => {
   }
 
   try {
-    const user1 = await result[0].save();
-    const user2 = await result[1].save();
+    const savedCurrentUser = await currentUser.save();
+    const savedFriend = await friend.save();
 
     console.log(
       'Сохранили результат. Друзья юзера1: ',
-      user1.friends,
+      savedCurrentUser.friends,
       'Друзья юзера2: ',
-      user2.friends
+      savedFriend.friends
     );
-    resSuccess(res, responseSuccessData.default, { idFriend });
+    resSuccess(res, responseSuccessData.default, {
+      friendsList: currentUser.friends,
+    });
   } catch (e) {
     console.log('Ошибка сохранения результатов. Ошибка: ', e);
     resError(res, responseErrorData.default);

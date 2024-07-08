@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, Suspense, useEffect } from 'react';
 import styles from './ViewTasksPage.module.css';
 import { TasksType } from '../../types/taskType';
 import Task from '../../components/Task/Task';
@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getUserSlice } from '../../redux/slices/userSlice';
 import { getTasks } from '../../redux/slices/tasksSlice';
 import { getTasksAction } from '../../redux/actionsAndBuilders/tasks/getTasks';
+import Spinner from '../../components/Spinner/Spinner';
 
 type Props = {
   type: TasksType;
@@ -35,15 +36,17 @@ const ViewTasksPage: FC<Props> = ({ type }) => {
 
   return (
     <section className={styles.content}>
-      <ul className={styles.tasks_container}>
-        {willShowTasks.map((task) => {
-          return (
-            <li key={task._id} className={styles.task_item}>
-              <Task task={task} type={type} />
-            </li>
-          );
-        })}
-      </ul>
+      <Suspense fallback={<Spinner />}>
+        <ul className={styles.tasks_container}>
+          {willShowTasks.map((task) => {
+            return (
+              <li key={task._id} className={styles.task_item}>
+                <Task task={task} type={type} />
+              </li>
+            );
+          })}
+        </ul>
+      </Suspense>
     </section>
   );
 };

@@ -13,39 +13,11 @@ import { checkerParams } from '../../db/utils/index.js';
 
 export const getOffers = async (req: Request, res: Response) => {
   const user = getUser(req);
-  const type = req.params.type as 'steps' | 'tasks';
-  if (type && !checkerParams({ [req.params.type]: ['steps', 'tasks'] })) {
-    console.log(
-      'Передан некорректный тип. Полученные параметры: ',
-      req.params.type,
-      ' Отправляем ошибку'
-    );
-    resError(res, responseErrorData.badRequest);
-  }
 
-  const projections = {
-    all: { sharedToMeTasks: 1, sharedToMeSteps: 1 },
-    tasks: { sharedToMeTasks: 1 },
-    steps: { sharedToMeSteps: 1 },
-  };
-
-  let currentProjection;
-
-  switch (type) {
-    case 'steps': {
-      currentProjection = projections.steps;
-      break;
-    }
-    case 'tasks': {
-      currentProjection = projections.tasks;
-      break;
-    }
-    default: {
-      currentProjection = projections.all;
-    }
-  }
-
-  UserModel.findOne({ _id: user._id }, currentProjection)
+  UserModel.findOne(
+    { _id: user._id },
+    { sharedToMeTasks: 1, sharedToMeSteps: 1 }
+  )
     .populate([
       {
         path: 'sharedToMeTasks',
@@ -75,24 +47,10 @@ export const getOffers = async (req: Request, res: Response) => {
           result
         );
 
-        let responseObject;
-        switch (type) {
-          case 'tasks': {
-            responseObject = { sharedToMeTasks: result.sharedToMeTasks };
-            break;
-          }
-          case 'steps': {
-            responseObject = { sharedToMeSteps: result.sharedToMeSteps };
-            break;
-          }
-          default: {
-            responseObject = {
-              sharedToMeTasks: result.sharedToMeTasks.length,
-              sharedToMeSteps: result.sharedToMeSteps.length,
-            };
-          }
-        }
-        resSuccess(res, responseSuccessData.default, responseObject);
+        resSuccess(res, responseSuccessData.default, {
+          sharedToMeTasks: result.sharedToMeTasks,
+          sharedToMeSteps: result.sharedToMeSteps,
+        });
       } else {
         console.log('Не смогли найти нужного юзера. ', result);
         resError(res, responseErrorData.badRequest);

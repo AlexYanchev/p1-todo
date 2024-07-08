@@ -50,7 +50,7 @@ export const changeOfferStep = async (req: Request, res: Response) => {
           currentUser.sharedToMeSteps
         );
         resSuccess(res, responseSuccessData.default, {
-          deletedStep: idStep,
+          idStep,
         });
       }
     } catch (err) {
@@ -116,7 +116,7 @@ export const changeOfferStep = async (req: Request, res: Response) => {
         acceptedStep
       );
       resSuccess(res, responseSuccessData.default, {
-        acceptedStep: acceptedStep._id,
+        idStep: acceptedStep._id,
       });
     }
   } else {

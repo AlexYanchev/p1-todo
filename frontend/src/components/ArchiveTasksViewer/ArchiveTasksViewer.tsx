@@ -1,54 +1,32 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getTasks } from '../../redux/slices/tasksSlice';
-import { ArchiveTasksFileds } from '../../types/taskType';
 import Button from '../Button/Button';
 import styles from './ArchiveTasksViewer.module.css';
 import ArchiveTasksList from '../ArchiveTasksList/ArchiveTasksList';
-import { getTasksAction } from '../../redux/actionsAndBuilders/tasks/getTasks';
-import { getUserSlice } from '../../redux/slices/userSlice';
+import { getUserToken } from '../../redux/slices/userSlice';
 import Notifications from '../Notifications/Notifications';
-import { customFetch } from '../../requests';
 import Spinner from '../Spinner/Spinner';
-
-type SimplifiedTasksList = {
-  expiredTasks: Array<ArchiveTasksFileds>;
-  completedTasks: Array<ArchiveTasksFileds>;
-  deletedTasks: Array<ArchiveTasksFileds>;
-  openIs: 'expired' | 'completed' | 'deleted' | null;
-};
+import { getArchiveTasksThunkAction } from '../../redux/actionsAndBuilders/profileData/archiveTasks/getArchiveTasks';
+import { getArchiveTasks } from '../../redux/slices/profileDataSlice';
 
 const ArchiveTasksViewer = () => {
   const dispatch = useAppDispatch();
-  const userSlice = useAppSelector(getUserSlice);
-  const [tasksList, setTasksList] = useState<SimplifiedTasksList>({
-    expiredTasks: [],
-    completedTasks: [],
-    deletedTasks: [],
-    openIs: null,
-  });
+  const userToken = useAppSelector(getUserToken);
+  const { expiredTasks, completedTasks, deletedTasks } =
+    useAppSelector(getArchiveTasks);
+  const [openIs, setOpenIs] = useState<
+    'expired' | 'completed' | 'deleted' | null
+  >(null);
 
-  const openExpired = tasksList.openIs === 'expired';
-  const openCompleted = tasksList.openIs === 'completed';
-  const openDeleted = tasksList.openIs === 'deleted';
+  const openExpired = openIs === 'expired';
+  const openCompleted = openIs === 'completed';
+  const openDeleted = openIs === 'deleted';
 
   useEffect(() => {
-    if (userSlice.user) {
-      customFetch({
-        to: '/getArchiveTasks',
-        method: 'GET',
-        dispatch,
-        headers: {
-          Authorization: userSlice.user?.token,
-        },
-      })
-        .then((res: { data: Array<ArchiveTasksFileds> }) => {
-          setTasksList({
-            ...tasksList,
-            expiredTasks: res.data.filter((task) => task.expired),
-            completedTasks: res.data.filter((task) => task.complete),
-            deletedTasks: res.data.filter((task) => task.willBeDeleted),
-          });
+    if (userToken) {
+      dispatch(getArchiveTasksThunkAction({ token: userToken, dispatch }))
+        .then((res) => {
+          console.log('Успешно запросили архивные таски. Ошибка: ');
         })
         .catch((err) => {
           console.log(
@@ -59,37 +37,28 @@ const ArchiveTasksViewer = () => {
     }
   }, []);
 
-  const getExpiredTasks = () => {
+  const openExpiredTasks = () => {
     if (openExpired) {
-      setTasksList({ ...tasksList, openIs: null });
+      setOpenIs(null);
       return;
     }
-    setTasksList({
-      ...tasksList,
-      openIs: 'expired',
-    });
+    setOpenIs('expired');
   };
 
-  const getCompletedTasks = () => {
+  const openCompletedTasks = () => {
     if (openCompleted) {
-      setTasksList({ ...tasksList, openIs: null });
+      setOpenIs(null);
       return;
     }
-    setTasksList({
-      ...tasksList,
-      openIs: 'completed',
-    });
+    setOpenIs('completed');
   };
 
-  const getDeletedTasks = () => {
+  const openDeletedTasks = () => {
     if (openDeleted) {
-      setTasksList({ ...tasksList, openIs: null });
+      setOpenIs(null);
       return;
     }
-    setTasksList({
-      ...tasksList,
-      openIs: 'deleted',
-    });
+    setOpenIs('deleted');
   };
 
   const setTextButton = (text: string, open: boolean) => {
@@ -101,44 +70,54 @@ const ArchiveTasksViewer = () => {
     );
   };
   return (
-    <Suspense fallback={<Spinner />}>
-      <div className={styles.container}>
-        <Notifications quantity={tasksList.expiredTasks.length}>
-          <Button
-            type='button'
-            typeElement='button'
-            name='expiredTasks'
-            text={setTextButton('Просроченные', openExpired)}
-            className={styles.tasks_button}
-            onClick={getExpiredTasks}
-          />
-        </Notifications>
+    <div className={styles.container}>
+      <Notifications quantity={expiredTasks.length}>
+        <Button
+          type='button'
+          typeElement='button'
+          name='expiredTasks'
+          text={setTextButton('Просроченные', openExpired)}
+          className={styles.tasks_button}
+          onClick={openExpiredTasks}
+        />
+      </Notifications>
 
-        {openExpired && <ArchiveTasksList list={tasksList.expiredTasks} />}
-        <Notifications quantity={tasksList.completedTasks.length}>
-          <Button
-            type='button'
-            typeElement='button'
-            name='completedTasks'
-            text={setTextButton('Завершенные', openCompleted)}
-            className={styles.tasks_button}
-            onClick={getCompletedTasks}
-          />
-        </Notifications>
-        {openCompleted && <ArchiveTasksList list={tasksList.completedTasks} />}
-        <Notifications quantity={tasksList.deletedTasks.length}>
-          <Button
-            type='button'
-            typeElement='button'
-            name='deletedTasks'
-            text={setTextButton('Удаленные', openDeleted)}
-            className={styles.tasks_button}
-            onClick={getDeletedTasks}
-          />
-        </Notifications>
-        {openDeleted && <ArchiveTasksList list={tasksList.deletedTasks} />}
-      </div>
-    </Suspense>
+      {openExpired && (
+        <Suspense fallback={<Spinner />}>
+          <ArchiveTasksList list={expiredTasks} />
+        </Suspense>
+      )}
+      <Notifications quantity={completedTasks.length}>
+        <Button
+          type='button'
+          typeElement='button'
+          name='completedTasks'
+          text={setTextButton('Завершенные', openCompleted)}
+          className={styles.tasks_button}
+          onClick={openCompletedTasks}
+        />
+      </Notifications>
+      {openCompleted && (
+        <Suspense fallback={<Spinner />}>
+          <ArchiveTasksList list={completedTasks} />
+        </Suspense>
+      )}
+      <Notifications quantity={deletedTasks.length}>
+        <Button
+          type='button'
+          typeElement='button'
+          name='deletedTasks'
+          text={setTextButton('Удаленные', openDeleted)}
+          className={styles.tasks_button}
+          onClick={openDeletedTasks}
+        />
+      </Notifications>
+      {openDeleted && (
+        <Suspense fallback={<Spinner />}>
+          <ArchiveTasksList list={deletedTasks} />
+        </Suspense>
+      )}
+    </div>
   );
 };
 export default ArchiveTasksViewer;

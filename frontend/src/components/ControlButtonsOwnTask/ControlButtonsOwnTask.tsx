@@ -12,9 +12,16 @@ import Spinner from '../Spinner/Spinner';
 type Props = {
   taskId: string;
   type: TasksType;
+  classNameContainer?: string;
+  classNameButton?: string;
 };
 
-const ControlButtonsOwnTask: FC<Props> = ({ taskId, type }) => {
+const ControlButtonsOwnTask: FC<Props> = ({
+  taskId,
+  type,
+  classNameContainer,
+  classNameButton,
+}) => {
   const userSlice = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -57,13 +64,17 @@ const ControlButtonsOwnTask: FC<Props> = ({ taskId, type }) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div
+      className={`${
+        classNameContainer ? classNameContainer : styles.container
+      }`}
+    >
       <Button
         typeElement='button'
         type='button'
         name='addStep'
         text='Добавить шаг'
-        className={styles.top_button}
+        className={`${classNameButton ? classNameButton : styles.top_button}`}
         onClick={addStep}
         options={{
           disabled: currentTask?.complete || pending,
@@ -76,6 +87,7 @@ const ControlButtonsOwnTask: FC<Props> = ({ taskId, type }) => {
         text={pending && action.deleteTask ? <Spinner /> : 'Удалить'}
         onClick={deleteTask}
         options={{ disabled: pending }}
+        className={`${classNameButton ? classNameButton : ''}`}
       />
       <Button
         typeElement='button'
@@ -92,6 +104,7 @@ const ControlButtonsOwnTask: FC<Props> = ({ taskId, type }) => {
         }
         onClick={completeTask}
         options={{ disabled: pending }}
+        className={`${classNameButton ? classNameButton : ''}`}
       />
     </div>
   );

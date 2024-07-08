@@ -1,74 +1,58 @@
 import styles from './ProfilePage.module.css';
 import Avatar from '../../components/Avatar/Avatar';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getUserSlice } from '../../redux/slices/userSlice';
-import { useEffect, useState } from 'react';
+import { getUserToken } from '../../redux/slices/userSlice';
+import { Suspense, useEffect, useState } from 'react';
 import ArchiveTasksViewer from '../../components/ArchiveTasksViewer/ArchiveTasksViewer';
-import { UserPublicProfileType } from '../../types/userType';
-import { customFetch } from '../../requests';
 import PublicAvatar from '../../components/PublicAvatar/PublicAvatar';
-import { changeFriendsListThunkAction } from '../../redux/actionsAndBuilders/user/addToFriend';
+import { changeFriendsListThunkAction } from '../../redux/actionsAndBuilders/profileData/friends/changeFriendsList';
 import Button from '../../components/Button/Button';
 import ProfileInfo from '../../components/ProfileInfo/ProfileInfo';
 import Notifications from '../../components/Notifications/Notifications';
 import OfferTasks from '../../components/OfferTasks/OfferTasks';
 import OfferSteps from '../../components/OfferSteps/OfferSteps';
+import { getOffersThunkAction } from '../../redux/actionsAndBuilders/profileData/offers/getOffers';
+import { getOffers } from '../../redux/slices/profileDataSlice';
+import Spinner from '../../components/Spinner/Spinner';
+import { getFriendsListThunkAction } from '../../redux/actionsAndBuilders/profileData/friends/getFriendsList';
+import { getFriendsList } from '../../redux/slices/profileDataSlice';
 
 const ProfilePage = () => {
-  const userSlice = useAppSelector(getUserSlice);
+  const userToken = useAppSelector(getUserToken);
   const dispatch = useAppDispatch();
-  const [quantityOffers, setQuantityOffers] = useState({
-    tasks: 0,
-    steps: 0,
-  });
-  const [friendsList, setFriendsList] = useState<UserPublicProfileType[]>([]);
+  const friendsList = useAppSelector(getFriendsList);
+  const { sharedToMeTasks, sharedToMeSteps } = useAppSelector(getOffers);
   const [openOffer, setOpenOffer] = useState({
-    tasks: false,
-    steps: false,
+    sharedToMeTasks: false,
+    sharedToMeSteps: false,
   });
 
   useEffect(() => {
-    if (!userSlice.user) {
+    if (!userToken) {
       return;
     }
-    if (!friendsList.length) {
-      customFetch({
-        to: `/getData/friendsList`,
-        method: 'GET',
+    dispatch(
+      getFriendsListThunkAction({
+        token: userToken,
         dispatch,
-        headers: {
-          Authorization: userSlice.user.token,
-        },
       })
-        .then((res) => [
-          console.log('Запрос на список друзей успешный. Результат: ', res),
-          setFriendsList(res.data.result.friends),
-        ])
-        .catch((err) => {
-          console.log(
-            'Запрос на список друзей выполнился с ошибкой. Ошибка: ',
-            err
-          );
-        });
-    }
+    )
+      .then((res) => [
+        console.log('Запрос на список друзей успешный. Результат: ', res),
+      ])
+      .catch((err) => {
+        console.log(
+          'Запрос на список друзей выполнился с ошибкой. Ошибка: ',
+          err
+        );
+      });
 
-    customFetch({
-      to: `/getData/offers`,
-      method: 'GET',
-      dispatch,
-      headers: {
-        Authorization: userSlice.user.token,
-      },
-    })
+    dispatch(getOffersThunkAction({ token: userToken, dispatch }))
       .then((res) => [
         console.log(
           'Запрос на количество предложений успешен. Результат: ',
           res
         ),
-        setQuantityOffers({
-          tasks: Number(res.data.sharedToMeTasks),
-          steps: Number(res.data.sharedToMeSteps),
-        }),
       ])
       .catch((err) => {
         console.log(
@@ -79,12 +63,12 @@ const ProfilePage = () => {
   }, []);
 
   const deleteFriend = (idFriend: string) => {
-    if (!userSlice.user) {
+    if (!userToken) {
       return;
     }
     dispatch(
       changeFriendsListThunkAction({
-        token: userSlice.user.token,
+        token: userToken,
         dispatch,
         idFriend,
       })
@@ -94,7 +78,6 @@ const ProfilePage = () => {
           'Успешный запрос на удаление друга. Ответ от сервера: ',
           res
         );
-        setFriendsList(friendsList.filter((friend) => friend._id !== idFriend));
       })
       .catch((err) => [
         console.log('Ошибка при запросе на удаление друга. Ошибка: ', err),
@@ -102,74 +85,101 @@ const ProfilePage = () => {
   };
 
   return (
-    <section className={styles.profile_container}>
-      <div className={styles.content}>
-        <div>
-          <Avatar alt='Аватар' width='300px' height='300px' type='avatar' />
-          <ArchiveTasksViewer />
-        </div>
-        <ProfileInfo />
-      </div>
-      <div className={styles.friends_container}>
-        <h2 className={styles.friends_header}>Друзья</h2>
-        {friendsList.length ? (
-          <ol className={styles.friends_list}>
-            {friendsList.map((friend) => {
-              return (
-                <li key={friend._id}>
-                  <PublicAvatar srcAvatar={friend.avatar} />
-                  <span>
-                    {friend.firstName} {friend.lastName}
-                  </span>
-                  <Button
-                    typeElement='button'
-                    type='button'
-                    name='deleteFriend'
-                    onClick={() => deleteFriend(friend._id)}
-                    text='Удалить'
-                  />
-                </li>
-              );
-            })}
-          </ol>
-        ) : (
-          <p>Друзей нет</p>
-        )}
-      </div>
-      <div className={styles.incoming_action}>
-        <h2>Предложения</h2>
-        <div>
-          <Notifications quantity={quantityOffers.tasks}>
-            <h3>Задачи</h3>
+    <section>
+      <h1>Профиль</h1>
+      <div className={styles.profile_container}>
+        <section className={styles.edit_profile_section}>
+          <h2>Редактирование профиля</h2>
+          <div className={styles.profile_info_container}>
+            <div>
+              <Avatar alt='Аватар' width='200px' height='200px' type='avatar' />
+              <ArchiveTasksViewer />
+            </div>
+            <ProfileInfo />
+          </div>
+        </section>
+        <section>
+          <Notifications quantity={friendsList.length}>
+            <h2 className={styles.friends_header}>Друзья</h2>
           </Notifications>
-          <Button
-            type='button'
-            typeElement='button'
-            name='sharedToMeTasks'
-            text={openOffer.tasks ? 'Закрыть' : 'Открыть'}
-            className={styles.tasks_button}
-            onClick={() =>
-              setOpenOffer({ ...openOffer, tasks: !openOffer.tasks })
-            }
-          />
-          {openOffer.tasks && <OfferTasks />}
-        </div>
-        <div>
-          <Notifications quantity={quantityOffers.steps}>
-            <h3>Шаги</h3>
-          </Notifications>
-          <Button
-            type='button'
-            typeElement='button'
-            name='sharedToMeSteps'
-            text={openOffer.steps ? 'Закрыть' : 'Открыть'}
-            className={styles.tasks_button}
-            onClick={() =>
-              setOpenOffer({ ...openOffer, steps: !openOffer.steps })
-            }
-          />
-          {openOffer.steps && <OfferSteps />}
-        </div>
+
+          <div className={styles.friends_container}>
+            {friendsList.length ? (
+              <ol className={styles.friends_list}>
+                {friendsList.map((friend) => {
+                  return (
+                    <li key={friend._id} className={styles.friend_item}>
+                      <PublicAvatar srcAvatar={friend.avatar} />
+                      <span>
+                        {friend.firstName} {friend.lastName}
+                      </span>
+                      <Button
+                        typeElement='button'
+                        type='button'
+                        name='deleteFriend'
+                        onClick={() => deleteFriend(friend._id)}
+                        text='Удалить'
+                      />
+                    </li>
+                  );
+                })}
+              </ol>
+            ) : (
+              <p>Друзей нет</p>
+            )}
+          </div>
+        </section>
+        <section>
+          <h2>Предложения</h2>
+          <div className={styles.offers_container}>
+            <div>
+              <Notifications quantity={sharedToMeTasks.length}>
+                <h3>Задачи</h3>
+              </Notifications>
+              <Button
+                type='button'
+                typeElement='button'
+                name='sharedToMeTasks'
+                text={openOffer.sharedToMeTasks ? 'Закрыть' : 'Открыть'}
+                className={styles.tasks_button}
+                onClick={() =>
+                  setOpenOffer({
+                    ...openOffer,
+                    sharedToMeTasks: !openOffer.sharedToMeTasks,
+                  })
+                }
+              />
+              {openOffer.sharedToMeTasks && (
+                <Suspense fallback={<Spinner />}>
+                  <OfferTasks list={sharedToMeTasks} />
+                </Suspense>
+              )}
+            </div>
+            <div>
+              <Notifications quantity={sharedToMeSteps.length}>
+                <h3>Шаги</h3>
+              </Notifications>
+              <Button
+                type='button'
+                typeElement='button'
+                name='sharedToMeSteps'
+                text={openOffer.sharedToMeSteps ? 'Закрыть' : 'Открыть'}
+                className={styles.tasks_button}
+                onClick={() =>
+                  setOpenOffer({
+                    ...openOffer,
+                    sharedToMeSteps: !openOffer.sharedToMeSteps,
+                  })
+                }
+              />
+              {openOffer.sharedToMeSteps && (
+                <Suspense fallback={<Spinner />}>
+                  <OfferSteps list={sharedToMeSteps} />
+                </Suspense>
+              )}
+            </div>
+          </div>
+        </section>
       </div>
     </section>
   );

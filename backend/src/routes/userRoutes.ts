@@ -71,7 +71,7 @@ userRouter.get('/getData/friendsList', async (req, res) => {
   }
 });
 
-userRouter.get('/getData/offers/:type?', async (req, res) => {
+userRouter.get('/getData/offers', async (req, res) => {
   console.log('Запрос предложений для пользователя');
   try {
     await getOffers(req, res);

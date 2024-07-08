@@ -1,55 +1,30 @@
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { getUserSlice } from '../../redux/slices/userSlice';
+import { getUserSlice, getUserToken } from '../../redux/slices/userSlice';
 import styles from './OfferSteps.module.css';
 import { customFetch } from '../../requests';
-import { OfferStep } from '../../types/stepTypes';
+import { OfferStepType } from '../../types/stepTypes';
 import Button from '../Button/Button';
+import { changeOfferStepThunkAction } from '../../redux/actionsAndBuilders/profileData/offers/changeOfferStep';
 
-const OfferSteps = () => {
-  const userSlice = useAppSelector(getUserSlice);
+type Props = {
+  list: Array<OfferStepType>;
+};
+
+const OfferSteps: FC<Props> = ({ list }) => {
+  const userToken = useAppSelector(getUserToken);
   const dispatch = useAppDispatch();
-  const [steps, setSteps] = useState<Array<OfferStep>>([]);
-
-  useEffect(() => {
-    if (!userSlice.user) {
-      return;
-    }
-    customFetch({
-      to: `/getData/offers/steps`,
-      method: 'GET',
-      dispatch,
-      headers: {
-        Authorization: userSlice.user.token,
-      },
-    })
-      .then((res) => {
-        console.log('Запрос на получения предложенных шагов. Результат: ', res);
-        setSteps(res.data.sharedToMeSteps);
-      })
-      .catch((err) => {
-        console.log(
-          'Запрос на получения предложенных шагов выполнился с ошибкой. Ошибка: ',
-          err
-        );
-      });
-  }, []);
 
   const changeOfferStep = (idStep: string, action: 'delete' | 'accept') => {
-    if (!userSlice.user) {
+    if (!userToken) {
       return;
     }
-    customFetch({
-      to: `/changeOfferStep/${idStep}/${action}`,
-      method: 'PATCH',
-      dispatch,
-      headers: {
-        Authorization: userSlice.user.token,
-      },
-    })
+
+    dispatch(
+      changeOfferStepThunkAction({ token: userToken, dispatch, idStep, action })
+    )
       .then((res) => {
         console.log('Результат успешен: ', res);
-        setSteps(steps.filter((step) => step._id !== res.data.sharedToMeSteps));
       })
       .catch((err) => {
         console.log('Запрос совершился с ошибкой: ', err);
@@ -58,14 +33,14 @@ const OfferSteps = () => {
   return (
     <div>
       <ul className={styles.steps_container}>
-        {steps.map((step) => {
+        {list.map((step) => {
           return (
             <li className={styles.step} key={step._id}>
-              <span>{step.title}</span>
-              <span>к задаче {step.task.title}</span>
+              <span>Шаг: {step.title}</span>
+              <span>Задача: {step.task.title}</span>
               <span>
-                Предложил {step.proposedBy.firstName} {step.proposedBy.lastName}{' '}
-                {step.proposedBy.login}
+                Предложил: {step.proposedBy.firstName}{' '}
+                {step.proposedBy.lastName} {step.proposedBy.login}
               </span>
               <div className={styles.buttons_control}>
                 <Button

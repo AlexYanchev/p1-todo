@@ -1,9 +1,9 @@
 import { FC } from 'react';
-import { ArchiveTasksFileds } from '../../types/taskType';
+import { ArchiveTasksFields } from '../../types/taskType';
 import styles from './ArchiveTasksList.module.css';
 
 type Props = {
-  list: Array<ArchiveTasksFileds>;
+  list: Array<ArchiveTasksFields>;
   classNameContainer?: string;
 };
 

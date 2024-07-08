@@ -1,58 +1,29 @@
-import { useEffect, useState } from 'react';
+import { FC } from 'react';
 import { OfferTaskType } from '../../types/taskType';
 import styles from './OfferTasks.module.css';
-import userSlice, { getUserSlice } from '../../redux/slices/userSlice';
-import { customFetch } from '../../requests';
+import { getUserToken } from '../../redux/slices/userSlice';
 import { useAppSelector, useAppDispatch } from '../../redux/hooks';
 import Button from '../Button/Button';
+import { changeOfferTaskThunkAction } from '../../redux/actionsAndBuilders/profileData/offers/changeOfferTask';
 
-const OfferTasks = () => {
-  const userSlice = useAppSelector(getUserSlice);
+type Props = {
+  list: Array<OfferTaskType>;
+};
+
+const OfferTasks: FC<Props> = ({ list }) => {
+  const userToken = useAppSelector(getUserToken);
   const dispatch = useAppDispatch();
-  const [tasks, setTasks] = useState<Array<OfferTaskType>>([]);
-
-  useEffect(() => {
-    if (!userSlice.user) {
-      return;
-    }
-    customFetch({
-      to: `/getData/offers/tasks`,
-      method: 'GET',
-      dispatch,
-      headers: {
-        Authorization: userSlice.user.token,
-      },
-    })
-      .then((res) => {
-        console.log(
-          'Запрос на получения предложенных тасков. Результат: ',
-          res
-        );
-        setTasks(res.data.sharedToMeTasks);
-      })
-      .catch((err) => {
-        console.log(
-          'Запрос на получения предложенных тасков выполнился с ошибкой. Ошибка: ',
-          err
-        );
-      });
-  }, []);
 
   const changeOfferTask = (idTask: string, action: 'delete' | 'accept') => {
-    if (!userSlice.user) {
+    if (!userToken) {
       return;
     }
-    customFetch({
-      to: `/changeOfferTask/${idTask}/${action}`,
-      method: 'PATCH',
-      dispatch,
-      headers: {
-        Authorization: userSlice.user.token,
-      },
-    })
+
+    dispatch(
+      changeOfferTaskThunkAction({ token: userToken, dispatch, idTask, action })
+    )
       .then((res) => {
         console.log('Результат успешен: ', res);
-        setTasks(tasks.filter((task) => task._id !== res.data.sharedToMeTasks));
       })
       .catch((err) => {
         console.log('Запрос совершился с ошибкой: ', err);
@@ -62,7 +33,7 @@ const OfferTasks = () => {
   return (
     <div>
       <ul className={styles.tasks_container}>
-        {tasks.map((task) => {
+        {list.map((task) => {
           return (
             <li className={styles.task} key={task._id}>
               <span>{task.title}</span>

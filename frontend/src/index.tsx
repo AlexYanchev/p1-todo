@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import Defender from './components/Defender/Defender';
+import ErrorPage from './pages/ErrorPage/ErrorPage';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -39,6 +40,7 @@ ReactDOM.render(
               </Defender>
             }
           />
+          <Route path='/' element={<ErrorPage />} />
         </Routes>
       </Provider>
     </BrowserRouter>

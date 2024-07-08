@@ -4,6 +4,9 @@
   position: fixed;
   bottom: 0px;
   background-color: rgb(255, 255, 255);
+}
+
+.firends_list {
   padding: 20px;
   display: flex;
   gap: 20px;

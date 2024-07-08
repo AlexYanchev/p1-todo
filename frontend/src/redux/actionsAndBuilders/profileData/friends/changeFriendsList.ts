@@ -4,14 +4,20 @@ import {
   ThunkDispatch,
   UnknownAction,
 } from '@reduxjs/toolkit';
-import { customFetch } from '../../../requests';
-import { UserState } from '../../slices/userSlice';
-import { ErrorTypeFromServer } from '../tasks/commonTypes';
-import { UserProfileType } from '../../../types/userType';
-import { RootState } from '../../store';
+import { customFetch } from '../../../../requests';
+import { UserState } from '../../../slices/userSlice';
+import { ErrorTypeFromServer } from '../../tasks/commonTypes';
+import {
+  FriendSimpleProfileType,
+  UserProfileType,
+} from '../../../../types/userType';
+import { RootState } from '../../../store';
+import { ProfileDataState } from '../../../slices/profileDataSlice';
 
 export const changeFriendsListThunkAction = createAsyncThunk<
-  { data: { idFriend: string } & ErrorTypeFromServer },
+  {
+    data: { friendsList: Array<FriendSimpleProfileType> } & ErrorTypeFromServer;
+  },
   {
     token: string;
     dispatch: ThunkDispatch<RootState, undefined, UnknownAction>;
@@ -35,24 +41,17 @@ export const changeFriendsListThunkAction = createAsyncThunk<
 });
 
 export const changeFriendsListThunkActionBuilder = (
-  builder: ActionReducerMapBuilder<UserState>
+  builder: ActionReducerMapBuilder<ProfileDataState>
 ) => {
   builder.addCase(changeFriendsListThunkAction.fulfilled, (state, action) => {
-    state.status = 'fulfilled';
-    console.log(action.payload);
-    if (!state.user) {
-      return;
-    }
-    if (!state.user.friends) {
-      state.user.friends = [];
-    }
-    state.user.friends.push(action.payload.data.idFriend);
+    state.friendsList.status = 'fulfilled';
+    state.friendsList.data = action.payload.data.friendsList;
   });
   builder.addCase(changeFriendsListThunkAction.rejected, (state, action) => {
-    state.status = 'rejected';
-    state.error = action.error;
+    state.friendsList.status = 'rejected';
+    state.friendsList.error = action.error;
   });
   builder.addCase(changeFriendsListThunkAction.pending, (state, action) => {
-    state.status = 'pending';
+    state.friendsList.status = 'pending';
   });
 };

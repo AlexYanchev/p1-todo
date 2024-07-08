@@ -1,15 +1,60 @@
 .profile_container {
   height: 100%;
   padding: 30px 50px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+  gap: 15px;
 }
 
-.content {
+.edit_profile_section {
+  grid-column: 1/-1;
+}
+
+.profile_info_container {
   display: flex;
   gap: 50px;
+  padding: 15px;
+  justify-content: center;
+}
+
+.profile_info_container form {
+  background: transparent;
+}
+
+.profile_info_container input {
+  background: transparent;
+}
+
+.profile_info_container input::placeholder {
+  color: rgba(220, 220, 220, 0.9);
 }
 
 .friends_list {
+  margin-top: 15px;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+  width: 100%;
+}
+
+.friends_container {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.offers_container {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  justify-content: center;
+}
+
+.friend_item {
+  padding: 10px;
+  width: 90%;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  place-items: center center;
 }

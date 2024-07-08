@@ -19,9 +19,11 @@ export const getFriendsList = async (req: Request, res: Response) => {
       path: 'friends',
       select: ['_id', 'firstName', 'lastName', 'avatar', 'friends'],
     })
-    .then((result) => {
-      console.log('нашли друзей. ', result);
-      resSuccess(res, responseSuccessData.default, { result });
+    .then((friendsList) => {
+      console.log('нашли друзей. ', friendsList);
+      resSuccess(res, responseSuccessData.default, {
+        friendsList: friendsList?.friends,
+      });
     })
     .catch((err) => {
       console.log('Ошибка выполнения запроса. ', err);

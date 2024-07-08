@@ -97,7 +97,6 @@ export const userSchema = new mongoose.Schema<UserType>(
           proposedBy: {
             type: Schema.Types.ObjectId,
             ref: 'User',
-            required: true,
           },
           task: { type: Schema.Types.ObjectId, ref: 'Task' },
         },

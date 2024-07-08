@@ -49,7 +49,7 @@ export const changeOfferTask = async (req: Request, res: Response) => {
           currentUser.sharedToMeTasks
         );
         resSuccess(res, responseSuccessData.default, {
-          sharedToMeTasks: idTask,
+          idTask,
         });
       }
     } catch (err) {
@@ -100,7 +100,7 @@ export const changeOfferTask = async (req: Request, res: Response) => {
             result
           );
           resSuccess(res, responseSuccessData.default, {
-            sharedToMeTasks: idTask,
+            idTask,
           });
         })
         .catch((err) => {
@@ -115,7 +115,7 @@ export const changeOfferTask = async (req: Request, res: Response) => {
       );
       resSuccess(res, responseSuccessData.default, {
         alreadyInvolved: true,
-        sharedToMeTasks: idTask,
+        idTask,
       });
     }
   } else {

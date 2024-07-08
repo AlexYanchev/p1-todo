@@ -27,7 +27,7 @@ const CreateTaskPage = () => {
   const currentFormattedDate = useMemo(() => {
     return `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
       .toString()
-      .padStart(2, '0')}-${currentDate.getDate()}`;
+      .padStart(2, '0')}-${currentDate.getDate().toString().padStart(2, '0')}`;
   }, [currentDate.getDate()]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {

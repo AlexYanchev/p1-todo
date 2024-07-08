@@ -1,10 +1,11 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { getUserSlice } from '../../redux/slices/userSlice';
 import styles from './FriendsListForShare.module.css';
-import { UserPublicProfileType } from '../../types/userType';
 import { customFetch } from '../../requests';
 import PublicAvatar from '../PublicAvatar/PublicAvatar';
+import { getFriendsList } from '../../redux/slices/profileDataSlice';
+import { getFriendsListThunkAction } from '../../redux/actionsAndBuilders/profileData/friends/getFriendsList';
 
 type Props = {
   idTask: string;
@@ -13,26 +14,18 @@ type Props = {
 
 const FriendsListForShare: FC<Props> = ({ idTask, cb }) => {
   const userSlice = useAppSelector(getUserSlice);
-  const [friendsList, setFriendsList] = useState<Array<UserPublicProfileType>>(
-    []
-  );
+  const friendsList = useAppSelector(getFriendsList);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!userSlice.user) {
       return;
     }
-    customFetch({
-      to: '/getData/friendsList',
-      method: 'GET',
-      headers: {
-        Authorization: userSlice.user.token,
-      },
-      dispatch,
-    })
+    dispatch(
+      getFriendsListThunkAction({ token: userSlice.user.token, dispatch })
+    )
       .then((res) => {
         console.log('Запрос списка друзей успешен.', res);
-        setFriendsList(res.data.result.friends);
       })
       .catch((err) => {
         console.log('Ошибка при запросе друзей.', err);
@@ -62,9 +55,9 @@ const FriendsListForShare: FC<Props> = ({ idTask, cb }) => {
   };
 
   return (
-    <>
+    <div className={styles.friends_list_container}>
       {friendsList.length ? (
-        <ul className={styles.friends_list_container}>
+        <ul className={styles.firends_list}>
           {friendsList.map((friend) => {
             return (
               <li
@@ -85,7 +78,7 @@ const FriendsListForShare: FC<Props> = ({ idTask, cb }) => {
       ) : (
         <p>Нет друзей с кем можно поделится</p>
       )}
-    </>
+    </div>
   );
 };
 export default FriendsListForShare;

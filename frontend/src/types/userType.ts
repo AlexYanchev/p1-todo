@@ -25,3 +25,7 @@ export type UserPublicProfileType = Pick<
 export type UserChangeFirstName = Pick<UserType, '_id' | 'firstName'>;
 export type UserChangeLastName = Pick<UserType, '_id' | 'lastName'>;
 export type UserChangeAvatar = Pick<UserType, '_id' | 'avatar'>;
+export type FriendSimpleProfileType = Pick<
+  UserType,
+  '_id' | 'firstName' | 'lastName' | 'avatar' | 'friends'
+>;

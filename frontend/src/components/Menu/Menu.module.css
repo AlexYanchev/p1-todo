@@ -1,5 +1,4 @@
 .header {
-  /* height: 130px; */
   padding: 40px 50px;
   display: flex;
   align-items: center;
@@ -10,6 +9,8 @@
 
 .link_list {
   gap: 55px;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .createTaskButton {
@@ -23,7 +24,6 @@
 
 .link_container {
   display: flex;
-  justify-content: space-between;
   width: 100%;
 }
 
@@ -39,4 +39,113 @@
   display: flex;
   gap: 5px;
   align-items: center;
+  margin-left: auto;
+}
+
+.burger_container {
+  display: none;
+  width: 100%;
+}
+
+.burger_checkbox {
+  display: none;
+}
+
+@media screen and (max-width: 1060px) {
+  .link_list {
+    gap: 30px;
+  }
+}
+
+@media screen and (max-width: 945px) {
+  .link_list {
+    gap: 20px;
+  }
+  .link_list a {
+    font-size: 1rem;
+  }
+
+  .createTaskButton {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+
+  .logout_button {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 810px) {
+  .link_list {
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+  }
+
+  .burger_container {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .link_container {
+    display: block;
+  }
+
+  .burger_container_button {
+    display: block;
+    padding: 5px 8px;
+    background-color: rgb(194, 181, 203);
+    cursor: pointer;
+  }
+
+  .burger_checkbox {
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    height: 1px;
+    width: 1px;
+  }
+
+  .profile_item {
+    margin-left: 0;
+  }
+
+  .burger_container_button {
+    display: block;
+    padding: 5px 8px;
+    background-color: rgb(194, 181, 203);
+    cursor: pointer;
+  }
+
+  .burger_checkbox:checked + .burger_container > .burger_container_button {
+    z-index: 11;
+    position: fixed;
+    right: 40px;
+    top: 40px;
+  }
+
+  .burger_checkbox:checked ~ .link_list > .profile_item > svg {
+    transform: scale(1.5);
+  }
+
+  .burger_checkbox:checked ~ .link_list {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    visibility: visible;
+    opacity: 1;
+    height: auto;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: rgb(255, 245, 245);
+    height: 50%;
+    padding-top: 50px;
+  }
+
+  .burger_checkbox:checked ~ .link_list > li {
+    padding: 20px 14px 5px;
+    font-size: 1.5rem;
+  }
 }

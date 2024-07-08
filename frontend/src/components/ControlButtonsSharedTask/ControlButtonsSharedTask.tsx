@@ -21,6 +21,7 @@ const ControlButtonsSharedTask: FC<Props> = ({ taskId, type }) => {
         type='button'
         name='offerStep'
         text='Предложить шаг'
+        className='button_control'
         onClick={proposeStep}
       />
     </div>
