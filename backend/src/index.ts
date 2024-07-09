@@ -7,6 +7,7 @@ import connectDB from './db/index.js';
 import Models from './db/schemas/index.js';
 import { validateToken } from './utils/index.js';
 import { resError, responseErrorData } from './helpers/response/resError.js';
+import helmet from 'helmet';
 
 connectDB()
   .then(() => {
@@ -19,6 +20,7 @@ connectDB()
 const app = express();
 const port = 3001;
 
+app.use(helmet());
 app.use(
   cors({
     origin: ['http://localhost:3000'],

@@ -1,7 +1,6 @@
 import { NextFunction, Response, Request } from 'express';
 import { UserType } from '../db/schemas/userSchema.js';
 import { tokenizer } from '../db/utils/index.js';
-import { Types } from 'mongoose';
 
 export const getUser = (req: Request) => {
   return req.body.userDecoded as UserType;
