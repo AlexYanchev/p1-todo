@@ -5,6 +5,7 @@
 html {
   height: fit-content;
   min-height: 100vh;
+  width: 100%;
 }
 
 body {
@@ -124,4 +125,11 @@ dd {
     rgba(121, 104, 142, 0.505)
   );
   opacity: 0.8;
+}
+
+@media screen and (max-width: 550px) {
+  ul,
+  ol {
+    display: grid;
+  }
 }

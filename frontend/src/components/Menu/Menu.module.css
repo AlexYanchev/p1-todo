@@ -76,6 +76,10 @@
 }
 
 @media screen and (max-width: 810px) {
+  .header {
+    padding: 10px 15px;
+  }
+
   .link_list {
     visibility: hidden;
     opacity: 0;

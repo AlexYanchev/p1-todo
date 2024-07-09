@@ -58,3 +58,13 @@
   grid-template-columns: 1fr 2fr 1fr;
   place-items: center center;
 }
+
+@media screen and (max-width: 800px) {
+  .profile_container {
+    grid-template-columns: 1fr;
+  }
+
+  .profile_info_container {
+    flex-wrap: wrap;
+  }
+}
